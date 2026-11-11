@@ -1,9 +1,10 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Minus, MousePointer2, Pause, Play, Plus, RotateCcw } from 'lucide-react';
-import { useRef, useState, type PointerEvent, type ReactNode } from 'react';
+import { Suspense, useRef, useState, type PointerEvent, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { Button, Chip } from '../../components/ui';
 import { cn, prefersReducedMotion } from '../../lib/utils';
+import { GLBModel } from './GLBModelViewer';
 
 export interface ViewerHotspot {
   id: string;
@@ -16,6 +17,7 @@ export type ViewerModel = 'microscope' | 'cell-animal' | 'cell-plant' | 'energy-
 
 interface Cell3DViewerProps {
   model: ViewerModel;
+  glbUrl?: string;
   hotspots?: ViewerHotspot[];
   activeHotspot?: string | null;
   onHotspot?: (id: string) => void;
@@ -307,6 +309,7 @@ function SceneRig({
 
 export default function Cell3DViewer({
   model,
+  glbUrl,
   hotspots = [],
   activeHotspot = null,
   onHotspot,
@@ -418,8 +421,19 @@ export default function Cell3DViewer({
           <pointLight position={[-3, -1, 2]} intensity={2.5} color="#58e6c5" />
           <pointLight position={[3, 2, -2]} intensity={1.6} color="#7dd3fc" />
           <SceneRig rotation={rotation} zoom={zoom} autoRotate={autoRotate}>
-            {model === 'microscope' ? (
-              <MicroscopeModel hotspots={hotspots} activeHotspot={activeHotspot} onHotspot={onHotspot} />
+            {glbUrl ? (
+              <Suspense fallback={<MicroscopeModel hotspots={hotspots} activeHotspot={activeHotspot} onHotspot={onHotspot} />}>
+                <GLBModel url={glbUrl} scale={1.2} />
+              </Suspense>
+            ) : model === 'microscope' ? (
+              <Suspense fallback={<MicroscopeModel hotspots={hotspots} activeHotspot={activeHotspot} onHotspot={onHotspot} />}>
+                <GLBModel
+                  url="/models/microscopio_celula.glb"
+                  scale={1.3}
+                  position={[0, -0.2, 0]}
+                  fallback={<MicroscopeModel hotspots={hotspots} activeHotspot={activeHotspot} onHotspot={onHotspot} />}
+                />
+              </Suspense>
             ) : (
               <CellModel
                 model={model}
