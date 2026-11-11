@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LoadingBlock, SectionHeading, StatCard } from '../../components/ui';
+import { AnimatedList, SpotlightCard } from '../../components/reactbits';
 import { api, classroomsApi } from '../../lib/api';
 import type { Classroom, User } from '../../lib/types';
 
@@ -85,7 +86,7 @@ export function AdminPage() {
       </section>
 
       {/* Summary stats */}
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <AnimatedList className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Estudiantes"
           value={studentCount}
@@ -114,7 +115,7 @@ export function AdminPage() {
           icon={CheckCircle2}
           accent="#a78bfa"
         />
-      </section>
+      </AnimatedList>
 
       {/* Classrooms List */}
       <section className="space-y-4">
@@ -126,7 +127,7 @@ export function AdminPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {classrooms.map((c) => (
-            <Card key={c._id} className="p-5 space-y-3">
+            <SpotlightCard key={c._id} spotlightColor="#7dd3fc" className="p-5 space-y-3">
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-white">{c.name}</h3>
@@ -138,7 +139,7 @@ export function AdminPage() {
                 <span>Año lectivo: {c.academicYear}</span>
                 <span>{c.teacherIds?.length ?? 1} docente(s)</span>
               </div>
-            </Card>
+            </SpotlightCard>
           ))}
         </div>
       </section>

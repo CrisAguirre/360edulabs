@@ -5,6 +5,7 @@ import { CitoMascot, Logo } from '../../components/Cito';
 import { Button } from '../../components/ui';
 import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { ApiError } from '../../lib/api';
+import { BlurText, ClickSpark, Particles } from '../../components/reactbits';
 
 const demoAccounts = [
   {
@@ -70,9 +71,12 @@ export function LoginPage() {
 
   return (
     <div className="relative min-h-dvh overflow-hidden">
+      {/* React Bits: Particles background */}
+      <Particles count={28} speed={0.16} color="#7dd3fc" connectDistance={95} className="absolute inset-0 -z-10" />
+
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
-        <div className="absolute -left-32 top-0 size-[30rem] rounded-full bg-mint-400/12 blur-3xl" />
-        <div className="absolute -right-24 bottom-0 size-[34rem] rounded-full bg-sky-400/12 blur-3xl" />
+        <div className="absolute -left-32 top-0 size-[30rem] rounded-full bg-mint-400/8 blur-3xl" />
+        <div className="absolute -right-24 bottom-0 size-[34rem] rounded-full bg-sky-400/8 blur-3xl" />
       </div>
 
       <div className="mx-auto grid min-h-dvh w-full max-w-7xl items-center gap-8 px-4 py-6 sm:px-6 lg:grid-cols-[0.95fr_1.05fr]">
@@ -85,7 +89,11 @@ export function LoginPage() {
             <div>
               <p className="eyebrow">Bienvenido de vuelta</p>
               <h1 className="mt-2 max-w-lg font-display text-5xl font-extrabold leading-[1.05] text-white">
-                Tu próxima <span className="text-gradient">misión</span> te espera.
+                Tu próxima{' '}
+                <span className="text-gradient inline-block">
+                  <BlurText text="misión" delay={0.2} animateBy="letters" />
+                </span>{' '}
+                te espera.
               </h1>
               <p className="mt-4 max-w-md text-slate-300">
                 Entra a la Agencia CitoIndagar 360 y continúa tu exploración por el mundo invisible de las células.
@@ -174,10 +182,12 @@ export function LoginPage() {
                 </p>
               ) : null}
 
-              <Button type="submit" size="lg" className="w-full" loading={submitting}>
-                Entrar a mi laboratorio
-                <ArrowRight className="size-5" aria-hidden />
-              </Button>
+              <ClickSpark sparkColor="#58e6c5" sparkCount={10}>
+                <Button type="submit" size="lg" className="w-full" loading={submitting}>
+                  Entrar a mi laboratorio
+                  <ArrowRight className="size-5" aria-hidden />
+                </Button>
+              </ClickSpark>
             </form>
 
             <div className="mt-6">
@@ -192,25 +202,26 @@ export function LoginPage() {
                 {demoAccounts.map((account) => {
                   const Icon = account.icon;
                   return (
-                    <button
-                      key={account.username}
-                      type="button"
-                      onClick={() => {
-                        setUsername(account.username);
-                        setPassword(account.password);
-                        setError(null);
-                      }}
-                      className="group rounded-2xl border border-white/10 bg-white/4 p-3 text-left transition hover:border-white/20 hover:bg-white/8"
-                    >
-                      <span
-                        className="grid size-8 place-items-center rounded-lg"
-                        style={{ background: `${account.accent}1f`, color: account.accent }}
+                    <ClickSpark key={account.username} sparkColor={account.accent} sparkCount={8}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUsername(account.username);
+                          setPassword(account.password);
+                          setError(null);
+                        }}
+                        className="group w-full rounded-2xl border border-white/10 bg-white/4 p-3 text-left transition hover:border-white/20 hover:bg-white/8"
                       >
-                        <Icon className="size-4" aria-hidden />
-                      </span>
-                      <span className="mt-2 block text-xs font-extrabold text-white">{account.label}</span>
-                      <span className="block text-[10px] text-slate-500">{account.hint}</span>
-                    </button>
+                        <span
+                          className="grid size-8 place-items-center rounded-lg"
+                          style={{ background: `${account.accent}1f`, color: account.accent }}
+                        >
+                          <Icon className="size-4" aria-hidden />
+                        </span>
+                        <span className="mt-2 block text-xs font-extrabold text-white">{account.label}</span>
+                        <span className="block text-[10px] text-slate-500">{account.hint}</span>
+                      </button>
+                    </ClickSpark>
                   );
                 })}
               </div>

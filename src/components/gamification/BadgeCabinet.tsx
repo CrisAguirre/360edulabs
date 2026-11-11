@@ -3,6 +3,7 @@ import type { AwardedBadge } from '../../lib/types';
 import { BADGE_CATALOG } from '../../lib/badges';
 import { cn, formatDate } from '../../lib/utils';
 import { Chip } from '../ui';
+import { AnimatedList, SpotlightCard } from '../reactbits';
 
 export function BadgeCabinet({
   earned,
@@ -19,15 +20,20 @@ export function BadgeCabinet({
   });
 
   return (
-    <div className={cn('grid gap-3', compact ? 'sm:grid-cols-2 lg:grid-cols-5' : 'sm:grid-cols-2 lg:grid-cols-3')}>
+    <AnimatedList
+      className={cn('grid gap-3', compact ? 'sm:grid-cols-2 lg:grid-cols-5' : 'sm:grid-cols-2 lg:grid-cols-3')}
+      stagger={0.04}
+    >
       {items.map(({ badge, awarded }) => (
-        <div
+        <SpotlightCard
           key={badge.code}
+          spotlightColor={awarded ? `${badge.accent}30` : 'rgba(255,255,255,0.08)'}
+          borderColor={awarded ? `${badge.accent}50` : 'rgba(255,255,255,0.1)'}
           className={cn(
-            'relative overflow-hidden rounded-2xl border p-4 transition',
+            'relative overflow-hidden p-4 transition',
             awarded
-              ? 'border-white/12 bg-ink-900/70 hover:-translate-y-0.5 hover:border-white/20'
-              : 'border-dashed border-white/10 bg-white/2 opacity-70'
+              ? 'bg-ink-900/70 hover:-translate-y-0.5'
+              : 'border-dashed bg-white/2 opacity-70'
           )}
         >
           {awarded ? (
@@ -48,11 +54,11 @@ export function BadgeCabinet({
           <p className="relative mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
             {awarded ? `Obtenida el ${formatDate(awarded.awardedAt)}` : `+${badge.xpBonus} XP`}
           </p>
-        </div>
+        </SpotlightCard>
       ))}
       {earnedCodes.size === 0 ? (
         <p className="sr-only">Todavía no has ganado insignias. Completa una misión para obtener la primera.</p>
       ) : null}
-    </div>
+    </AnimatedList>
   );
 }

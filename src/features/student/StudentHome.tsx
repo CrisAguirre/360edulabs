@@ -6,6 +6,7 @@ import { CitoMascot } from '../../components/Cito';
 import { Button, Card, ErrorBlock, LinkButton, LoadingBlock, ProgressBar, ProgressRing, SectionHeading } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 import { useMyEvidence, useProgress } from '../../lib/queries';
+import { AnimatedList, Aurora, DecryptedText } from '../../components/reactbits';
 
 export function StudentHome() {
   const { user } = useAuth();
@@ -29,12 +30,21 @@ export function StudentHome() {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-mint-400/12 via-ink-900/70 to-sky-400/10 p-5 sm:p-7">
+        <Aurora className="rounded-[2rem]" opacity={0.25} />
         <div className="pointer-events-none absolute -right-16 -top-20 size-72 rounded-full bg-mint-400/12 blur-3xl" aria-hidden />
         <div className="relative grid items-center gap-6 lg:grid-cols-[1.4fr_0.6fr]">
           <div>
             <p className="eyebrow">Agencia CitoIndagar 360 · 5.º A</p>
             <h1 className="mt-2 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl">
-              ¡Hola, {user?.displayName.split(' ')[0] ?? 'explorador'}!
+              ¡Hola,{' '}
+              <span className="text-mint-300 inline-block">
+                <DecryptedText
+                  text={user?.displayName.split(' ')[0] ?? 'explorador'}
+                  speed={45}
+                  triggerOnHover
+                />
+              </span>
+              !
             </h1>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
               {active
@@ -58,7 +68,7 @@ export function StudentHome() {
                 Mis logros
               </LinkButton>
             </div>
-            <div className="mt-5 grid gap-2 sm:grid-cols-3">
+            <AnimatedList className="mt-5 grid gap-2 sm:grid-cols-3" stagger={0.06}>
               <div className="rounded-2xl border border-white/8 bg-ink-950/35 px-3 py-2.5">
                 <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Misiones completadas</p>
                 <p className="font-display text-xl font-bold text-white">
@@ -75,7 +85,7 @@ export function StudentHome() {
                 <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Evidencias aprobadas</p>
                 <p className="font-display text-xl font-bold text-white">{approved}</p>
               </div>
-            </div>
+            </AnimatedList>
           </div>
 
           <div className="mx-auto flex w-full max-w-xs flex-col items-center gap-3">

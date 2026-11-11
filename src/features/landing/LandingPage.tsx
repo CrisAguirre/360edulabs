@@ -3,7 +3,15 @@ import { Link } from 'react-router-dom';
 import { useAuth, roleHome } from '../../contexts/AuthContext';
 import { BADGE_CATALOG, type BadgeInfo } from '../../lib/badges';
 import { CitoMascot } from '../../components/Cito';
-import { Card, LinkButton } from '../../components/ui';
+import { LinkButton } from '../../components/ui';
+import {
+  AnimatedList,
+  Aurora,
+  BlurText,
+  Particles,
+  ShinyText,
+  SpotlightCard
+} from '../../components/reactbits';
 
 const missions = [
   {
@@ -46,10 +54,13 @@ export function LandingPage() {
 
   return (
     <div className="relative min-h-dvh overflow-hidden">
+      {/* React Bits: Canvas Particles background */}
+      <Particles count={45} speed={0.22} color="#58e6c5" connectDistance={110} className="absolute inset-0 -z-10" />
+
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
-        <div className="absolute -left-40 top-10 size-[34rem] rounded-full bg-mint-400/12 blur-3xl" />
-        <div className="absolute -right-40 top-1/4 size-[38rem] rounded-full bg-sky-400/12 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 size-[30rem] -translate-x-1/2 rounded-full bg-violet-400/10 blur-3xl" />
+        <div className="absolute -left-40 top-10 size-[34rem] rounded-full bg-mint-400/8 blur-3xl" />
+        <div className="absolute -right-40 top-1/4 size-[38rem] rounded-full bg-sky-400/8 blur-3xl" />
+        <div className="absolute bottom-0 left-1/2 size-[30rem] -translate-x-1/2 rounded-full bg-violet-400/6 blur-3xl" />
       </div>
 
       <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-5 sm:px-6">
@@ -79,12 +90,16 @@ export function LandingPage() {
 
       <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 pb-16 pt-8 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:pb-24 lg:pt-14">
         <div className="relative space-y-7">
-          <span className="inline-flex items-center gap-2 rounded-full border border-mint-400/25 bg-mint-400/10 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-mint-300">
-            <Sparkles className="size-4" aria-hidden />
-            Ciencia para 5.º de primaria
+          <span className="inline-flex items-center gap-2 rounded-full border border-mint-400/25 bg-mint-400/10 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wider text-mint-300">
+            <Sparkles className="size-4 text-mint-300" aria-hidden />
+            <ShinyText text="Ciencia para 5.º de primaria" className="text-mint-300" speed={2.5} />
           </span>
           <h1 className="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] text-white sm:text-6xl lg:text-7xl">
-            La célula se vuelve una <span className="text-gradient">aventura</span>.
+            La célula se vuelve una{' '}
+            <span className="text-gradient inline-block">
+              <BlurText text="aventura" delay={0.15} animateBy="letters" />
+            </span>
+            .
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
             Tres misiones gamificadas para descubrir lo invisible: video 360, modelos 3D, realidad aumentada,
@@ -148,9 +163,14 @@ export function LandingPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {missions.map((mission, index) => (
-            <Card key={mission.code} className="relative overflow-hidden p-5">
+            <SpotlightCard
+              key={mission.code}
+              spotlightColor={`${mission.accent}20`}
+              borderColor={`${mission.accent}55`}
+              className="relative overflow-hidden p-5"
+            >
               <div
-                className="absolute -right-12 -top-12 size-36 rounded-full blur-2xl"
+                className="pointer-events-none absolute -right-12 -top-12 size-36 rounded-full blur-2xl"
                 style={{ background: `${mission.accent}33` }}
                 aria-hidden
               />
@@ -167,7 +187,7 @@ export function LandingPage() {
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-400">{mission.description}</p>
               </div>
-            </Card>
+            </SpotlightCard>
           ))}
         </div>
       </section>
@@ -177,7 +197,7 @@ export function LandingPage() {
           <p className="eyebrow">Un laboratorio completo</p>
           <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Aprender haciendo, con evidencia</h2>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <AnimatedList className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {features.map((feature) => (
             <div key={feature.title} className="glass-soft rounded-2xl p-5">
               <span className="text-2xl" aria-hidden>{feature.icon}</span>
@@ -185,11 +205,12 @@ export function LandingPage() {
               <p className="mt-1 text-sm leading-relaxed text-slate-400">{feature.text}</p>
             </div>
           ))}
-        </div>
+        </AnimatedList>
       </section>
 
       <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
-        <div className="grid items-center gap-6 rounded-[2rem] border border-white/10 bg-gradient-to-br from-mint-400/12 via-sky-400/8 to-violet-400/10 p-6 sm:p-10 lg:grid-cols-[1fr_1fr]">
+        <div className="relative overflow-hidden grid items-center gap-6 rounded-[2rem] border border-white/10 bg-gradient-to-br from-mint-400/12 via-sky-400/8 to-violet-400/10 p-6 sm:p-10 lg:grid-cols-[1fr_1fr]">
+          <Aurora className="rounded-[2rem]" opacity={0.25} />
           <div>
             <p className="eyebrow">Para docentes</p>
             <h2 className="mt-2 text-3xl font-bold text-white">Tu aula, en una sola mirada</h2>

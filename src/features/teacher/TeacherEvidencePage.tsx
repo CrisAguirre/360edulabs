@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Card, Chip, EmptyState, ErrorBlock, EvidenceStatusBadge, LoadingBlock, Modal } from '../../components/ui';
+import { Button, Chip, EmptyState, ErrorBlock, EvidenceStatusBadge, LoadingBlock, Modal } from '../../components/ui';
+import { AnimatedList, SpotlightCard } from '../../components/reactbits';
 import { useToast } from '../../components/ui/Toast';
 import { ApiError } from '../../lib/api';
 import { useClassroomEvidence, useClassrooms, useReviewEvidence } from '../../lib/queries';
@@ -187,14 +188,14 @@ export function TeacherEvidencePage() {
           description="Las producciones enviadas por los estudiantes aparecerán aquí para tu revisión."
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <AnimatedList className="grid gap-4 sm:grid-cols-2">
           {filteredEvidence.map((item) => {
             const student = typeof item.studentId === 'object' ? item.studentId : null;
             const mission = typeof item.missionId === 'object' ? item.missionId : null;
             const currentRubric = item.teacherScore ? menRubric[item.teacherScore] : null;
 
             return (
-              <Card key={item._id} className="p-5 flex flex-col justify-between space-y-4">
+              <SpotlightCard key={item._id} spotlightColor="#58e6c5" className="p-5 flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -263,10 +264,10 @@ export function TeacherEvidencePage() {
                     {item.status === 'submitted' ? 'Calificar ahora' : 'Editar calificación'}
                   </Button>
                 </div>
-              </Card>
+              </SpotlightCard>
             );
           })}
-        </div>
+        </AnimatedList>
       )}
 
       {/* Review Modal */}

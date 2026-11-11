@@ -6,6 +6,7 @@ import { ApiError } from '../../lib/api';
 import { evidenceForActivity, useMyEvidence, useSaveEvidence, useSubmitEvidence } from '../../lib/queries';
 import type { Activity, Evidence, MissionDetail } from '../../lib/types';
 import { cn, timeAgo } from '../../lib/utils';
+import { AnimatedList, ClickSpark, SpotlightCard } from '../../components/reactbits';
 
 interface EvidenceEditorProps {
   activity: Activity;
@@ -178,7 +179,11 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
         </span>
       </div>
 
-      <Card className="p-5">
+      <SpotlightCard
+        spotlightColor="rgba(244, 114, 182, 0.15)"
+        borderColor="rgba(244, 114, 182, 0.35)"
+        className="p-5"
+      >
         <p className="text-[10px] font-extrabold uppercase tracking-wider text-rose-300">Consigna</p>
         <p className="mt-1 text-sm leading-relaxed text-white">{content.prompt}</p>
         <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-bold text-slate-400">
@@ -186,7 +191,7 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
           {requiresLink ? <span className="rounded-full bg-amber-400/10 px-3 py-1 text-amber-200">Enlace obligatorio</span> : null}
           <span className="rounded-full bg-mint-400/10 px-3 py-1 text-mint-200">+{activity.xp} XP</span>
         </div>
-      </Card>
+      </SpotlightCard>
 
       {evidence?.feedback || status === 'approved' || status === 'changes_requested' ? (
         <div
@@ -263,22 +268,28 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
           </label>
 
           {!locked ? (
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Button variant="secondary" onClick={handleSave} loading={saving} disabled={!canDraft}>
-                Guardar borrador
-              </Button>
-              <Button onClick={handleSubmit} loading={submitting} disabled={!enoughContent}>
-                <Send className="size-4" aria-hidden />
-                Enviar a revisión
-              </Button>
-            </div>
+            <ClickSpark sparkColor="#58e6c5">
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Button variant="secondary" onClick={handleSave} loading={saving} disabled={!canDraft}>
+                  Guardar borrador
+                </Button>
+                <Button onClick={handleSubmit} loading={submitting} disabled={!enoughContent}>
+                  <Send className="size-4" aria-hidden />
+                  Enviar a revisión
+                </Button>
+              </div>
+            </ClickSpark>
           ) : null}
         </Card>
 
         <div className="space-y-3">
-          <Card className="p-4">
+          <SpotlightCard
+            spotlightColor="rgba(88, 230, 197, 0.12)"
+            borderColor="rgba(255, 255, 255, 0.1)"
+            className="p-4"
+          >
             <h4 className="text-sm font-extrabold text-white">Checklist de calidad</h4>
-            <div className="mt-2 space-y-1.5">
+            <AnimatedList className="mt-2 space-y-1.5" stagger={0.03}>
               {checklist.map((item, index) => (
                 <label
                   key={item}
@@ -296,24 +307,28 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
                   {item}
                 </label>
               ))}
-            </div>
-          </Card>
+            </AnimatedList>
+          </SpotlightCard>
 
           {rubric.length > 0 ? (
-            <Card className="p-4">
+            <SpotlightCard
+              spotlightColor="rgba(56, 189, 248, 0.12)"
+              borderColor="rgba(255, 255, 255, 0.1)"
+              className="p-4"
+            >
               <div className="flex items-center gap-2">
                 <ShieldCheck className="size-4 text-mint-300" aria-hidden />
                 <h4 className="text-sm font-extrabold text-white">Rúbrica de evaluación</h4>
               </div>
-              <div className="mt-2 space-y-1.5">
+              <AnimatedList className="mt-2 space-y-1.5" stagger={0.03}>
                 {rubric.map((level) => (
                   <div key={level.level} className="rounded-xl border border-white/6 bg-white/2 p-2">
                     <p className="text-[10px] font-extrabold uppercase tracking-wider text-mint-300">{level.level}</p>
                     <p className="text-xs leading-relaxed text-slate-400">{level.description}</p>
                   </div>
                 ))}
-              </div>
-            </Card>
+              </AnimatedList>
+            </SpotlightCard>
           ) : null}
 
           <div className="rounded-2xl border border-sky-400/20 bg-sky-400/8 p-3 text-xs leading-relaxed text-sky-100">

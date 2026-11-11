@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button, Card, Chip, EmptyState, ErrorBlock, LinkButton, LoadingBlock, MissionStatusBadge, SectionHeading, StatCard } from '../../components/ui';
+import { Aurora, AnimatedList, SpotlightCard } from '../../components/reactbits';
 import { useAuth } from '../../contexts/AuthContext';
 import { useClassroomDashboard, useClassrooms } from '../../lib/queries';
 import type { StudentRow } from '../../lib/types';
@@ -63,6 +64,7 @@ export function TeacherDashboard() {
     <div className="space-y-8">
       {/* Teacher Header */}
       <section className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-sky-400/10 via-ink-900/80 to-mint-400/10 p-6 sm:p-8">
+        <Aurora colors={['#38bdf8', '#58e6c5', '#818cf8']} className="opacity-45" />
         <div className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-sky-400/12 blur-3xl" aria-hidden />
 
         <div className="relative flex flex-wrap items-center justify-between gap-6">
@@ -105,7 +107,7 @@ export function TeacherDashboard() {
 
       {/* KPI Cards */}
       {dashboard ? (
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <AnimatedList className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             label="Estudiantes activos"
             value={dashboard.summary.totalStudents}
@@ -134,12 +136,12 @@ export function TeacherDashboard() {
             icon={ClipboardCheck}
             accent="#f472b6"
           />
-        </section>
+        </AnimatedList>
       ) : null}
 
       {/* Quick Action Navigation */}
       <section className="grid gap-4 sm:grid-cols-2">
-        <Card className="p-5 flex items-center justify-between gap-4">
+        <SpotlightCard spotlightColor="#58e6c5" className="p-5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="grid size-12 place-items-center rounded-2xl bg-mint-400/12 text-mint-300">
               <ClipboardCheck className="size-6" aria-hidden />
@@ -153,9 +155,9 @@ export function TeacherDashboard() {
             Revisar
             <ArrowRight className="size-4" aria-hidden />
           </LinkButton>
-        </Card>
+        </SpotlightCard>
 
-        <Card className="p-5 flex items-center justify-between gap-4">
+        <SpotlightCard spotlightColor="#7dd3fc" className="p-5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="grid size-12 place-items-center rounded-2xl bg-sky-400/12 text-sky-300">
               <BookOpenCheck className="size-6" aria-hidden />
@@ -169,7 +171,7 @@ export function TeacherDashboard() {
             Ver reportes
             <ArrowRight className="size-4" aria-hidden />
           </LinkButton>
-        </Card>
+        </SpotlightCard>
       </section>
 
       {/* Classroom Turn System (Rotación de aula) */}

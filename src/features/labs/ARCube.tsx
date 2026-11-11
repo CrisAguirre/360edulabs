@@ -1,8 +1,9 @@
 import { Box, Camera, Check, MousePointer2, RotateCcw, ScanLine } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Card, Chip, ProgressBar } from '../../components/ui';
+import { Button, Chip, ProgressBar } from '../../components/ui';
 import { cn } from '../../lib/utils';
 import type { ActivityRuntimeProps } from './types';
+import { ClickSpark, Particles, ShinyText, SpotlightCard } from '../../components/reactbits';
 
 interface CubeFace {
   id: string;
@@ -88,7 +89,9 @@ export function ARCube({ activity, onProgressChange }: ActivityRuntimeProps) {
 
       <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_50%_35%,rgba(251,191,36,0.13),rgba(5,8,23,0.9)_70%)] p-4">
-          <div className="cube-scene grid place-items-center py-6" style={{ minHeight: '19rem' }}>
+          <Particles count={28} speed={0.18} color="#fbbf24" connectDistance={75} className="absolute inset-0 pointer-events-none opacity-40" />
+
+          <div className="cube-scene relative grid place-items-center py-6" style={{ minHeight: '19rem' }}>
             <div
               className="cube"
               style={{ transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)` }}
@@ -115,36 +118,42 @@ export function ARCube({ activity, onProgressChange }: ActivityRuntimeProps) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
-            <Button size="sm" variant="secondary" onClick={() => rotateBy('y', -90)} aria-label="Girar cubo a la izquierda">
-              ←
-            </Button>
-            <Button size="sm" variant="secondary" onClick={() => rotateBy('x', -90)} aria-label="Girar cubo hacia arriba">
-              ↑
-            </Button>
-            <Button size="sm" variant="secondary" onClick={() => rotateBy('x', 90)} aria-label="Girar cubo hacia abajo">
-              ↓
-            </Button>
-            <Button size="sm" variant="secondary" onClick={() => rotateBy('y', 90)} aria-label="Girar cubo a la derecha">
-              →
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                setRotation(FACE_ROTATIONS[0]);
-                setActiveIndex(0);
-              }}
-              aria-label="Reiniciar cubo"
-            >
-              <RotateCcw className="size-4" aria-hidden />
-              Reiniciar
-            </Button>
-          </div>
+          <ClickSpark sparkColor="#fbbf24">
+            <div className="relative flex flex-wrap items-center justify-center gap-1.5">
+              <Button size="sm" variant="secondary" onClick={() => rotateBy('y', -90)} aria-label="Girar cubo a la izquierda">
+                ←
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => rotateBy('x', -90)} aria-label="Girar cubo hacia arriba">
+                ↑
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => rotateBy('x', 90)} aria-label="Girar cubo hacia abajo">
+                ↓
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => rotateBy('y', 90)} aria-label="Girar cubo a la derecha">
+                →
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setRotation(FACE_ROTATIONS[0]);
+                  setActiveIndex(0);
+                }}
+                aria-label="Reiniciar cubo"
+              >
+                <RotateCcw className="size-4" aria-hidden />
+                Reiniciar
+              </Button>
+            </div>
+          </ClickSpark>
         </div>
 
         <div className="space-y-3">
-          <Card className="p-4">
+          <SpotlightCard
+            spotlightColor={`${active?.color ?? '#fbbf24'}22`}
+            borderColor={`${active?.color ?? '#fbbf24'}45`}
+            className="p-5"
+          >
             <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
               Cara seleccionada · {activeIndex + 1} de {faces.length}
             </p>
@@ -158,7 +167,9 @@ export function ARCube({ activity, onProgressChange }: ActivityRuntimeProps) {
                   >
                     {active.icon}
                   </span>
-                  <h3 className="font-display text-xl font-extrabold text-white">{active.label}</h3>
+                  <h3 className="font-display text-xl font-extrabold text-white">
+                    <ShinyText text={active.label} speed={4} className="font-extrabold text-white" />
+                  </h3>
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-slate-300">{active.description}</p>
                 <p className="mt-3 rounded-xl border border-white/8 bg-white/3 p-3 text-xs leading-relaxed text-slate-400">
@@ -166,7 +177,7 @@ export function ARCube({ activity, onProgressChange }: ActivityRuntimeProps) {
                 </p>
               </>
             ) : null}
-          </Card>
+          </SpotlightCard>
 
           <div className="rounded-2xl border border-white/8 bg-white/3 p-3">
             <ProgressBar
@@ -175,35 +186,41 @@ export function ARCube({ activity, onProgressChange }: ActivityRuntimeProps) {
               color="#fbbf24"
               label={`Caras exploradas: ${exploredCount} de ${faces.length} (mínimo ${minFaces})`}
             />
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              {faces.map((face, index) => (
-                <button
-                  key={face.id}
-                  type="button"
-                  onClick={() => selectFace(index)}
-                  className={cn(
-                    'flex min-h-11 items-center gap-2 rounded-xl border px-2.5 py-2 text-left text-[11px] font-bold transition',
-                    index === activeIndex
-                      ? 'border-amber-400/40 bg-amber-400/12 text-amber-100'
-                      : 'border-white/8 bg-white/3 text-slate-300 hover:bg-white/7'
-                  )}
-                  aria-pressed={index === activeIndex}
-                >
-                  {explored.has(face.id) ? (
-                    <Check className="size-4 shrink-0 text-emerald-300" aria-label="Cara explorada" />
-                  ) : (
-                    <MousePointer2 className="size-4 shrink-0 text-slate-500" aria-hidden />
-                  )}
-                  <span className="truncate">{face.label}</span>
-                </button>
-              ))}
-            </div>
+            <ClickSpark sparkColor="#fbbf24">
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {faces.map((face, index) => (
+                  <button
+                    key={face.id}
+                    type="button"
+                    onClick={() => selectFace(index)}
+                    className={cn(
+                      'flex min-h-11 items-center gap-2 rounded-xl border px-2.5 py-2 text-left text-[11px] font-bold transition',
+                      index === activeIndex
+                        ? 'border-amber-400/40 bg-amber-400/12 text-amber-100'
+                        : 'border-white/8 bg-white/3 text-slate-300 hover:bg-white/7'
+                    )}
+                    aria-pressed={index === activeIndex}
+                  >
+                    {explored.has(face.id) ? (
+                      <Check className="size-4 shrink-0 text-emerald-300" aria-label="Cara explorada" />
+                    ) : (
+                      <MousePointer2 className="size-4 shrink-0 text-slate-500" aria-hidden />
+                    )}
+                    <span className="truncate">{face.label}</span>
+                  </button>
+                ))}
+              </div>
+            </ClickSpark>
           </div>
         </div>
       </div>
 
       {arGuide ? (
-        <Card className="p-5">
+        <SpotlightCard
+          spotlightColor="rgba(251, 191, 36, 0.15)"
+          borderColor="rgba(251, 191, 36, 0.35)"
+          className="p-5"
+        >
           <div className="flex items-start gap-3">
             <div className="grid size-11 shrink-0 place-items-center rounded-2xl bg-amber-400/12 text-amber-300">
               <Box className="size-5" aria-hidden />
@@ -232,7 +249,7 @@ export function ARCube({ activity, onProgressChange }: ActivityRuntimeProps) {
               </div>
             </div>
           </div>
-        </Card>
+        </SpotlightCard>
       ) : null}
     </div>
   );

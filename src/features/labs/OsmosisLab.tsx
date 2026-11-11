@@ -1,8 +1,9 @@
 import { Droplets, FlaskConical, Ruler, ShieldAlert, Timer, Waves } from 'lucide-react';
 import { useState } from 'react';
-import { Card, Chip } from '../../components/ui';
+import { Chip } from '../../components/ui';
 import { cn } from '../../lib/utils';
 import type { ActivityRuntimeProps } from './types';
+import { AnimatedList, ClickSpark, Particles, ShinyText, SpotlightCard } from '../../components/reactbits';
 
 const CUPS = [
   { id: 'pure', label: 'Agua pura', salinity: '0 %', factor: 0.2, color: '#38bdf8', result: 'Gana agua · se vuelve más firme' },
@@ -43,7 +44,11 @@ export function OsmosisLab({ activity }: Pick<ActivityRuntimeProps, 'activity'>)
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <Card className="p-4">
+        <SpotlightCard
+          spotlightColor="rgba(43, 212, 173, 0.15)"
+          borderColor="rgba(43, 212, 173, 0.3)"
+          className="p-5"
+        >
           <h4 className="font-bold text-white">Materiales</h4>
           <div className="mt-2 flex flex-wrap gap-2">
             {materials.map((material) => (
@@ -53,7 +58,7 @@ export function OsmosisLab({ activity }: Pick<ActivityRuntimeProps, 'activity'>)
             ))}
           </div>
           <h4 className="mt-4 font-bold text-white">Procedimiento</h4>
-          <ol className="mt-2 space-y-2">
+          <AnimatedList className="mt-2 space-y-2" stagger={0.05}>
             {steps.map((step, index) => (
               <li key={step} className="flex gap-2 text-sm text-slate-300">
                 <span className="grid size-6 shrink-0 place-items-center rounded-full bg-emerald-400/15 text-[11px] font-extrabold text-emerald-300">
@@ -62,91 +67,106 @@ export function OsmosisLab({ activity }: Pick<ActivityRuntimeProps, 'activity'>)
                 {step}
               </li>
             ))}
-          </ol>
-        </Card>
+          </AnimatedList>
+        </SpotlightCard>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <Waves className="size-5 text-sky-300" aria-hidden />
-            <h4 className="font-bold text-white">Simulación de ósmosis</h4>
-          </div>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
-            Elige un vaso y mueve el tiempo para observar cómo cambia el bastón de papa. Es una simulación: no reemplaza
-            el experimento real.
-          </p>
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            {CUPS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setSelectedCup(item.id)}
-                className={cn(
-                  'min-h-20 rounded-2xl border p-2 text-center transition',
-                  selectedCup === item.id
-                    ? 'border-white/25 bg-white/8'
-                    : 'border-white/8 bg-white/3 hover:bg-white/6'
-                )}
-                aria-pressed={selectedCup === item.id}
-              >
-                <span
-                  className="mx-auto mb-1 block h-8 w-6 rounded-b-lg rounded-t-sm border-2 border-t-0"
-                  style={{ background: `${item.color}44`, borderColor: item.color }}
-                  aria-hidden
-                />
-                <span className="block text-[10px] font-extrabold text-white">{item.label}</span>
-                <span className="block text-[9px] text-slate-400">{item.salinity}</span>
-              </button>
-            ))}
-          </div>
+        <SpotlightCard
+          spotlightColor={`${cup.color}25`}
+          borderColor={`${cup.color}45`}
+          className="relative overflow-hidden p-5"
+        >
+          <Particles count={24} speed={0.25} color={cup.color} connectDistance={70} className="absolute inset-0 pointer-events-none opacity-40" />
 
-          <label className="mt-4 block">
-            <span className="flex items-center justify-between text-xs font-extrabold text-slate-300">
-              <span className="inline-flex items-center gap-1.5">
-                <Timer className="size-4 text-sky-300" aria-hidden />
-                Tiempo transcurrido
-              </span>
-              <span className="text-sky-300">{minutes} min</span>
-            </span>
-            <input
-              type="range"
-              min={0}
-              max={30}
-              value={minutes}
-              onChange={(event) => setMinutes(Number(event.target.value))}
-              className="range-glow mt-2"
-              aria-label="Minutos del experimento"
-            />
-          </label>
-
-          <div className="mt-4 rounded-2xl border border-white/8 bg-ink-950/45 p-3">
-            <div className="flex items-center justify-between gap-2">
-              <span className="inline-flex items-center gap-1.5 text-sm font-extrabold text-white">
-                <Ruler className="size-4 text-mint-300" aria-hidden />
-                {cup.label}
-              </span>
-              <span className="font-display text-2xl font-extrabold" style={{ color: cup.color }}>
-                {lengthFor(6, cup.factor, minutes)} cm
-              </span>
+          <div className="relative">
+            <div className="flex items-center gap-2">
+              <Waves className="size-5 text-sky-300" aria-hidden />
+              <h4 className="font-bold text-white">Simulación de ósmosis</h4>
             </div>
-            <div className="mt-2 h-3 overflow-hidden rounded-full bg-white/8">
-              <div
-                className="h-full rounded-full transition-all"
-                style={{
-                  width: `${Math.min(100, (Number(lengthFor(6, cup.factor, minutes)) / 8) * 100)}%`,
-                  background: cup.color
-                }}
-              />
-            </div>
-            <p className="mt-2 text-xs leading-relaxed text-slate-400">
-              {minutes === 0
-                ? 'Longitud inicial: 6,0 cm. Inicia el tiempo para observar el cambio.'
-                : `${activeCup.result} Explicación: el agua se mueve por ósmosis desde donde hay menor concentración de sales hacia donde hay mayor concentración.`}
+            <p className="mt-1 text-xs leading-relaxed text-slate-400">
+              Elige un vaso y mueve el tiempo para observar cómo cambia el bastón de papa. Es una simulación: no reemplaza
+              el experimento real.
             </p>
+            <ClickSpark sparkColor={cup.color}>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {CUPS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSelectedCup(item.id)}
+                    className={cn(
+                      'min-h-20 rounded-2xl border p-2 text-center transition',
+                      selectedCup === item.id
+                        ? 'border-white/25 bg-white/8'
+                        : 'border-white/8 bg-white/3 hover:bg-white/6'
+                    )}
+                    aria-pressed={selectedCup === item.id}
+                  >
+                    <span
+                      className="mx-auto mb-1 block h-8 w-6 rounded-b-lg rounded-t-sm border-2 border-t-0"
+                      style={{ background: `${item.color}44`, borderColor: item.color }}
+                      aria-hidden
+                    />
+                    <span className="block text-[10px] font-extrabold text-white">{item.label}</span>
+                    <span className="block text-[9px] text-slate-400">{item.salinity}</span>
+                  </button>
+                ))}
+              </div>
+            </ClickSpark>
+
+            <label className="mt-4 block">
+              <span className="flex items-center justify-between text-xs font-extrabold text-slate-300">
+                <span className="inline-flex items-center gap-1.5">
+                  <Timer className="size-4 text-sky-300" aria-hidden />
+                  Tiempo transcurrido
+                </span>
+                <span className="text-sky-300 font-bold">{minutes} min</span>
+              </span>
+              <input
+                type="range"
+                min={0}
+                max={30}
+                value={minutes}
+                onChange={(event) => setMinutes(Number(event.target.value))}
+                className="range-glow mt-2"
+                aria-label="Minutos del experimento"
+              />
+            </label>
+
+            <div className="mt-4 rounded-2xl border border-white/8 bg-ink-950/65 backdrop-blur-sm p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-sm font-extrabold text-white">
+                  <Ruler className="size-4 text-mint-300" aria-hidden />
+                  {cup.label}
+                </span>
+                <span className="font-display text-2xl font-extrabold">
+                  <ShinyText text={`${lengthFor(6, cup.factor, minutes)} cm`} speed={3} className="font-extrabold" />
+                </span>
+              </div>
+              <div className="mt-2 h-3 overflow-hidden rounded-full bg-white/8">
+                <div
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{
+                    width: `${Math.min(100, (Number(lengthFor(6, cup.factor, minutes)) / 8) * 100)}%`,
+                    background: cup.color,
+                    boxShadow: `0 0 12px ${cup.color}88`
+                  }}
+                />
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-slate-300">
+                {minutes === 0
+                  ? 'Longitud inicial: 6,0 cm. Inicia el tiempo para observar el cambio.'
+                  : `${activeCup.result} Explicación: el agua se mueve por ósmosis desde donde hay menor concentración de sales hacia donde hay mayor concentración.`}
+              </p>
+            </div>
           </div>
-        </Card>
+        </SpotlightCard>
       </div>
 
-      <Card className="p-4">
+      <SpotlightCard
+        spotlightColor="rgba(56, 189, 248, 0.12)"
+        borderColor="rgba(255, 255, 255, 0.12)"
+        className="p-5"
+      >
         <h4 className="font-bold text-white">Tabla de observaciones</h4>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[38rem] border-collapse text-left text-xs">
@@ -201,7 +221,7 @@ export function OsmosisLab({ activity }: Pick<ActivityRuntimeProps, 'activity'>)
           Tus notas se quedan en esta pantalla. Si quieres conservarlas para tu bitácora, cópialas en tu evidencia o
           cuaderno.
         </p>
-      </Card>
+      </SpotlightCard>
 
       {content.safety ? (
         <div className="flex items-start gap-3 rounded-2xl border border-rose-400/20 bg-rose-400/8 p-4">

@@ -15,6 +15,7 @@ import { badgeForCode } from '../../lib/badges';
 import { useMission, useStartMission } from '../../lib/queries';
 import type { PhaseKey } from '../../lib/types';
 import { cn } from '../../lib/utils';
+import { AnimatedList, Aurora, SpotlightCard } from '../../components/reactbits';
 
 export function MissionDetailPage() {
   const { codigo, phase: paramPhase } = useParams<{ codigo: string; phase?: string }>();
@@ -76,6 +77,11 @@ export function MissionDetailPage() {
           background: `linear-gradient(135deg, ${mission.theme.accent}14 0%, rgba(8,13,32,0.85) 60%, rgba(5,8,23,0.95) 100%)`
         }}
       >
+        <Aurora
+          className="rounded-[2.5rem]"
+          opacity={0.22}
+          colors={[mission.theme.accent, '#7dd3fc', '#a78bfa']}
+        />
         <div
           className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full blur-3xl"
           style={{ background: `${mission.theme.accent}25` }}
@@ -228,15 +234,17 @@ export function MissionDetailPage() {
         </div>
 
         {/* Activities List */}
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <AnimatedList className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {phaseActivities.map((activity) => {
             const meta = ACTIVITY_META[activity.type];
             const Icon = meta.icon;
             const isCompleted = activity.status === 'completed';
 
             return (
-              <Card
+              <SpotlightCard
                 key={activity._id}
+                spotlightColor={`${meta.color}20`}
+                borderColor={`${meta.color}45`}
                 className={cn(
                   'group relative flex flex-col justify-between overflow-hidden p-5 transition duration-200',
                   isCompleted
@@ -301,10 +309,10 @@ export function MissionDetailPage() {
                     <ArrowRight className="size-4" aria-hidden />
                   </LinkButton>
                 </div>
-              </Card>
+              </SpotlightCard>
             );
           })}
-        </div>
+        </AnimatedList>
 
         {phaseActivities.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-slate-400">

@@ -14,6 +14,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { cn, initials } from '../../lib/utils';
 import { Logo } from '../Cito';
+import { SplashCursor } from '../reactbits';
 
 const navByRole = {
   student: [
@@ -48,6 +49,9 @@ export function AppShell() {
 
   return (
     <div className="relative min-h-dvh">
+      {/* React Bits: Desktop glow cursor */}
+      <SplashCursor color="#58e6c5" size={26} />
+
       <a
         href="#contenido"
         className="sr-only z-[100] rounded-xl bg-mint-400 px-4 py-2 font-bold text-ink-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4"

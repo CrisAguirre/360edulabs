@@ -13,6 +13,7 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import { cn } from '../../lib/utils';
 import { Button, Chip } from '../../components/ui';
 import type { ActivityRuntimeProps, HotspotView } from './types';
+import { AnimatedList, ClickSpark, SpotlightCard } from '../../components/reactbits';
 
 interface RawHotspot {
   id?: string;
@@ -174,7 +175,11 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
         })}
 
         {activeHotspot ? (
-          <div className="absolute inset-x-4 bottom-20 z-20 rounded-2xl border border-white/15 bg-ink-950/92 p-4 backdrop-blur-md sm:inset-x-auto sm:left-4 sm:max-w-sm">
+          <SpotlightCard
+            spotlightColor={`${activeHotspot.color ?? '#58e6c5'}35`}
+            borderColor={`${activeHotspot.color ?? '#58e6c5'}60`}
+            className="absolute inset-x-4 bottom-20 z-20 p-4 backdrop-blur-md sm:inset-x-auto sm:left-4 sm:max-w-sm"
+          >
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-extrabold uppercase tracking-wider text-mint-300">
@@ -190,7 +195,7 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
                 Cerrar
               </button>
             </div>
-          </div>
+          </SpotlightCard>
         ) : null}
 
         {captionIndex >= 0 ? (
@@ -205,47 +210,49 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
         ) : null}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/8 bg-white/3 p-3">
-        <Button
-          size="sm"
-          variant={playing ? 'secondary' : 'primary'}
-          onClick={() => setPlaying((current) => !current)}
-          aria-label={playing ? 'Pausar recorrido' : 'Reproducir recorrido'}
-        >
-          {playing ? <Pause className="size-4" aria-hidden /> : <Play className="size-4" aria-hidden />}
-          {playing ? 'Pausar' : time >= duration ? 'Volver a ver' : 'Reproducir'}
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => setRate((current) => (current === 1 ? 2 : 1))}
-          aria-label={`Velocidad ${rate}x. Cambiar velocidad`}
-        >
-          <Gauge className="size-4" aria-hidden />
-          {rate}x
-        </Button>
-        <Button size="sm" variant="ghost" onClick={reset} aria-label="Reiniciar recorrido">
-          <RotateCcw className="size-4" aria-hidden />
-          Reiniciar
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => setShowTranscript((current) => !current)}
-          aria-expanded={showTranscript}
-        >
-          <Captions className="size-4" aria-hidden />
-          Transcripción
-        </Button>
-        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-500">
-          <VolumeX className="size-3.5" aria-hidden />
-          Sin audio en la demo
-        </span>
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs font-extrabold text-slate-300">{progress}%</span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">recorrido</span>
+      <ClickSpark sparkColor="#38bdf8">
+        <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/8 bg-white/3 p-3">
+          <Button
+            size="sm"
+            variant={playing ? 'secondary' : 'primary'}
+            onClick={() => setPlaying((current) => !current)}
+            aria-label={playing ? 'Pausar recorrido' : 'Reproducir recorrido'}
+          >
+            {playing ? <Pause className="size-4" aria-hidden /> : <Play className="size-4" aria-hidden />}
+            {playing ? 'Pausar' : time >= duration ? 'Volver a ver' : 'Reproducir'}
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setRate((current) => (current === 1 ? 2 : 1))}
+            aria-label={`Velocidad ${rate}x. Cambiar velocidad`}
+          >
+            <Gauge className="size-4" aria-hidden />
+            {rate}x
+          </Button>
+          <Button size="sm" variant="ghost" onClick={reset} aria-label="Reiniciar recorrido">
+            <RotateCcw className="size-4" aria-hidden />
+            Reiniciar
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowTranscript((current) => !current)}
+            aria-expanded={showTranscript}
+          >
+            <Captions className="size-4" aria-hidden />
+            Transcripción
+          </Button>
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-500">
+            <VolumeX className="size-3.5" aria-hidden />
+            Sin audio en la demo
+          </span>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-xs font-extrabold text-slate-300">{progress}%</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">recorrido</span>
+          </div>
         </div>
-      </div>
+      </ClickSpark>
 
       <div className="flex items-center gap-3">
         <Eye className="size-4 shrink-0 text-sky-300" aria-hidden />
@@ -265,10 +272,14 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
       </div>
 
       {showTranscript ? (
-        <div className="space-y-2 rounded-2xl border border-white/10 bg-ink-950/50 p-4">
+        <SpotlightCard
+          spotlightColor="rgba(56, 189, 248, 0.12)"
+          borderColor="rgba(255, 255, 255, 0.1)"
+          className="space-y-2 p-5"
+        >
           <h4 className="text-sm font-extrabold text-white">Transcripción completa</h4>
           <p className="text-xs text-slate-400">{content.transcriptNote ?? 'Texto equivalente al recorrido.'}</p>
-          <ol className="space-y-2">
+          <AnimatedList className="space-y-2" stagger={0.03}>
             {narration.map((line, index) => (
               <li
                 key={line}
@@ -285,15 +296,19 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
                 {line}
               </li>
             ))}
-          </ol>
-        </div>
+          </AnimatedList>
+        </SpotlightCard>
       ) : null}
 
       {content.pauseQuestion ? (
-        <div className="rounded-2xl border border-amber-400/25 bg-amber-400/8 p-4">
+        <SpotlightCard
+          spotlightColor="rgba(251, 191, 36, 0.2)"
+          borderColor="rgba(251, 191, 36, 0.4)"
+          className="p-4"
+        >
           <p className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300">Pausa para pensar</p>
           <p className="mt-1 text-sm font-semibold leading-relaxed text-amber-100">{content.pauseQuestion}</p>
-        </div>
+        </SpotlightCard>
       ) : null}
     </div>
   );

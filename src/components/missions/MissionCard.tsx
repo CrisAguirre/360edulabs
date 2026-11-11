@@ -4,6 +4,7 @@ import type { MissionSummary } from '../../lib/types';
 import { badgeForCode } from '../../lib/badges';
 import { cn } from '../../lib/utils';
 import { MissionStatusBadge, ProgressBar } from '../ui';
+import { AnimatedList, ShinyText, SpotlightCard } from '../reactbits';
 
 export function MissionCard({ mission, index }: { mission: MissionSummary; index: number }) {
   const badge = badgeForCode(mission.badgeCode);
@@ -11,14 +12,15 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
   const completed = mission.progress.status === 'completed';
 
   return (
-    <article
+    <SpotlightCard
+      spotlightColor={locked ? 'rgba(255,255,255,0.05)' : `${mission.theme.accent}25`}
+      borderColor={locked ? 'rgba(255,255,255,0.1)' : `${mission.theme.accent}45`}
       className={cn(
-        'group relative flex h-full flex-col overflow-hidden rounded-3xl border p-5 transition duration-300',
+        'group relative flex h-full flex-col overflow-hidden p-5 transition duration-300',
         locked
-          ? 'border-white/8 bg-ink-900/45 opacity-70'
-          : 'border-white/10 bg-ink-900/70 hover:-translate-y-1 hover:border-white/20 hover:shadow-2xl'
+          ? 'bg-ink-900/45 opacity-70'
+          : 'bg-ink-900/70 hover:-translate-y-1 hover:shadow-2xl'
       )}
-      style={!locked ? { boxShadow: `inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 60px -40px ${mission.theme.accent}` } : undefined}
     >
       <div
         className="pointer-events-none absolute -right-16 -top-16 size-44 rounded-full blur-3xl transition group-hover:scale-125"
@@ -92,18 +94,24 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
         ) : (
           <Link
             to={`/misiones/${mission.code}`}
-            className="inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-sm font-extrabold transition"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-sm font-extrabold transition shadow-lg"
             style={{
               background: completed ? 'rgba(255,255,255,0.08)' : mission.theme.accent,
               color: completed ? '#e2e8f0' : '#061022'
             }}
           >
-            {completed ? 'Repasar' : mission.progress.status === 'in_progress' ? 'Continuar' : 'Entrar'}
+            {completed ? (
+              'Repasar'
+            ) : mission.progress.status === 'in_progress' ? (
+              'Continuar'
+            ) : (
+              <ShinyText text="Entrar" speed={3} className="font-extrabold text-ink-950" />
+            )}
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         )}
       </div>
-    </article>
+    </SpotlightCard>
   );
 }
 
@@ -114,11 +122,11 @@ export function MissionMap({ missions }: { missions: MissionSummary[] }) {
         className="pointer-events-none absolute left-0 right-0 top-1/2 hidden h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent md:block"
         aria-hidden
       />
-      <div className="grid gap-4 md:grid-cols-3">
+      <AnimatedList className="grid gap-4 md:grid-cols-3" stagger={0.08}>
         {missions.map((mission, index) => (
           <MissionCard key={mission.code} mission={mission} index={index} />
         ))}
-      </div>
+      </AnimatedList>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Card, Chip } from '../../components/ui';
 import { cn } from '../../lib/utils';
 import type { ActivityRuntimeProps } from './types';
+import { AnimatedList, Particles, SpotlightCard } from '../../components/reactbits';
 
 interface TimelineItem {
   year?: string;
@@ -51,22 +52,24 @@ export function Animation2DPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
       </div>
 
       {items.length > 0 ? (
-        <div className="relative space-y-3 pl-6 sm:pl-8">
+        <div className="relative pl-6 sm:pl-8">
           <div className="timeline-rail" aria-hidden />
-          {items.map((item, index) => (
-            <div key={`${item.year}-${item.name}-${index}`} className="relative">
-              <span className="absolute -left-[1.9rem] top-4 grid size-8 place-items-center rounded-full border border-rose-400/30 bg-ink-900 text-sm sm:-left-[2.4rem]">
-                {item.icon ?? <Clock3 className="size-4" aria-hidden />}
-              </span>
-              <Card className="p-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Chip tone="rose">{item.year}</Chip>
-                  <h4 className="text-sm font-extrabold text-white">{item.name}</h4>
-                </div>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-300">{item.text}</p>
-              </Card>
-            </div>
-          ))}
+          <AnimatedList className="space-y-3" stagger={0.07}>
+            {items.map((item, index) => (
+              <div key={`${item.year}-${item.name}-${index}`} className="relative">
+                <span className="absolute -left-[1.9rem] top-4 grid size-8 place-items-center rounded-full border border-rose-400/30 bg-ink-900 text-sm sm:-left-[2.4rem]">
+                  {item.icon ?? <Clock3 className="size-4" aria-hidden />}
+                </span>
+                <Card className="p-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Chip tone="rose">{item.year}</Chip>
+                    <h4 className="text-sm font-extrabold text-white">{item.name}</h4>
+                  </div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-300">{item.text}</p>
+                </Card>
+              </div>
+            ))}
+          </AnimatedList>
         </div>
       ) : null}
 
@@ -75,10 +78,15 @@ export function Animation2DPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
           <h4 className="text-lg font-bold text-white">{content.spotlight.title}</h4>
           <div className="mt-3 grid gap-2 sm:grid-cols-3">
             {content.spotlight.cards?.map((card: { title: string; text: string }) => (
-              <div key={card.title} className="rounded-2xl border border-white/8 bg-white/3 p-3">
+              <SpotlightCard
+                key={card.title}
+                spotlightColor="rgba(244, 114, 182, 0.18)"
+                borderColor="rgba(244, 114, 182, 0.4)"
+                className="p-3"
+              >
                 <p className="text-sm font-extrabold text-rose-200">{card.title}</p>
                 <p className="mt-1 text-sm leading-relaxed text-slate-300">{card.text}</p>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </Card>
@@ -155,25 +163,12 @@ export function Animation2DPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
 
       {particles.length > 0 ? (
         <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_50%_50%,rgba(251,191,36,0.1),rgba(5,8,23,0.9)_70%)] p-5">
-          <div className="pointer-events-none absolute inset-0" aria-hidden>
-            {particles.map((particle, index) => (
-              <span
-                key={particle.id}
-                className="absolute size-2 rounded-full opacity-60"
-                style={{
-                  left: `${18 + index * 28}%`,
-                  bottom: '0%',
-                  background: particle.color,
-                  boxShadow: `0 0 16px ${particle.color}`,
-                  animation: `particle-rise ${5 + index}s linear infinite`,
-                  animationDelay: `${index * 1.4}s`
-                }}
-              />
-            ))}
-          </div>
+          {/* React Bits: Canvas Particles background */}
+          <Particles count={32} speed={0.2} color="#fbbf24" connectDistance={85} className="absolute inset-0 pointer-events-none" />
+
           <div className="relative grid gap-2 sm:grid-cols-3">
             {particles.map((particle) => (
-              <div key={particle.id} className="rounded-2xl border border-white/10 bg-ink-950/55 p-3">
+              <div key={particle.id} className="rounded-2xl border border-white/10 bg-ink-950/65 backdrop-blur-sm p-3">
                 <span className="text-xl" aria-hidden>{particle.icon}</span>
                 <p className="mt-1 text-sm font-extrabold text-white">{particle.label}</p>
                 <p className="mt-1 text-xs leading-relaxed text-slate-400">{particle.description}</p>
@@ -184,7 +179,7 @@ export function Animation2DPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
       ) : null}
 
       {steps.length > 0 ? (
-        <div className="grid gap-2 sm:grid-cols-2">
+        <AnimatedList className="grid gap-2 sm:grid-cols-2" stagger={0.06}>
           {steps.map((step, index) => (
             <div key={step.title} className="rounded-2xl border border-white/8 bg-white/3 p-4">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Paso {index + 1}</span>
@@ -192,7 +187,7 @@ export function Animation2DPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
               <p className="mt-1 text-sm leading-relaxed text-slate-300">{step.text}</p>
             </div>
           ))}
-        </div>
+        </AnimatedList>
       ) : null}
     </div>
   );

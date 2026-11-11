@@ -1,6 +1,7 @@
 import { BookOpenCheck, FlaskConical, Lightbulb, Microscope, Quote, Sparkles } from 'lucide-react';
 import { Card, Chip } from '../../components/ui';
 import type { ActivityRuntimeProps } from './types';
+import { AnimatedList, Aurora, ShinyText, SpotlightCard } from '../../components/reactbits';
 
 interface Scientist {
   name?: string;
@@ -41,21 +42,33 @@ export function ReadingPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity
 
   return (
     <article className="space-y-6">
-      <header className="rounded-3xl border border-white/10 bg-gradient-to-br from-mint-400/10 via-ink-900/60 to-sky-400/8 p-5 sm:p-6">
-        <Chip tone="mint">
-          <BookOpenCheck className="size-3.5" aria-hidden />
-          Lectura guiada
-        </Chip>
-        <h2 className="mt-3 font-display text-2xl font-extrabold leading-tight text-white sm:text-3xl">
-          {content.title ?? activity.title}
-        </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">{content.intro}</p>
+      <header className="relative overflow-hidden rounded-3xl border border-white/10 p-5 sm:p-6">
+        <Aurora
+          className="rounded-3xl"
+          opacity={0.25}
+          colors={['#58e6c5', '#38bdf8', '#818cf8']}
+        />
+        <div className="relative">
+          <Chip tone="mint">
+            <BookOpenCheck className="size-3.5" aria-hidden />
+            Lectura guiada
+          </Chip>
+          <h2 className="mt-3 font-display text-2xl font-extrabold leading-tight text-white sm:text-3xl">
+            {content.title ?? activity.title}
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">{content.intro}</p>
+        </div>
       </header>
 
       {sections.length > 0 ? (
-        <div className="grid gap-3 md:grid-cols-2">
+        <AnimatedList className="grid gap-3 md:grid-cols-2" stagger={0.05}>
           {sections.map((section, index) => (
-            <Card key={section.heading} className="p-5">
+            <SpotlightCard
+              key={section.heading}
+              spotlightColor="rgba(56, 189, 248, 0.15)"
+              borderColor="rgba(56, 189, 248, 0.3)"
+              className="p-5"
+            >
               <div className="flex items-center gap-2">
                 <span className="grid size-8 place-items-center rounded-xl bg-sky-400/12 text-xs font-extrabold text-sky-200">
                   {index + 1}
@@ -63,48 +76,60 @@ export function ReadingPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity
                 <h3 className="text-lg font-bold text-white">{section.heading}</h3>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-slate-300">{section.body}</p>
-            </Card>
+            </SpotlightCard>
           ))}
-        </div>
+        </AnimatedList>
       ) : null}
 
       {scientists.length > 0 ? (
-        <div className="relative space-y-3 pl-6 sm:pl-8">
+        <div className="relative pl-6 sm:pl-8">
           <div className="timeline-rail" aria-hidden />
-          {scientists.map((scientist) => (
-            <div key={`${scientist.name}-${scientist.year}`} className="relative">
-              <span className="absolute -left-[1.85rem] top-4 grid size-8 place-items-center rounded-full border border-mint-400/40 bg-ink-900 text-sm sm:-left-[2.35rem]">
-                {scientist.icon ?? '🔬'}
-              </span>
-              <Card className="p-4 sm:p-5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-base font-extrabold text-white">{scientist.name}</h3>
-                  <Chip tone="sky">{scientist.year}</Chip>
-                </div>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
-                  {scientist.contribution ?? scientist.text}
-                </p>
-              </Card>
-            </div>
-          ))}
+          <AnimatedList className="space-y-3" stagger={0.06}>
+            {scientists.map((scientist) => (
+              <div key={`${scientist.name}-${scientist.year}`} className="relative">
+                <span className="absolute -left-[1.85rem] top-4 grid size-8 place-items-center rounded-full border border-mint-400/40 bg-ink-900 text-sm sm:-left-[2.35rem]">
+                  {scientist.icon ?? '🔬'}
+                </span>
+                <SpotlightCard
+                  spotlightColor="rgba(88, 230, 197, 0.15)"
+                  borderColor="rgba(88, 230, 197, 0.3)"
+                  className="p-4 sm:p-5"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-base font-extrabold text-white">{scientist.name}</h3>
+                    <Chip tone="sky">{scientist.year}</Chip>
+                  </div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-300">
+                    {scientist.contribution ?? scientist.text}
+                  </p>
+                </SpotlightCard>
+              </div>
+            ))}
+          </AnimatedList>
         </div>
       ) : null}
 
       {postulates.length > 0 ? (
-        <Card className="border-mint-400/20 p-5">
+        <SpotlightCard
+          spotlightColor="rgba(88, 230, 197, 0.2)"
+          borderColor="rgba(88, 230, 197, 0.4)"
+          className="p-5"
+        >
           <div className="flex items-center gap-2">
             <Microscope className="size-5 text-mint-300" aria-hidden />
-            <h3 className="text-lg font-bold text-white">Los postulados de la teoría celular</h3>
+            <h3 className="text-lg font-bold text-white">
+              <ShinyText text="Los postulados de la teoría celular" speed={4} className="font-bold text-mint-200" />
+            </h3>
           </div>
           <ol className="mt-3 grid gap-2 sm:grid-cols-3">
             {postulates.map((postulate, index) => (
-              <li key={postulate} className="rounded-2xl border border-mint-400/15 bg-mint-400/6 p-3 text-sm font-semibold leading-relaxed text-mint-100">
+              <li key={postulate} className="rounded-2xl border border-mint-400/20 bg-mint-400/8 p-4 text-sm font-semibold leading-relaxed text-mint-100 shadow-sm">
                 <span className="mb-1 block font-display text-xl font-extrabold text-mint-300">{index + 1}</span>
                 {postulate}
               </li>
             ))}
           </ol>
-        </Card>
+        </SpotlightCard>
       ) : null}
 
       {comparisonTable.length > 0 ? (
@@ -136,9 +161,14 @@ export function ReadingPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity
       ) : null}
 
       {comparison.length > 0 ? (
-        <div className="grid gap-3 md:grid-cols-2">
+        <AnimatedList className="grid gap-3 md:grid-cols-2" stagger={0.06}>
           {comparison.map((row) => (
-            <Card key={row.process} className="p-5">
+            <SpotlightCard
+              key={row.process}
+              spotlightColor="rgba(251, 191, 36, 0.15)"
+              borderColor="rgba(251, 191, 36, 0.3)"
+              className="p-5"
+            >
               <div className="flex items-center gap-2">
                 <FlaskConical className="size-5 text-amber-300" aria-hidden />
                 <h3 className="text-lg font-bold text-white">{row.process}</h3>
@@ -156,9 +186,9 @@ export function ReadingPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity
                   </div>
                 ))}
               </dl>
-            </Card>
+            </SpotlightCard>
           ))}
-        </div>
+        </AnimatedList>
       ) : null}
 
       {glossary.length > 0 ? (
@@ -167,14 +197,19 @@ export function ReadingPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity
             <Sparkles className="size-5 text-violet-300" aria-hidden />
             <h3 className="text-lg font-bold text-white">Glosario visual</h3>
           </div>
-          <dl className="mt-3 grid gap-2 sm:grid-cols-2">
+          <AnimatedList className="mt-3 grid gap-2 sm:grid-cols-2" stagger={0.04}>
             {glossary.map((item) => (
-              <div key={item.term} className="rounded-2xl border border-white/8 bg-white/3 p-3">
+              <SpotlightCard
+                key={item.term}
+                spotlightColor="rgba(167, 139, 250, 0.15)"
+                borderColor="rgba(167, 139, 250, 0.3)"
+                className="p-3"
+              >
                 <dt className="text-sm font-extrabold text-mint-300">{item.term}</dt>
                 <dd className="mt-1 text-sm leading-relaxed text-slate-300">{item.definition}</dd>
-              </div>
+              </SpotlightCard>
             ))}
-          </dl>
+          </AnimatedList>
         </Card>
       ) : null}
 

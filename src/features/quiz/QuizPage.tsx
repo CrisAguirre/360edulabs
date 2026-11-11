@@ -17,6 +17,7 @@ import { celebrate } from '../../lib/celebrate';
 import { useAttempts, useMission, useQuiz, useStartQuiz, useSubmitQuiz } from '../../lib/queries';
 import type { QuizOption, QuizResult } from '../../lib/types';
 import { cn, formatDate } from '../../lib/utils';
+import { AnimatedList, Aurora, ClickSpark, ShinyText, SpotlightCard } from '../../components/reactbits';
 
 export function QuizPage() {
   const { codigo } = useParams<{ codigo: string }>();
@@ -134,8 +135,8 @@ export function QuizPage() {
           Volver a la misión
         </Link>
         <Chip tone="gold">
-          <Trophy className="size-3.5" aria-hidden />
-          Reto de Evaluación · 5.º Grado
+          <Trophy className="size-3.5 text-amber-300" aria-hidden />
+          <ShinyText text="Reto de Evaluación · 5.º Grado" speed={4} className="font-extrabold text-amber-200" />
         </Chip>
       </div>
 
@@ -143,6 +144,11 @@ export function QuizPage() {
       {quizResult ? (
         <div className="space-y-6">
           <Card className="relative overflow-hidden p-6 sm:p-8">
+            <Aurora
+              className="rounded-3xl"
+              opacity={0.25}
+              colors={quizResult.passed ? ['#58e6c5', '#38bdf8', '#a78bfa'] : ['#f472b6', '#fbbf24', '#38bdf8']}
+            />
             <div
               className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full blur-3xl"
               style={{ background: quizResult.passed ? 'rgba(88,230,197,0.25)' : 'rgba(244,114,182,0.2)' }}
@@ -169,37 +175,41 @@ export function QuizPage() {
                   : `Obtuviste ${quizResult.percentage}% (${quizResult.score} de ${quizResult.total} puntos). Necesitas ${quiz.passScore}% para conquistar la insignia. Revisa la retroalimentación y reintenta.`}
               </p>
 
-              <div className="mt-6 flex flex-wrap justify-center gap-4">
-                <Button size="lg" onClick={handleStartAttempt} loading={startQuiz.isPending}>
-                  <RotateCcw className="size-5" aria-hidden />
-                  {quizResult.passed ? 'Mejorar puntaje (opcional)' : 'Intentar el quiz de nuevo'}
-                </Button>
-                <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="lg">
-                  Volver a la misión
-                  <ArrowRight className="size-5" aria-hidden />
-                </LinkButton>
-                {quizResult.passed ? (
-                  <LinkButton to="/logros" variant="gold" size="lg">
-                    <Trophy className="size-5" aria-hidden />
-                    Ver mis insignias
+              <ClickSpark sparkColor={quizResult.passed ? '#58e6c5' : '#fbbf24'}>
+                <div className="mt-6 flex flex-wrap justify-center gap-4">
+                  <Button size="lg" onClick={handleStartAttempt} loading={startQuiz.isPending}>
+                    <RotateCcw className="size-5" aria-hidden />
+                    {quizResult.passed ? 'Mejorar puntaje (opcional)' : 'Intentar el quiz de nuevo'}
+                  </Button>
+                  <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="lg">
+                    Volver a la misión
+                    <ArrowRight className="size-5" aria-hidden />
                   </LinkButton>
-                ) : null}
-              </div>
+                  {quizResult.passed ? (
+                    <LinkButton to="/logros" variant="gold" size="lg">
+                      <Trophy className="size-5" aria-hidden />
+                      Ver mis insignias
+                    </LinkButton>
+                  ) : null}
+                </div>
+              </ClickSpark>
             </div>
           </Card>
 
           {/* Detailed Question Review */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-white">Revisión de respuestas y explicaciones</h2>
-            <div className="space-y-3">
+            <AnimatedList className="space-y-3" stagger={0.05}>
               {quizResult.graded.map((item, index) => {
                 const questionData = quiz.questions.find((q) => q.id === item.questionId);
                 return (
-                  <Card
+                  <SpotlightCard
                     key={item.questionId}
+                    spotlightColor={item.correct ? 'rgba(88,230,197,0.18)' : 'rgba(244,114,182,0.18)'}
+                    borderColor={item.correct ? 'rgba(88,230,197,0.35)' : 'rgba(244,114,182,0.35)'}
                     className={cn(
                       'p-5 transition',
-                      item.correct ? 'border-mint-400/30 bg-mint-950/15' : 'border-rose-400/30 bg-rose-950/15'
+                      item.correct ? 'bg-mint-950/20' : 'bg-rose-950/20'
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -265,10 +275,10 @@ export function QuizPage() {
                         </div>
                       ) : null}
                     </div>
-                  </Card>
+                  </SpotlightCard>
                 );
               })}
-            </div>
+            </AnimatedList>
           </section>
         </div>
       ) : attemptId ? (
@@ -297,7 +307,11 @@ export function QuizPage() {
           </div>
 
           {currentQ ? (
-            <Card className="p-6 sm:p-8 space-y-6">
+            <SpotlightCard
+              spotlightColor="rgba(251, 191, 36, 0.15)"
+              borderColor="rgba(251, 191, 36, 0.35)"
+              className="p-6 sm:p-8 space-y-6"
+            >
               <div className="flex items-start gap-4">
                 <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-400/15 text-lg font-extrabold text-amber-300">
                   {currentQuestionIndex + 1}
@@ -318,40 +332,42 @@ export function QuizPage() {
                 </div>
               </div>
 
-              <div className="grid gap-3 pt-2">
-                {currentQ.options.map((option: QuizOption) => {
-                  const selectedList = answers[currentQ.id] ?? [];
-                  const isSelected = selectedList.includes(option.id);
-                  const isSingle = currentQ.type === 'single' || currentQ.type === 'true_false';
+              <ClickSpark sparkColor="#58e6c5">
+                <AnimatedList className="grid gap-3 pt-2" stagger={0.04}>
+                  {currentQ.options.map((option: QuizOption) => {
+                    const selectedList = answers[currentQ.id] ?? [];
+                    const isSelected = selectedList.includes(option.id);
+                    const isSingle = currentQ.type === 'single' || currentQ.type === 'true_false';
 
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => handleOptionToggle(currentQ.id, option.id, isSingle)}
-                      className={cn(
-                        'group flex items-center gap-3.5 rounded-2xl border p-4 text-left transition',
-                        isSelected
-                          ? 'border-mint-400/50 bg-mint-400/15 shadow-md text-white'
-                          : 'border-white/10 bg-white/4 text-slate-300 hover:border-white/20 hover:bg-white/8 hover:text-white'
-                      )}
-                    >
-                      <span
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => handleOptionToggle(currentQ.id, option.id, isSingle)}
                         className={cn(
-                          'grid size-6 shrink-0 place-items-center rounded-lg border transition',
-                          isSingle ? 'rounded-full' : 'rounded-lg',
+                          'group flex items-center gap-3.5 rounded-2xl border p-4 text-left transition',
                           isSelected
-                            ? 'border-mint-400 bg-mint-400 text-ink-950 font-extrabold text-xs'
-                            : 'border-white/20 group-hover:border-white/40'
+                            ? 'border-mint-400/50 bg-mint-400/15 shadow-md text-white'
+                            : 'border-white/10 bg-white/4 text-slate-300 hover:border-white/20 hover:bg-white/8 hover:text-white'
                         )}
                       >
-                        {isSelected ? '✓' : ''}
-                      </span>
-                      <span className="text-sm font-semibold leading-relaxed flex-1">{option.text}</span>
-                    </button>
-                  );
-                })}
-              </div>
+                        <span
+                          className={cn(
+                            'grid size-6 shrink-0 place-items-center rounded-lg border transition',
+                            isSingle ? 'rounded-full' : 'rounded-lg',
+                            isSelected
+                              ? 'border-mint-400 bg-mint-400 text-ink-950 font-extrabold text-xs'
+                              : 'border-white/20 group-hover:border-white/40'
+                          )}
+                        >
+                          {isSelected ? '✓' : ''}
+                        </span>
+                        <span className="text-sm font-semibold leading-relaxed flex-1">{option.text}</span>
+                      </button>
+                    );
+                  })}
+                </AnimatedList>
+              </ClickSpark>
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/8">
                 <Button
@@ -388,33 +404,40 @@ export function QuizPage() {
                   })}
                 </div>
 
-                {currentQuestionIndex < quiz.questions.length - 1 ? (
-                  <Button
-                    size="md"
-                    onClick={() => setCurrentQuestionIndex((prev) => Math.min(quiz.questions.length - 1, prev + 1))}
-                  >
-                    Siguiente
-                    <ArrowRight className="size-4" aria-hidden />
-                  </Button>
-                ) : (
-                  <Button
-                    variant="gold"
-                    size="md"
-                    onClick={handleSubmit}
-                    loading={submitQuiz.isPending}
-                  >
-                    <CheckCircle2 className="size-4" aria-hidden />
-                    Entregar examen final
-                  </Button>
-                )}
+                <ClickSpark sparkColor="#fbbf24">
+                  {currentQuestionIndex < quiz.questions.length - 1 ? (
+                    <Button
+                      size="md"
+                      onClick={() => setCurrentQuestionIndex((prev) => Math.min(quiz.questions.length - 1, prev + 1))}
+                    >
+                      Siguiente
+                      <ArrowRight className="size-4" aria-hidden />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="gold"
+                      size="md"
+                      onClick={handleSubmit}
+                      loading={submitQuiz.isPending}
+                    >
+                      <CheckCircle2 className="size-4" aria-hidden />
+                      Entregar examen final
+                    </Button>
+                  )}
+                </ClickSpark>
               </div>
-            </Card>
+            </SpotlightCard>
           ) : null}
         </div>
       ) : (
         /* QUIZ LANDING / PRE-ATTEMPT VIEW */
         <div className="space-y-6">
           <Card className="relative overflow-hidden p-6 sm:p-8">
+            <Aurora
+              className="rounded-3xl"
+              opacity={0.2}
+              colors={[mission.theme.accent, '#fbbf24', '#58e6c5']}
+            />
             <div
               className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full blur-3xl"
               style={{ background: `${mission.theme.accent}25` }}
@@ -451,10 +474,12 @@ export function QuizPage() {
                 </div>
 
                 <div className="pt-3">
-                  <Button size="lg" onClick={handleStartAttempt} loading={startQuiz.isPending}>
-                    <Play className="size-5" aria-hidden />
-                    {attempts.length > 0 ? 'Iniciar nuevo intento' : 'Comenzar el quiz ahora'}
-                  </Button>
+                  <ClickSpark sparkColor={mission.theme.accent}>
+                    <Button size="lg" onClick={handleStartAttempt} loading={startQuiz.isPending}>
+                      <Play className="size-5" aria-hidden />
+                      {attempts.length > 0 ? 'Iniciar nuevo intento' : 'Comenzar el quiz ahora'}
+                    </Button>
+                  </ClickSpark>
                 </div>
               </div>
 
@@ -481,11 +506,13 @@ export function QuizPage() {
           {attempts.length > 0 ? (
             <Card className="p-6">
               <h2 className="text-lg font-bold text-white mb-4">Historial de intentos</h2>
-              <div className="space-y-2">
+              <AnimatedList className="space-y-2" stagger={0.05}>
                 {attempts.map((att) => (
-                  <div
+                  <SpotlightCard
                     key={att._id}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/3 px-4 py-3"
+                    spotlightColor="rgba(88,230,197,0.12)"
+                    borderColor="rgba(255,255,255,0.12)"
+                    className="flex flex-wrap items-center justify-between gap-3 p-4"
                   >
                     <div>
                       <p className="text-sm font-bold text-white">Intento #{att.attemptNumber}</p>
@@ -499,9 +526,9 @@ export function QuizPage() {
                         {att.passed ? 'Aprobado' : 'No aprobado'}
                       </Chip>
                     </div>
-                  </div>
+                  </SpotlightCard>
                 ))}
-              </div>
+              </AnimatedList>
             </Card>
           ) : null}
         </div>

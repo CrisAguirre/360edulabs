@@ -1,8 +1,9 @@
 import { CheckCircle2, Download, ExternalLink, Palette, Printer, Sparkles } from 'lucide-react';
 import { useState } from 'react';
-import { Button, Card, Chip } from '../../components/ui';
+import { Button, Chip } from '../../components/ui';
 import { cn, downloadText } from '../../lib/utils';
 import type { ActivityRuntimeProps } from './types';
+import { AnimatedList, ClickSpark, SpotlightCard } from '../../components/reactbits';
 
 const CELL_TEMPLATES = {
   animal: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
@@ -85,30 +86,36 @@ export function QuiverStation({ activity }: Pick<ActivityRuntimeProps, 'activity
           <h3 className="mt-2 font-display text-xl font-extrabold text-white">{content.title ?? activity.title}</h3>
           <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-400">{content.intro}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => downloadText('plantilla_celula_animal.svg', CELL_TEMPLATES.animal, 'image/svg+xml;charset=utf-8')}
-          >
-            <Download className="size-4" aria-hidden />
-            Plantilla animal
-          </Button>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => downloadText('plantilla_celula_vegetal.svg', CELL_TEMPLATES.plant, 'image/svg+xml;charset=utf-8')}
-          >
-            <Download className="size-4" aria-hidden />
-            Plantilla vegetal
-          </Button>
-        </div>
+        <ClickSpark sparkColor="#fbbf24">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => downloadText('plantilla_celula_animal.svg', CELL_TEMPLATES.animal, 'image/svg+xml;charset=utf-8')}
+            >
+              <Download className="size-4" aria-hidden />
+              Plantilla animal
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => downloadText('plantilla_celula_vegetal.svg', CELL_TEMPLATES.plant, 'image/svg+xml;charset=utf-8')}
+            >
+              <Download className="size-4" aria-hidden />
+              Plantilla vegetal
+            </Button>
+          </div>
+        </ClickSpark>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <Card className="p-4">
+        <SpotlightCard
+          spotlightColor="rgba(251, 191, 36, 0.15)"
+          borderColor="rgba(251, 191, 36, 0.3)"
+          className="p-5"
+        >
           <h4 className="font-bold text-white">Cómo funciona la estación</h4>
-          <ol className="mt-3 space-y-3">
+          <AnimatedList className="mt-3 space-y-3" stagger={0.05}>
             {steps.map((step, index) => (
               <li key={step.title} className="flex gap-3 text-sm">
                 <span className="grid size-7 shrink-0 place-items-center rounded-full bg-amber-400/15 text-xs font-extrabold text-amber-300">
@@ -119,10 +126,14 @@ export function QuiverStation({ activity }: Pick<ActivityRuntimeProps, 'activity
                 </span>
               </li>
             ))}
-          </ol>
-        </Card>
+          </AnimatedList>
+        </SpotlightCard>
 
-        <Card className="p-4">
+        <SpotlightCard
+          spotlightColor="rgba(88, 230, 197, 0.15)"
+          borderColor="rgba(88, 230, 197, 0.3)"
+          className="p-5"
+        >
           <h4 className="font-bold text-white">Código de colores</h4>
           <div className="mt-3 grid grid-cols-2 gap-2">
             {colorGuide.map((item) => (
@@ -135,10 +146,14 @@ export function QuiverStation({ activity }: Pick<ActivityRuntimeProps, 'activity
               </div>
             ))}
           </div>
-        </Card>
+        </SpotlightCard>
       </div>
 
-      <Card className="p-4">
+      <SpotlightCard
+        spotlightColor="rgba(43, 212, 173, 0.12)"
+        borderColor="rgba(255, 255, 255, 0.1)"
+        className="p-5"
+      >
         <div className="flex items-center justify-between gap-2">
           <h4 className="font-bold text-white">Mi checklist Quiver</h4>
           <span className="text-xs font-extrabold text-mint-300">{checked.size} de {checklist.length}</span>
@@ -165,7 +180,7 @@ export function QuiverStation({ activity }: Pick<ActivityRuntimeProps, 'activity
             </label>
           ))}
         </div>
-      </Card>
+      </SpotlightCard>
 
       <div className="rounded-2xl border border-white/8 bg-white/3 p-4 text-sm leading-relaxed text-slate-300">
         <p className="font-bold text-white">¿No tienes impresora?</p>

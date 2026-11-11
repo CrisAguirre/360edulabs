@@ -13,6 +13,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useMyEvidence, useProgress } from '../../lib/queries';
 import type { Evidence, EvidenceLevel } from '../../lib/types';
 import { formatDate } from '../../lib/utils';
+import { AnimatedList, Aurora, DecryptedText } from '../../components/reactbits';
 
 const levelDescriptions: Record<EvidenceLevel, { label: string; tone: 'mint' | 'sky' | 'gold' | 'rose'; desc: string }> = {
   superior: { label: 'Superior (4.6 - 5.0)', tone: 'mint', desc: 'Excelente conexión de conceptos y argumentación científica' },
@@ -65,6 +66,7 @@ export function LogrosPage() {
 
       {/* Explorer Profile Banner */}
       <section className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br from-mint-400/10 via-ink-900/80 to-sky-400/10 p-6 sm:p-8">
+        <Aurora className="rounded-[2.5rem]" opacity={0.22} />
         <div className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-mint-400/12 blur-3xl" aria-hidden />
 
         <div className="relative grid items-center gap-6 lg:grid-cols-[1.3fr_0.7fr]">
@@ -76,7 +78,7 @@ export function LogrosPage() {
               <div>
                 <p className="eyebrow">Bitácora de Explorador</p>
                 <h1 className="font-display text-3xl font-extrabold text-white sm:text-4xl">
-                  {user?.displayName ?? 'Estudiante'}
+                  <DecryptedText text={user?.displayName ?? 'Estudiante'} speed={45} triggerOnHover />
                 </h1>
                 <p className="text-xs font-semibold text-slate-400">@{user?.username} · 5.º Grado de Primaria</p>
               </div>
@@ -87,7 +89,7 @@ export function LogrosPage() {
               evidencias revisadas por tu docente.
             </p>
 
-            <div className="grid grid-cols-3 gap-3 pt-2">
+            <AnimatedList className="grid grid-cols-3 gap-3 pt-2" stagger={0.06}>
               <div className="glass-soft rounded-2xl p-3 text-center">
                 <p className="text-[10px] font-extrabold uppercase text-slate-400">Total XP</p>
                 <p className="font-display text-2xl font-extrabold text-mint-300 mt-0.5">{progress.totalXP}</p>
@@ -102,7 +104,7 @@ export function LogrosPage() {
                   {progress.badges.length}/5
                 </p>
               </div>
-            </div>
+            </AnimatedList>
           </div>
 
           <div className="flex flex-col items-center justify-center gap-3">
@@ -152,7 +154,7 @@ export function LogrosPage() {
             </div>
           </Card>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <AnimatedList className="grid gap-4 sm:grid-cols-2" stagger={0.06}>
             {evidences.map((item: Evidence) => {
               const missionTitle = typeof item.missionId === 'object' ? item.missionId.title : 'Misión';
               const missionCode = typeof item.missionId === 'object' ? item.missionId.code : 'm1';
@@ -231,7 +233,7 @@ export function LogrosPage() {
                 </Card>
               );
             })}
-          </div>
+          </AnimatedList>
         )}
       </section>
     </div>

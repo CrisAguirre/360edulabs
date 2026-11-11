@@ -1,8 +1,9 @@
 import { CheckCircle2, Download, ExternalLink, LayoutTemplate, Lightbulb, Sparkles } from 'lucide-react';
 import { useState } from 'react';
-import { Button, Card, Chip } from '../../components/ui';
+import { Button, Chip } from '../../components/ui';
 import { cn, downloadText } from '../../lib/utils';
 import type { ActivityRuntimeProps } from './types';
+import { AnimatedList, ClickSpark, SpotlightCard } from '../../components/reactbits';
 
 export function InfographicPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity'>) {
   const content = activity.content as Record<string, any>;
@@ -49,30 +50,36 @@ export function InfographicPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
           <h3 className="mt-2 font-display text-xl font-extrabold text-white">{content.title ?? activity.title}</h3>
           <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-400">{content.intro}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="secondary" onClick={downloadPlan}>
-            <Download className="size-4" aria-hidden />
-            Descargar plan
-          </Button>
-          <a
-            href={content.templateUrl ?? 'https://www.canva.com/'}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-10 items-center gap-1.5 rounded-xl bg-sky-400 px-3.5 text-sm font-extrabold text-ink-950 transition hover:bg-sky-300"
-          >
-            <ExternalLink className="size-4" aria-hidden />
-            Abrir Canva
-          </a>
-        </div>
+        <ClickSpark sparkColor="#38bdf8">
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="secondary" onClick={downloadPlan}>
+              <Download className="size-4" aria-hidden />
+              Descargar plan
+            </Button>
+            <a
+              href={content.templateUrl ?? 'https://www.canva.com/'}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-xl bg-sky-400 px-3.5 text-sm font-extrabold text-ink-950 transition hover:bg-sky-300"
+            >
+              <ExternalLink className="size-4" aria-hidden />
+              Abrir Canva
+            </a>
+          </div>
+        </ClickSpark>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <Card className="p-4">
+        <SpotlightCard
+          spotlightColor="rgba(251, 191, 36, 0.15)"
+          borderColor="rgba(251, 191, 36, 0.3)"
+          className="p-5"
+        >
           <div className="flex items-center gap-2">
             <Lightbulb className="size-5 text-amber-300" aria-hidden />
             <h4 className="font-bold text-white">Preguntas guía</h4>
           </div>
-          <ol className="mt-3 space-y-2">
+          <AnimatedList className="mt-3 space-y-2" stagger={0.05}>
             {guidingQuestions.map((question, index) => (
               <li key={question} className="flex gap-2 rounded-xl border border-amber-400/15 bg-amber-400/6 p-3 text-sm leading-relaxed text-amber-50">
                 <span className="grid size-6 shrink-0 place-items-center rounded-full bg-amber-400/20 text-[11px] font-extrabold text-amber-200">
@@ -81,26 +88,34 @@ export function InfographicPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
                 {question}
               </li>
             ))}
-          </ol>
-        </Card>
+          </AnimatedList>
+        </SpotlightCard>
 
-        <Card className="p-4">
+        <SpotlightCard
+          spotlightColor="rgba(56, 189, 248, 0.15)"
+          borderColor="rgba(56, 189, 248, 0.3)"
+          className="p-5"
+        >
           <div className="flex items-center gap-2">
             <Sparkles className="size-5 text-sky-300" aria-hidden />
             <h4 className="font-bold text-white">Tu infografía debe incluir</h4>
           </div>
-          <ul className="mt-3 space-y-2">
+          <AnimatedList className="mt-3 space-y-2" stagger={0.05}>
             {structure.map((item) => (
               <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-slate-300">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-sky-300" aria-hidden />
                 {item}
               </li>
             ))}
-          </ul>
-        </Card>
+          </AnimatedList>
+        </SpotlightCard>
       </div>
 
-      <Card className="p-4">
+      <SpotlightCard
+        spotlightColor="rgba(43, 212, 173, 0.12)"
+        borderColor="rgba(255, 255, 255, 0.1)"
+        className="p-5"
+      >
         <div className="flex items-center justify-between gap-2">
           <h4 className="font-bold text-white">Checklist antes de entregar</h4>
           <span className="text-xs font-extrabold text-mint-300">{checked.size} de {checklist.length}</span>
@@ -126,7 +141,7 @@ export function InfographicPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
             </label>
           ))}
         </div>
-      </Card>
+      </SpotlightCard>
 
       <div className="rounded-2xl border border-white/8 bg-white/3 p-4 text-sm leading-relaxed text-slate-300">
         <p className="font-bold text-white">Entrega</p>
