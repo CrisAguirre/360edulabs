@@ -3,16 +3,12 @@ import { Link } from 'react-router-dom';
 import type { MissionSummary } from '../../lib/types';
 import { badgeForCode } from '../../lib/badges';
 import { cn } from '../../lib/utils';
-import { MissionStatusBadge, ProgressBar, ProgressRing } from '../ui';
+import { MissionStatusBadge, ProgressBar } from '../ui';
 
 export function MissionCard({ mission, index }: { mission: MissionSummary; index: number }) {
   const badge = badgeForCode(mission.badgeCode);
   const locked = mission.progress.status === 'locked';
   const completed = mission.progress.status === 'completed';
-  const percent =
-    mission.progress.totalActivities === 0
-      ? 0
-      : Math.round((mission.progress.completedActivities / mission.progress.totalActivities) * 100);
 
   return (
     <article

@@ -1,9 +1,9 @@
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth, roleHome } from '../contexts/AuthContext';
-import { BADGE_CATALOG } from '../lib/badges';
-import { CitoMascot } from '../components/Cito';
-import { Card, LinkButton } from '../components/ui';
+import { useAuth, roleHome } from '../../contexts/AuthContext';
+import { BADGE_CATALOG, type BadgeInfo } from '../../lib/badges';
+import { CitoMascot } from '../../components/Cito';
+import { Card, LinkButton } from '../../components/ui';
 
 const missions = [
   {
@@ -208,7 +208,7 @@ export function LandingPage() {
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            {BADGE_CATALOG.slice(0, 4).map((badge) => (
+            {BADGE_CATALOG.slice(0, 4).map((badge: BadgeInfo) => (
               <div key={badge.code} className="rounded-2xl border border-white/10 bg-ink-950/45 p-4">
                 <span className="text-2xl" aria-hidden>{badge.icon}</span>
                 <p className="mt-2 text-sm font-extrabold text-white">{badge.name}</p>
