@@ -29,8 +29,11 @@ const navByRole = {
   ],
   admin: [
     { to: '/admin', label: 'Administración', icon: ShieldCheck },
+    { to: '/estudiante', label: 'Misiones', icon: Compass },
+    { to: '/logros', label: 'Logros', icon: Trophy },
     { to: '/docente', label: 'Aulas', icon: LayoutDashboard },
-    { to: '/docente/evidencias', label: 'Evidencias', icon: ClipboardCheck }
+    { to: '/docente/evidencias', label: 'Evidencias', icon: ClipboardCheck },
+    { to: '/docente/reportes', label: 'Reportes', icon: ChartNoAxesColumnIncreasing }
   ]
 } as const;
 
@@ -87,7 +90,7 @@ export function AppShell() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  end={item.to === '/docente' || item.to === '/admin'}
+                  end={item.to === '/docente' || item.to === '/admin' || item.to === '/estudiante'}
                   className={({ isActive }) =>
                     cn(
                       'flex min-h-11 items-center gap-2 rounded-xl px-3.5 text-sm font-bold transition',
@@ -162,7 +165,7 @@ export function AppShell() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/docente' || item.to === '/admin'}
+                end={item.to === '/docente' || item.to === '/admin' || item.to === '/estudiante'}
                 className={({ isActive }) =>
                   cn(
                     'flex min-h-13 flex-1 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-extrabold uppercase tracking-wide transition',
@@ -177,7 +180,7 @@ export function AppShell() {
           })}
           <button
             type="button"
-            onClick={() => navigate(user.role === 'student' ? '/logros' : '/docente')}
+            onClick={() => navigate(user.role === 'student' ? '/logros' : user.role === 'admin' ? '/admin' : '/docente')}
             className="flex min-h-13 flex-1 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-extrabold uppercase tracking-wide text-slate-400"
           >
             <UserRound className="size-5" aria-hidden />

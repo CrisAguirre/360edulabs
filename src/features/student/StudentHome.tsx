@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpenCheck, CheckCircle2, ClipboardCheck, Compass, Star, Trophy } from 'lucide-react';
+import { ArrowRight, BookOpenCheck, CheckCircle2, ClipboardCheck, Compass, ShieldCheck, Star, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BadgeCabinet } from '../../components/gamification/BadgeCabinet';
 import { MissionMap, QuickTip } from '../../components/missions/MissionCard';
@@ -29,6 +29,22 @@ export function StudentHome() {
 
   return (
     <div className="space-y-8">
+      {user?.role === 'admin' && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-200">
+            <ShieldCheck className="size-4 text-amber-300" aria-hidden />
+            <span>Modo Verificación de Contenidos (Sesión de Administrador): Puedes acceder y probar todas las misiones.</span>
+          </div>
+          <Link
+            to="/admin"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-amber-400 px-3 py-1.5 text-xs font-extrabold text-ink-950 transition hover:bg-amber-300"
+          >
+            Volver a la Consola
+            <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
+        </div>
+      )}
+
       <section className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-mint-400/12 via-ink-900/70 to-sky-400/10 p-5 sm:p-7">
         <Aurora className="rounded-[2rem]" opacity={0.25} />
         <div className="pointer-events-none absolute -right-16 -top-20 size-72 rounded-full bg-mint-400/12 blur-3xl" aria-hidden />

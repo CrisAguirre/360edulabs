@@ -3,6 +3,7 @@ import {
   ArrowRight,
   Clock3,
   Play,
+  ShieldCheck,
   Star,
   Trophy,
   CheckCircle2
@@ -10,6 +11,7 @@ import {
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar } from '../../components/ui';
+import { useAuth } from '../../contexts/AuthContext';
 import { ACTIVITY_META, PHASE_META } from '../../lib/activityMeta';
 import { badgeForCode } from '../../lib/badges';
 import { useMission, useStartMission } from '../../lib/queries';
@@ -18,6 +20,7 @@ import { cn } from '../../lib/utils';
 import { AnimatedList, Aurora, SpotlightCard } from '../../components/reactbits';
 
 export function MissionDetailPage() {
+  const { user } = useAuth();
   const { codigo, phase: paramPhase } = useParams<{ codigo: string; phase?: string }>();
   const navigate = useNavigate();
   const missionQuery = useMission(codigo);
@@ -69,6 +72,22 @@ export function MissionDetailPage() {
           {completed ? 'Misión conquistada' : inProgress ? 'Misión en curso' : 'Misión disponible'}
         </Chip>
       </div>
+
+      {user?.role === 'admin' && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-2.5">
+          <div className="flex items-center gap-2 text-xs font-bold text-amber-200">
+            <ShieldCheck className="size-4 text-amber-300" aria-hidden />
+            <span>Verificando Misión como Administrador · Todas las fases y actividades están disponibles para comprobación.</span>
+          </div>
+          <Link
+            to="/admin"
+            className="inline-flex items-center gap-1 text-xs font-extrabold text-amber-300 hover:underline"
+          >
+            Panel de Admin
+            <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
+        </div>
+      )}
 
       {/* Header Banner */}
       <section

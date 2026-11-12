@@ -1,9 +1,17 @@
 import {
   ArrowLeft,
+  BookOpenCheck,
+  ChartNoAxesColumnIncreasing,
   CheckCircle2,
+  ClipboardCheck,
+  Compass,
+  Eye,
   GraduationCap,
+  Play,
   RefreshCw,
   ShieldCheck,
+  Sparkles,
+  Trophy,
   UserRound,
   Users
 } from 'lucide-react';
@@ -11,27 +19,29 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LoadingBlock, SectionHeading, StatCard } from '../../components/ui';
 import { AnimatedList, SpotlightCard } from '../../components/reactbits';
-import { api, classroomsApi } from '../../lib/api';
-import type { User } from '../../lib/types';
+import { api, classroomsApi, missionsApi } from '../../lib/api';
+import type { MissionSummary, User } from '../../lib/types';
 
 export function AdminPage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['admin-overview'],
     queryFn: async () => {
-      const [usersRes, classroomsRes] = await Promise.all([
+      const [usersRes, classroomsRes, missionsRes] = await Promise.all([
         api.get<{ users: User[] } | User[]>('/users').catch(() => []),
-        classroomsApi.list().catch(() => [])
+        classroomsApi.list().catch(() => []),
+        missionsApi.list().catch(() => [])
       ]);
 
       const userList = Array.isArray(usersRes)
         ? usersRes
         : (usersRes as { users?: User[] })?.users ?? [];
-      return { users: userList, classrooms: classroomsRes };
+      return { users: userList, classrooms: classroomsRes, missions: missionsRes as MissionSummary[] };
     }
   });
 
   const users = data?.users ?? [];
   const classrooms = data?.classrooms ?? [];
+  const missions = data?.missions ?? [];
 
   if (isLoading) return <LoadingBlock message="Cargando consola de administración…" />;
   if (isError) return <ErrorBlock message="No pudimos cargar la información de administración." onRetry={() => refetch()} />;
@@ -73,6 +83,49 @@ export function AdminPage() {
         </Button>
       </section>
 
+      {/* Quick Verification Toolbar */}
+      <div className="flex flex-wrap items-center gap-2.5 rounded-2xl border border-mint-400/20 bg-mint-400/6 p-3">
+        <div className="flex items-center gap-2 text-xs font-bold text-mint-300 mr-2">
+          <Sparkles className="size-4" aria-hidden />
+          <span>Vistas de Verificación Directa:</span>
+        </div>
+        <Link
+          to="/estudiante"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-white/12"
+        >
+          <Compass className="size-3.5 text-mint-400" aria-hidden />
+          Misiones (Estudiante)
+        </Link>
+        <Link
+          to="/logros"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-white/12"
+        >
+          <Trophy className="size-3.5 text-amber-300" aria-hidden />
+          Vitrina de Logros
+        </Link>
+        <Link
+          to="/docente"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-white/12"
+        >
+          <BookOpenCheck className="size-3.5 text-sky-400" aria-hidden />
+          Panel de Aulas (Docente)
+        </Link>
+        <Link
+          to="/docente/evidencias"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-white/12"
+        >
+          <ClipboardCheck className="size-3.5 text-violet-400" aria-hidden />
+          Revisión de Evidencias
+        </Link>
+        <Link
+          to="/docente/reportes"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-white/12"
+        >
+          <ChartNoAxesColumnIncreasing className="size-3.5 text-emerald-400" aria-hidden />
+          Reportes Docentes
+        </Link>
+      </div>
+
       {/* Summary stats */}
       <AnimatedList className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
@@ -104,6 +157,116 @@ export function AdminPage() {
           accent="#a78bfa"
         />
       </AnimatedList>
+
+      {/* Content Verification Section */}
+      <section className="space-y-4">
+        <SectionHeading
+          eyebrow="Verificación de Contenidos"
+          title="Misiones, Fases y Actividades de Indagación"
+          description="Accede directamente a cada misión, recorre sus fases (Inicio, Desarrollo, Cierre) y prueba sus actividades interactivas para verificar su correcto funcionamiento."
+        />
+
+        <div className="grid gap-5 lg:grid-cols-3">
+          {missions.map((mission) => (
+            <SpotlightCard
+              key={mission._id}
+              spotlightColor={`${mission.theme?.accent ?? '#58e6c5'}25`}
+              borderColor={`${mission.theme?.accent ?? '#58e6c5'}40`}
+              className="flex flex-col justify-between p-6 space-y-5"
+            >
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="grid size-10 place-items-center rounded-xl text-xl"
+                      style={{
+                        background: `${mission.theme?.accent ?? '#58e6c5'}20`,
+                        border: `1px solid ${mission.theme?.accent ?? '#58e6c5'}40`
+                      }}
+                    >
+                      {mission.theme?.icon ?? '🔬'}
+                    </span>
+                    <div>
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                        Misión {mission.order} · {mission.code.toUpperCase()}
+                      </span>
+                      <h3 className="font-display text-base font-bold text-white leading-tight">
+                        {mission.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <Chip tone="mint">Activa</Chip>
+                </div>
+
+                <p className="text-xs font-semibold leading-relaxed" style={{ color: mission.theme?.accent ?? '#58e6c5' }}>
+                  {mission.bigQuestion}
+                </p>
+
+                <p className="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                  {mission.description}
+                </p>
+
+                {/* Phases Pill Navigation */}
+                <div className="space-y-1.5 pt-2 border-t border-white/8">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
+                    Fases disponibles:
+                  </span>
+                  <div className="grid grid-cols-3 gap-1.5 text-center">
+                    <Link
+                      to={`/misiones/${mission.code}/inicio`}
+                      className="rounded-lg border border-white/8 bg-white/4 px-2 py-1 text-[11px] font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                      title="Fase 1: Inicio"
+                    >
+                      1. Inicio
+                    </Link>
+                    <Link
+                      to={`/misiones/${mission.code}/desarrollo`}
+                      className="rounded-lg border border-white/8 bg-white/4 px-2 py-1 text-[11px] font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                      title="Fase 2: Desarrollo"
+                    >
+                      2. Desarrollo
+                    </Link>
+                    <Link
+                      to={`/misiones/${mission.code}/cierre`}
+                      className="rounded-lg border border-white/8 bg-white/4 px-2 py-1 text-[11px] font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                      title="Fase 3: Cierre"
+                    >
+                      3. Cierre
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col gap-2 pt-3 border-t border-white/8">
+                <Link
+                  to={`/misiones/${mission.code}`}
+                  className="flex min-h-10 items-center justify-center gap-2 rounded-xl bg-mint-400 px-4 text-xs font-extrabold text-ink-950 transition hover:bg-mint-300 shadow-md"
+                >
+                  <Eye className="size-4" aria-hidden />
+                  Ver Estación Completa
+                </Link>
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    to={`/misiones/${mission.code}/quiz`}
+                    className="flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-2 text-xs font-bold text-amber-300 transition hover:bg-amber-400/20"
+                  >
+                    <Trophy className="size-3.5" aria-hidden />
+                    Probar Quiz
+                  </Link>
+                  <Link
+                    to="/estudiante"
+                    className="flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-2 text-xs font-bold text-slate-300 transition hover:bg-white/8 hover:text-white"
+                  >
+                    <Play className="size-3.5" aria-hidden />
+                    Ver en Mapa
+                  </Link>
+                </div>
+              </div>
+            </SpotlightCard>
+          ))}
+        </div>
+      </section>
 
       {/* Classrooms List */}
       <section className="space-y-4">
