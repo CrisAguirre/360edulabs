@@ -7,23 +7,17 @@ import {
   UserRound,
   Users
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LoadingBlock, SectionHeading, StatCard } from '../../components/ui';
 import { AnimatedList, SpotlightCard } from '../../components/reactbits';
 import { api, classroomsApi } from '../../lib/api';
-import type { Classroom, User } from '../../lib/types';
+import type { User } from '../../lib/types';
 
 export function AdminPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [classrooms, setClassrooms] = useState<Classroom[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const loadData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['admin-overview'],
+    queryFn: async () => {
       const [usersRes, classroomsRes] = await Promise.all([
         api.get<{ users: User[] } | User[]>('/users').catch(() => []),
         classroomsApi.list().catch(() => [])
@@ -32,21 +26,15 @@ export function AdminPage() {
       const userList = Array.isArray(usersRes)
         ? usersRes
         : (usersRes as { users?: User[] })?.users ?? [];
-      setUsers(userList);
-      setClassrooms(classroomsRes);
-    } catch {
-      setError('No pudimos cargar la información de administración.');
-    } finally {
-      setLoading(false);
+      return { users: userList, classrooms: classroomsRes };
     }
-  };
+  });
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const users = data?.users ?? [];
+  const classrooms = data?.classrooms ?? [];
 
-  if (loading) return <LoadingBlock message="Cargando consola de administración…" />;
-  if (error) return <ErrorBlock message={error} onRetry={loadData} />;
+  if (isLoading) return <LoadingBlock message="Cargando consola de administración…" />;
+  if (isError) return <ErrorBlock message="No pudimos cargar la información de administración." onRetry={() => refetch()} />;
 
   const studentCount = users.filter((u) => u.role === 'student').length;
   const teacherCount = users.filter((u) => u.role === 'teacher').length;
@@ -79,7 +67,7 @@ export function AdminPage() {
             Administra usuarios, docentes, grupos escolares y el catálogo de misiones de indagación.
           </p>
         </div>
-        <Button variant="secondary" size="sm" onClick={loadData}>
+        <Button variant="secondary" size="sm" onClick={() => refetch()}>
           <RefreshCw className="size-4" aria-hidden />
           Actualizar datos
         </Button>

@@ -455,26 +455,26 @@ export default function Cell3DViewer({
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-1" role="group" aria-label="Controles de rotación">
-          <Button size="sm" variant="secondary" onClick={() => rotate('left')} aria-label="Girar a la izquierda">
+        <div className="flex items-center gap-1.5" role="group" aria-label="Controles de rotación">
+          <Button size="sm" variant="secondary" className="min-h-11 min-w-11" onClick={() => rotate('left')} aria-label="Girar a la izquierda">
             <ArrowLeft className="size-4" aria-hidden />
           </Button>
-          <Button size="sm" variant="secondary" onClick={() => rotate('up')} aria-label="Girar hacia arriba">
+          <Button size="sm" variant="secondary" className="min-h-11 min-w-11" onClick={() => rotate('up')} aria-label="Girar hacia arriba">
             <ArrowUp className="size-4" aria-hidden />
           </Button>
-          <Button size="sm" variant="secondary" onClick={() => rotate('down')} aria-label="Girar hacia abajo">
+          <Button size="sm" variant="secondary" className="min-h-11 min-w-11" onClick={() => rotate('down')} aria-label="Girar hacia abajo">
             <ArrowDown className="size-4" aria-hidden />
           </Button>
-          <Button size="sm" variant="secondary" onClick={() => rotate('right')} aria-label="Girar a la derecha">
+          <Button size="sm" variant="secondary" className="min-h-11 min-w-11" onClick={() => rotate('right')} aria-label="Girar a la derecha">
             <ArrowRight className="size-4" aria-hidden />
           </Button>
         </div>
-        <div className="flex items-center gap-1" role="group" aria-label="Controles de acercamiento">
-          <Button size="sm" variant="secondary" onClick={() => setZoom((current) => Math.max(0.6, current - 0.15))} aria-label="Alejar">
+        <div className="flex items-center gap-1.5" role="group" aria-label="Controles de acercamiento">
+          <Button size="sm" variant="secondary" className="min-h-11 min-w-11" onClick={() => setZoom((current) => Math.max(0.6, current - 0.15))} aria-label="Alejar">
             <Minus className="size-4" aria-hidden />
           </Button>
           <span className="w-12 text-center text-xs font-extrabold text-slate-300">{Math.round(zoom * 100)}%</span>
-          <Button size="sm" variant="secondary" onClick={() => setZoom((current) => Math.min(2.2, current + 0.15))} aria-label="Acercar">
+          <Button size="sm" variant="secondary" className="min-h-11 min-w-11" onClick={() => setZoom((current) => Math.min(2.2, current + 0.15))} aria-label="Acercar">
             <Plus className="size-4" aria-hidden />
           </Button>
         </div>
@@ -482,7 +482,7 @@ export default function Cell3DViewer({
 
       {hotspots.length > 0 ? (
         <div className="rounded-2xl border border-white/8 bg-white/3 p-3">
-          <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
+          <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
             Puntos interactivos · toca los puntos brillantes o elige una estructura
           </p>
           <div className="mt-2 flex flex-wrap gap-2">

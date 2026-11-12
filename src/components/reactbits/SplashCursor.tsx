@@ -13,17 +13,17 @@ export interface SplashCursorProps {
 }
 
 export function SplashCursor({ color = '#8df5df', size = 28 }: SplashCursorProps) {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    return hasFinePointer && !prefersReducedMotion();
+  });
   const cursorRef = useRef<HTMLDivElement>(null);
   const target = useRef({ x: -100, y: -100 });
   const current = useRef({ x: -100, y: -100 });
 
   useEffect(() => {
-    // Only enable on precise pointer devices (desktops/laptops with mouse)
-    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-    if (!hasFinePointer || prefersReducedMotion()) return;
-
-    setEnabled(true);
+    if (!enabled) return;
 
     const handleMouseMove = (event: MouseEvent) => {
       target.current.x = event.clientX;
@@ -52,7 +52,7 @@ export function SplashCursor({ color = '#8df5df', size = 28 }: SplashCursorProps
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationId);
     };
-  }, [size]);
+  }, [size, enabled]);
 
   if (!enabled) return null;
 

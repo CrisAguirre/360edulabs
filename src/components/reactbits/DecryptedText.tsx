@@ -4,7 +4,7 @@
  * Scrambled-character text effect that reveals characters sequentially
  * upon hover or mount, perfect for science agency and terminal themes.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '../../lib/utils';
 
 export interface DecryptedTextProps {
@@ -28,7 +28,7 @@ export function DecryptedText({
   const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
-  const startDecryption = () => {
+  const startDecryption = useCallback(() => {
     let iteration = 0;
     if (intervalRef.current) clearInterval(intervalRef.current);
 
@@ -53,7 +53,7 @@ export function DecryptedText({
 
       iteration += 1 / 2;
     }, speed);
-  };
+  }, [text, scrambleChars, speed]);
 
   useEffect(() => {
     if (!triggerOnHover) {
@@ -62,7 +62,7 @@ export function DecryptedText({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [text, triggerOnHover]);
+  }, [triggerOnHover, startDecryption]);
 
   const handleMouseEnter = () => {
     if (triggerOnHover && !isHovered) {

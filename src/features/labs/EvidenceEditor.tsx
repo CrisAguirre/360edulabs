@@ -48,20 +48,24 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
   const [submitting, setSubmitting] = useState(false);
 
   const saveRef = useRef(saveMutation.mutateAsync);
-  saveRef.current = saveMutation.mutateAsync;
+  useEffect(() => {
+    saveRef.current = saveMutation.mutateAsync;
+  }, [saveMutation.mutateAsync]);
 
   const status = evidence?.status ?? 'draft';
   const locked = status === 'submitted' || status === 'approved';
   const enoughContent = text.trim().length >= minLength && (!requiresLink || linkUrl.trim().length > 0);
   const canDraft = text.trim().length >= 10 || linkUrl.trim().length > 0;
 
+  const prevExistingId = useRef(existing?._id);
   useEffect(() => {
-    if (!evidence && existing) {
+    if (existing && existing._id !== prevExistingId.current) {
+      prevExistingId.current = existing._id;
       setEvidence(existing);
       setText(existing.text ?? '');
       setLinkUrl(existing.linkUrl ?? '');
     }
-  }, [existing, evidence]);
+  }, [existing]);
 
   // Autoguardado del borrador: espera 1,4 s después del último cambio.
   useEffect(() => {

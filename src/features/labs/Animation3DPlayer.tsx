@@ -13,9 +13,10 @@ const Cell3DViewer = lazy(() => import('./Cell3DViewer'));
 
 export function Animation3DPlayer({ activity, mission }: ActivityRuntimeProps) {
   const content = activity.content as Record<string, any>;
-  const steps: Array<{ title: string; description: string; highlight?: string }> = Array.isArray(content.steps)
-    ? content.steps
-    : [];
+  const steps = useMemo<Array<{ title: string; description: string; highlight?: string }>>(
+    () => (Array.isArray(content.steps) ? content.steps : []),
+    [content.steps]
+  );
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
 

@@ -110,10 +110,8 @@
   }
 
   .text-gradient {
-    background: linear-gradient(100deg, #ffffff 10%, #8df5df 55%, #7dd3fc 95%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: #8df5df;
+    text-shadow: 0 0 24px rgba(141, 245, 223, 0.35);
   }
 
   .eyebrow {

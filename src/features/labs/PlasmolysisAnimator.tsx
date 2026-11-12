@@ -172,7 +172,7 @@ export function PlasmolysisAnimator() {
             <svg
               viewBox="0 0 500 380"
               className="w-full max-w-md drop-shadow-2xl select-none"
-              style={{ transition: 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+              style={{ transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}
             >
               <defs>
                 {/* Gradients */}
@@ -255,7 +255,7 @@ export function PlasmolysisAnimator() {
                 stroke={activeState === 'plasmolyzed' ? '#fb7185' : '#38bdf8'}
                 strokeWidth={activeState === 'plasmolyzed' ? '3.5' : '3'}
                 style={{
-                  transition: 'all 0.8s cubic-bezier(0.34, 1.25, 0.64, 1)',
+                  transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                   filter: activeState === 'plasmolyzed' ? 'drop-shadow(0 0 10px rgba(251,113,133,0.3))' : undefined
                 }}
               />
@@ -269,7 +269,7 @@ export function PlasmolysisAnimator() {
                 fill="url(#vacuoleGradient)"
                 opacity={activeState === 'plasmolyzed' ? 0.45 : 0.85}
                 style={{
-                  transition: 'all 0.8s cubic-bezier(0.34, 1.25, 0.64, 1)',
+                  transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                   filter: `drop-shadow(0 0 16px ${info.accent}55)`
                 }}
               />
