@@ -50,7 +50,7 @@ export function StudentHome() {
         <div className="pointer-events-none absolute -right-16 -top-20 size-72 rounded-full bg-mint-400/12 blur-3xl" aria-hidden />
         <div className="relative grid items-center gap-6 lg:grid-cols-[1.4fr_0.6fr]">
           <div>
-            <p className="eyebrow">Agencia CitoIndagar 360 · 5.º A</p>
+            <p className="eyebrow">Laboratorio 360 La Célula · 5.º A</p>
             <h1 className="mt-2 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl">
               ¡Hola,{' '}
               <span className="text-mint-300 inline-block">
@@ -65,7 +65,7 @@ export function StudentHome() {
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
               {active
                 ? `Tu siguiente estación es “${active.title}”. ${active.bigQuestion}`
-                : 'Completaste todas las misiones. ¡Tu bitácora es digna de un Científico CitoIndagar 360!'}
+                : 'Completaste todas las misiones. ¡Tu bitácora es digna de un Investigador del Laboratorio 360!'}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
               {active ? (
@@ -135,7 +135,7 @@ export function StudentHome() {
         <SectionHeading
           eyebrow="Mapa de misiones"
           title="Tu ruta por la célula"
-          description="Avanza en orden: cada insignia abre la siguiente estación de la Agencia."
+          description="Avanza en orden: cada insignia abre la siguiente estación del Laboratorio."
           action={<QuickTip>Consejo: explora todos los hotspots antes de completar una actividad.</QuickTip>}
         />
         <MissionMap missions={missions} />
@@ -231,7 +231,7 @@ export function StudentHome() {
 
       <div className="flex items-center justify-center gap-2 text-xs font-bold text-slate-500">
         <CheckCircle2 className="size-4 text-mint-300" aria-hidden />
-        Tu progreso se guarda automáticamente en la Agencia.
+        Tu progreso se guarda automáticamente en el Laboratorio.
         <Button variant="ghost" size="sm" onClick={() => progressQuery.refetch()} className="ml-1">
           Actualizar
         </Button>

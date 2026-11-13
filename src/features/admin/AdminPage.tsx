@@ -71,7 +71,7 @@ export function AdminPage() {
         <div>
           <p className="eyebrow">Consola de Control</p>
           <h1 className="font-display text-2xl font-bold text-white sm:text-3xl">
-            Gestión Institucional de CitoIndagar 360
+            Gestión Institucional de Laboratorio 360 La Célula
           </h1>
           <p className="text-xs text-slate-400 mt-1">
             Administra usuarios, docentes, grupos escolares y el catálogo de misiones de indagación.

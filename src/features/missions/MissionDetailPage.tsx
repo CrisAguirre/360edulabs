@@ -117,7 +117,7 @@ export function MissionDetailPage() {
                 {mission.theme.icon}
               </span>
               <div>
-                <p className="eyebrow">Misión {mission.order} · Agencia CitoIndagar 360</p>
+                <p className="eyebrow">Misión {mission.order} · Laboratorio 360 La Célula</p>
                 <h1 className="font-display text-3xl font-extrabold text-white sm:text-4xl">{mission.title}</h1>
               </div>
             </div>

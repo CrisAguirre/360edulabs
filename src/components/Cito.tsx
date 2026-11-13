@@ -91,10 +91,10 @@ export function Logo({ compact = false }: { compact?: boolean }) {
       {!compact ? (
         <span className="leading-none">
           <span className="block font-display text-lg font-extrabold tracking-tight text-white">
-            CitoIndagar <span className="text-mint-300">360</span>
+            Laboratorio <span className="text-mint-300">360</span>
           </span>
           <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
-            Agencia de exploradores
+            La Célula
           </span>
         </span>
       ) : null}

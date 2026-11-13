@@ -64,16 +64,16 @@ export function LandingPage() {
       </div>
 
       <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-5 sm:px-6">
-        <Link to="/" className="flex items-center gap-2.5" aria-label="CitoIndagar 360">
+        <Link to="/" className="flex items-center gap-2.5" aria-label="Laboratorio 360 La Célula">
           <span className="grid size-10 place-items-center rounded-2xl bg-gradient-to-br from-mint-300 to-sky-400 font-display text-xl font-extrabold text-ink-950">
-            C
+            L
           </span>
           <span className="leading-none">
             <span className="block font-display text-lg font-extrabold text-white">
-              CitoIndagar <span className="text-mint-300">360</span>
+              Laboratorio <span className="text-mint-300">360</span>
             </span>
             <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
-              Agencia de exploradores
+              La Célula
             </span>
           </span>
         </Link>
@@ -82,7 +82,7 @@ export function LandingPage() {
             Iniciar sesión
           </Link>
           <LinkButton to={user ? roleHome(user.role) : '/login'} size="sm">
-            {user ? 'Ir a mi panel' : 'Entrar a la Agencia'}
+            {user ? 'Ir a mi panel' : 'Entrar al Laboratorio'}
             <ArrowRight className="size-4" aria-hidden />
           </LinkButton>
         </div>
@@ -154,7 +154,7 @@ export function LandingPage() {
 
       <section id="misiones" className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
         <div className="mb-8 max-w-2xl">
-          <p className="eyebrow">El mapa de la Agencia</p>
+          <p className="eyebrow">El mapa del Laboratorio</p>
           <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Tres estaciones, una gran pregunta</h2>
           <p className="mt-2 text-slate-400">
             Cada misión combina observación, manipulación y argumentación. Completa la anterior para abrir la
@@ -242,7 +242,7 @@ export function LandingPage() {
 
       <footer className="border-t border-white/8 px-4 py-8 sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
-          <p>CitoIndagar 360 · Agencia de exploradores científicos · v1.0.0</p>
+          <p>Laboratorio 360 La Célula · Plataforma de indagación científica escolar · v1.0.0</p>
           <p>Diseñado para 5.º de primaria · WCAG 2.1 AA · Datos de menores protegidos</p>
         </div>
       </footer>

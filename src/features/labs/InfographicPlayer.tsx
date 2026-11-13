@@ -36,7 +36,7 @@ export function InfographicPlayer({ activity }: Pick<ActivityRuntimeProps, 'acti
       '',
       'Herramienta sugerida: Canva. Guarda el enlace público de solo lectura.'
     ];
-    downloadText('plan_infografia_citoindagar.txt', lines.join('\n'));
+    downloadText('plan_infografia_laboratorio360.txt', lines.join('\n'));
   };
 
   return (

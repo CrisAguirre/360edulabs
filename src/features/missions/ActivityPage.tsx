@@ -77,6 +77,17 @@ export function ActivityPage() {
   const completed = activity.status === 'completed';
   const starting = startMission.isPending || (mission.progress.status === 'available' && !startMission.isError);
 
+  const currentIndex = mission.activities.findIndex((item) => item._id === activityId);
+  const previousActivity = currentIndex > 0 ? mission.activities[currentIndex - 1] : null;
+  const nextActivity =
+    currentIndex >= 0 && currentIndex < mission.activities.length - 1
+      ? mission.activities[currentIndex + 1]
+      : null;
+
+  const getActivityUrl = (act: (typeof mission.activities)[number]) => {
+    return act.type === 'quiz' ? `/misiones/${mission.code}/quiz` : `/misiones/${mission.code}/actividades/${act._id}`;
+  };
+
   const completePayload = (): Record<string, unknown> | null => {
     if (activity.completionRule.type === 'confirm') return { confirmed: true };
     if (activity.completionRule.type === 'video_progress') {
@@ -170,15 +181,31 @@ export function ActivityPage() {
     if (completed) {
       return (
         <Card className="border-mint-400/25 p-5">
-          <div className="flex items-center gap-3">
-            <span className="grid size-11 place-items-center rounded-2xl bg-mint-400/12 text-mint-300">
-              <CheckCircle2 className="size-6" aria-hidden />
-            </span>
-            <div>
-              <h2 className="text-lg font-bold text-white">Actividad completada</h2>
-              <p className="text-sm text-slate-400">
-                Ya recibiste los {activity.xp} XP de esta actividad. Puedes repasar el contenido las veces que quieras.
-              </p>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="grid size-11 place-items-center rounded-2xl bg-mint-400/12 text-mint-300">
+                <CheckCircle2 className="size-6" aria-hidden />
+              </span>
+              <div>
+                <h2 className="text-lg font-bold text-white">Actividad completada</h2>
+                <p className="text-sm text-slate-400">
+                  Ya recibiste los {activity.xp} XP de esta actividad. Puedes repasar el contenido las veces que quieras.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {nextActivity ? (
+                <LinkButton to={getActivityUrl(nextActivity)} variant="primary" size="sm">
+                  Siguiente actividad
+                  <ArrowRight className="size-4" aria-hidden />
+                </LinkButton>
+              ) : (
+                <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="sm">
+                  <Trophy className="size-4" aria-hidden />
+                  Ir al Quiz de la Misión
+                  <ArrowRight className="size-4" aria-hidden />
+                </LinkButton>
+              )}
             </div>
           </div>
         </Card>
@@ -188,9 +215,20 @@ export function ActivityPage() {
     if (activity.completionRule.type === 'confirm') {
       const label = activity.completionRule.label ?? 'Confirmo que completé esta actividad';
       return (
-        <Card className="p-5">
-          <h2 className="text-lg font-bold text-white">Cerrar actividad</h2>
-          <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/10 bg-white/3 p-4 text-sm text-slate-300 transition hover:bg-white/6">
+        <Card className="p-5 border-white/15">
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <CheckCircle2 className="size-5 text-mint-400" aria-hidden />
+            Registrar finalización
+          </h2>
+          <p className="mt-1 text-sm text-slate-300">
+            Para registrar tu avance y sumar tus XP, confirma que exploraste los contenidos de la estación:
+          </p>
+          <label className={cn(
+            'mt-3 flex cursor-pointer items-start gap-3 rounded-2xl border p-4 text-sm transition-all duration-300',
+            confirmed
+              ? 'border-mint-400/40 bg-mint-400/10 text-mint-100'
+              : 'border-white/10 bg-white/3 text-slate-300 hover:border-mint-400/20 hover:bg-white/6'
+          )}>
             <input
               type="checkbox"
               checked={confirmed}
@@ -198,18 +236,31 @@ export function ActivityPage() {
               className="mt-0.5 size-5 shrink-0 accent-[#2bd4ad]"
             />
             <span>
-              <strong className="text-white">{label}</strong>
+              <strong className="text-white block">{label}</strong>
               <span className="mt-1 block text-xs text-slate-400">
-                Al confirmar, la actividad se marca como completada y sumas {activity.xp} XP.
+                Al marcar la casilla, se habilita el botón para registrar tus {activity.xp} XP y continuar.
               </span>
             </span>
           </label>
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <Button onClick={handleComplete} disabled={!canComplete} loading={completeActivity.isPending}>
+            <Button
+              onClick={handleComplete}
+              disabled={!canComplete}
+              loading={completeActivity.isPending}
+              variant={confirmed ? 'primary' : 'secondary'}
+            >
               <CheckCircle2 className="size-4" aria-hidden />
               Completar actividad (+{activity.xp} XP)
             </Button>
-            {!confirmed ? <span className="text-xs text-slate-500">Marca la casilla para continuar.</span> : null}
+            {!confirmed ? (
+              <span className="text-xs text-amber-300/80 animate-pulse font-medium">
+                👉 Marca la casilla de arriba para habilitar este botón
+              </span>
+            ) : (
+              <span className="text-xs text-mint-300 font-medium">
+                ¡Listo! Haz clic en el botón para guardar tu progreso.
+              </span>
+            )}
           </div>
         </Card>
       );
@@ -272,17 +323,41 @@ export function ActivityPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <Link
-          to={`/misiones/${mission.code}/${activity.phase}`}
-          className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-bold text-slate-400 transition hover:bg-white/6 hover:text-white"
-        >
-          <ArrowLeft className="size-4" aria-hidden />
-          Volver a la misión
-        </Link>
-        <Chip tone="neutral">
-          <ListChecks className="size-3.5" aria-hidden />
-          {phase.label} · actividad {activity.order}
-        </Chip>
+        <div className="flex items-center gap-2">
+          <Link
+            to={`/misiones/${mission.code}/${activity.phase}`}
+            className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-bold text-slate-400 transition hover:bg-white/6 hover:text-white"
+          >
+            <ArrowLeft className="size-4" aria-hidden />
+            Volver a la misión
+          </Link>
+          {previousActivity && (
+            <Link
+              to={getActivityUrl(previousActivity)}
+              className="hidden sm:inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-slate-400 hover:bg-white/6 hover:text-mint-300 transition"
+              title={`Actividad anterior: ${previousActivity.title}`}
+            >
+              <ArrowLeft className="size-3" aria-hidden />
+              Anterior
+            </Link>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <Chip tone="neutral">
+            <ListChecks className="size-3.5" aria-hidden />
+            {phase.label} · actividad {activity.order}
+          </Chip>
+          {nextActivity && (
+            <Link
+              to={getActivityUrl(nextActivity)}
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-mint-300 hover:bg-mint-400/10 transition"
+              title={`Siguiente: ${nextActivity.title}`}
+            >
+              Siguiente
+              <ArrowRight className="size-3" aria-hidden />
+            </Link>
+          )}
+        </div>
       </div>
 
       <header className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-ink-900/85 via-ink-900/65 to-ink-950/85 p-5 sm:p-6">
@@ -342,7 +417,7 @@ export function ActivityPage() {
               {reward.badge?.icon ?? (reward.missionCompleted ? <Trophy className="size-7" aria-hidden /> : <Sparkles className="size-7" aria-hidden />)}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="eyebrow">Registro de la Agencia</p>
+              <p className="eyebrow">Registro del Laboratorio 360</p>
               <h2 className="mt-1 text-xl font-bold text-white">
                 {reward.badge
                   ? `¡Insignia desbloqueada: ${reward.badge.name}!`
@@ -357,9 +432,20 @@ export function ActivityPage() {
                     : 'Tu progreso quedó guardado. Puedes seguir con la siguiente actividad de la misión.')}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
+                {nextActivity ? (
+                  <LinkButton to={getActivityUrl(nextActivity)} variant="primary" size="sm">
+                    Siguiente: {nextActivity.title}
+                    <ArrowRight className="size-4" aria-hidden />
+                  </LinkButton>
+                ) : (
+                  <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="sm">
+                    <Trophy className="size-4" aria-hidden />
+                    Ir al Quiz de la Misión
+                    <ArrowRight className="size-4" aria-hidden />
+                  </LinkButton>
+                )}
                 <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="sm">
                   Ver la misión
-                  <ArrowRight className="size-4" aria-hidden />
                 </LinkButton>
                 <LinkButton to="/logros" variant="secondary" size="sm">
                   <Trophy className="size-4" aria-hidden />
@@ -374,10 +460,45 @@ export function ActivityPage() {
         </Card>
       ) : null}
 
+      {/* Barra de navegación continua entre actividades */}
+      <nav aria-label="Navegación continua entre actividades" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/8 bg-ink-950/40 p-3 sm:p-4">
+        {previousActivity ? (
+          <LinkButton to={getActivityUrl(previousActivity)} variant="ghost" size="sm">
+            <ArrowLeft className="size-4" aria-hidden />
+            <span className="hidden sm:inline">Anterior:</span> {previousActivity.title.length > 25 ? previousActivity.title.slice(0, 25) + '…' : previousActivity.title}
+          </LinkButton>
+        ) : (
+          <LinkButton to={`/misiones/${mission.code}`} variant="ghost" size="sm">
+            <ArrowLeft className="size-4" aria-hidden />
+            Inicio de la misión
+          </LinkButton>
+        )}
+
+        <Link
+          to={`/misiones/${mission.code}/${activity.phase}`}
+          className="text-xs font-bold text-slate-400 hover:text-mint-300 transition"
+        >
+          {phase.label} · {currentIndex + 1} de {mission.activities.length}
+        </Link>
+
+        {nextActivity ? (
+          <LinkButton to={getActivityUrl(nextActivity)} variant="secondary" size="sm">
+            <span className="hidden sm:inline">Siguiente:</span> {nextActivity.title.length > 25 ? nextActivity.title.slice(0, 25) + '…' : nextActivity.title}
+            <ArrowRight className="size-4" aria-hidden />
+          </LinkButton>
+        ) : (
+          <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="sm">
+            <Trophy className="size-4" aria-hidden />
+            Reto Quiz Final
+            <ArrowRight className="size-4" aria-hidden />
+          </LinkButton>
+        )}
+      </nav>
+
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/3 px-4 py-3 text-xs text-slate-400">
         <span className="inline-flex items-center gap-1.5">
           <ClipboardCheck className="size-4 text-mint-300" aria-hidden />
-          Tu progreso se guarda en la Agencia.
+          Tu progreso se guarda en el Laboratorio 360.
         </span>
         <span className={cn('inline-flex items-center gap-1.5', completed && 'text-mint-300')}>
           {completed ? <CheckCircle2 className="size-4" aria-hidden /> : <LockKeyhole className="size-4" aria-hidden />}

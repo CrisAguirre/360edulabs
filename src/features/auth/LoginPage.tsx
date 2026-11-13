@@ -81,7 +81,7 @@ export function LoginPage() {
 
       <div className="mx-auto grid min-h-dvh w-full max-w-7xl items-center gap-8 px-4 py-6 sm:px-6 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="hidden flex-col justify-between gap-10 lg:flex">
-          <Link to="/" aria-label="CitoIndagar 360">
+          <Link to="/" aria-label="Laboratorio 360 La Célula">
             <Logo />
           </Link>
           <div className="space-y-6">
@@ -96,7 +96,7 @@ export function LoginPage() {
                 te espera.
               </h1>
               <p className="mt-4 max-w-md text-slate-300">
-                Entra a la Agencia CitoIndagar 360 y continúa tu exploración por el mundo invisible de las células.
+                Entra al Laboratorio 360 La Célula y continúa tu exploración por el mundo invisible de las células.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -108,13 +108,13 @@ export function LoginPage() {
             </div>
           </div>
           <p className="text-xs text-slate-500">
-            La Agencia no publica datos personales de menores. Tu progreso solo lo ves tú y tu docente.
+            El Laboratorio no publica datos personales de menores. Tu progreso solo lo ves tú y tu docente.
           </p>
         </div>
 
         <div className="mx-auto w-full max-w-lg">
           <div className="mb-5 flex items-center justify-between lg:hidden">
-            <Link to="/" aria-label="CitoIndagar 360">
+            <Link to="/" aria-label="Laboratorio 360 La Célula">
               <Logo />
             </Link>
             <Link to="/" className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold text-slate-400 hover:bg-white/6 hover:text-white">
@@ -125,7 +125,7 @@ export function LoginPage() {
 
           <div className="glass rounded-[2rem] p-5 sm:p-8">
             <div className="mb-6">
-              <p className="eyebrow">Acceso a la Agencia</p>
+              <p className="eyebrow">Acceso al Laboratorio</p>
               <h1 className="mt-1 text-3xl font-bold text-white">Inicia tu sesión</h1>
               <p className="mt-1.5 text-sm text-slate-400">
                 Usa la cuenta que te entregó tu docente. Si estás explorando, prueba una cuenta demo.

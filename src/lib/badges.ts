@@ -42,7 +42,7 @@ export const BADGE_CATALOG: BadgeInfo[] = [
   },
   {
     code: 'cientifico-citoindagar',
-    name: 'Científico CitoIndagar 360',
+    name: 'Científico Laboratorio 360',
     shortName: 'Científico 360',
     description: 'Completaste la ruta y presentaste tu bitácora como un verdadero científico.',
     icon: '🏆',

@@ -10,10 +10,13 @@ import {
   Trophy,
   UserRound
 } from 'lucide-react';
+import { useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { cn, initials } from '../../lib/utils';
 import { Logo } from '../Cito';
+import { BreadcrumbBar } from '../navigation/BreadcrumbBar';
+import { SiteMapModal } from '../navigation/SiteMapModal';
 import { SplashCursor } from '../reactbits';
 
 const navByRole = {
@@ -43,6 +46,7 @@ export function AppShell() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [siteMapOpen, setSiteMapOpen] = useState(false);
   const items = user ? navByRole[user.role] : [];
 
   const handleLogout = async () => {
@@ -79,7 +83,7 @@ export function AppShell() {
 
       <header className="sticky top-0 z-50 border-b border-white/8 bg-ink-950/72 backdrop-blur-xl">
         <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <NavLink to={roleHome(user?.role)} aria-label="Ir al inicio de CitoIndagar 360">
+          <NavLink to={roleHome(user?.role)} aria-label="Ir al inicio de Laboratorio 360 La Célula">
             <Logo />
           </NavLink>
 
@@ -108,6 +112,18 @@ export function AppShell() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {/* Botón de Mapa del Sitio Superior */}
+            <button
+              type="button"
+              onClick={() => setSiteMapOpen(true)}
+              className="flex min-h-10 items-center gap-1.5 rounded-xl border border-mint-400/30 bg-mint-400/10 px-3 py-1.5 text-xs font-extrabold text-mint-300 transition hover:border-mint-400/50 hover:bg-mint-400/20 hover:text-white"
+              aria-label="Abrir mapa del sitio y orientación"
+              title="Mapa del Laboratorio 360"
+            >
+              <Compass className="size-4 animate-spin-slow text-mint-300" aria-hidden />
+              <span className="hidden sm:inline">Mapa del Sitio</span>
+            </button>
+
             {user ? (
               <>
                 <div className="hidden items-center gap-2.5 rounded-2xl border border-white/8 bg-white/4 px-3 py-1.5 sm:flex">
@@ -139,6 +155,9 @@ export function AppShell() {
           </div>
         </div>
       </header>
+
+      {/* Barra de Migas de Pan y Orientación Superior */}
+      <BreadcrumbBar onOpenSiteMap={() => setSiteMapOpen(true)} />
 
       <main id="contenido" className="mx-auto w-full max-w-7xl px-4 pb-28 pt-6 sm:px-6 sm:pt-8 md:pb-12">
         <AnimatePresence mode="wait" initial={false}>
@@ -188,6 +207,9 @@ export function AppShell() {
           </button>
         </nav>
       ) : null}
+
+      {/* Modal interactivo de Mapa del Sitio */}
+      <SiteMapModal isOpen={siteMapOpen} onClose={() => setSiteMapOpen(false)} />
     </div>
   );
 }
