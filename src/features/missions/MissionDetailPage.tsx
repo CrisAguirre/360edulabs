@@ -9,7 +9,7 @@ import {
   Trophy,
   CheckCircle2
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
@@ -26,15 +26,10 @@ export function MissionDetailPage() {
   const navigate = useNavigate();
   const missionQuery = useMission(codigo);
   const startMission = useStartMission(codigo ?? '');
-  const [selectedPhase, setSelectedPhase] = useState<PhaseKey>(
-    paramPhase === 'inicio' || paramPhase === 'desarrollo' || paramPhase === 'cierre' ? paramPhase : 'inicio'
-  );
-
-  useEffect(() => {
-    if (paramPhase === 'inicio' || paramPhase === 'desarrollo' || paramPhase === 'cierre') {
-      setSelectedPhase(paramPhase);
-    }
-  }, [paramPhase]);
+  const validPhase =
+    paramPhase === 'inicio' || paramPhase === 'desarrollo' || paramPhase === 'cierre' ? paramPhase : null;
+  const [internalPhase, setInternalPhase] = useState<PhaseKey>('inicio');
+  const selectedPhase: PhaseKey = validPhase ?? internalPhase;
 
   if (missionQuery.isLoading) return <LoadingBlock message="Cargando estación de la misión…" />;
   if (missionQuery.isError || !missionQuery.data) {
@@ -288,7 +283,7 @@ export function MissionDetailPage() {
                 key={phaseKey}
                 type="button"
                 onClick={() => {
-                  setSelectedPhase(phaseKey);
+                  setInternalPhase(phaseKey);
                   navigate(`/misiones/${mission.code}/${phaseKey}`, { replace: true });
                 }}
                 className={cn(

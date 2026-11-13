@@ -52,7 +52,7 @@ export function LogrosPage() {
       {/* Top back button */}
       <div className="flex items-center justify-between gap-4">
         <Link
-          to="/estudiante"
+          to={roleHome(user?.role)}
           className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-bold text-slate-400 transition hover:bg-white/6 hover:text-white"
         >
           <ArrowLeft className="size-4" aria-hidden />
@@ -236,6 +236,13 @@ export function LogrosPage() {
           </AnimatedList>
         )}
       </section>
+
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+        <LinkButton to={roleHome(user?.role)} variant="secondary" size="lg">
+          <ArrowLeft className="size-5" aria-hidden />
+          Volver al mapa de misiones
+        </LinkButton>
+      </div>
     </div>
   );
 }

@@ -34,14 +34,14 @@ export function ActivityPage() {
   const startMission = useStartMission(codigo ?? '');
   const completeActivity = useCompleteActivity(codigo ?? '');
   const toast = useToast();
+  const [prevId, setPrevId] = useState(activityId);
   const [runtime, setRuntime] = useState<{ progress?: number; faces?: number }>({});
   const [confirmed, setConfirmed] = useState(false);
   const [reward, setReward] = useState<Reward | null>(null);
   const autoStarted = useRef(false);
 
-  const prevActivityIdRef = useRef(activityId);
-  if (prevActivityIdRef.current !== activityId) {
-    prevActivityIdRef.current = activityId;
+  if (activityId !== prevId) {
+    setPrevId(activityId);
     setRuntime({});
     setConfirmed(false);
     setReward(null);
