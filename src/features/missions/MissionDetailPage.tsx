@@ -2,13 +2,14 @@ import {
   ArrowLeft,
   ArrowRight,
   Clock3,
+  LockKeyhole,
   Play,
   ShieldCheck,
   Star,
   Trophy,
   CheckCircle2
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
@@ -29,6 +30,12 @@ export function MissionDetailPage() {
     paramPhase === 'inicio' || paramPhase === 'desarrollo' || paramPhase === 'cierre' ? paramPhase : 'inicio'
   );
 
+  useEffect(() => {
+    if (paramPhase === 'inicio' || paramPhase === 'desarrollo' || paramPhase === 'cierre') {
+      setSelectedPhase(paramPhase);
+    }
+  }, [paramPhase]);
+
   if (missionQuery.isLoading) return <LoadingBlock message="Cargando estación de la misión…" />;
   if (missionQuery.isError || !missionQuery.data) {
     return <ErrorBlock message="No pudimos cargar la misión solicitada." onRetry={() => missionQuery.refetch()} />;
@@ -38,6 +45,59 @@ export function MissionDetailPage() {
   const badge = badgeForCode(mission.badgeCode);
   const completed = mission.progress.status === 'completed';
   const inProgress = mission.progress.status === 'in_progress';
+  const isLocked = mission.progress.status === 'locked' && user?.role !== 'admin';
+
+  const nextMissionCode = mission.code === 'm1' ? 'm2' : mission.code === 'm2' ? 'm3' : null;
+  const nextMissionName =
+    mission.code === 'm1'
+      ? 'Misión 2: Partes y Funciones Celulares'
+      : mission.code === 'm2'
+        ? 'Misión 3: Energía y Metabolismo Celular'
+        : null;
+
+  if (isLocked) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            to="/estudiante"
+            className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-bold text-slate-400 transition hover:bg-white/6 hover:text-white"
+          >
+            <ArrowLeft className="size-4" aria-hidden />
+            Volver al mapa
+          </Link>
+          <Chip tone="rose">
+            <LockKeyhole className="size-3.5" aria-hidden />
+            Misión Bloqueada
+          </Chip>
+        </div>
+
+        <section className="glass mx-auto max-w-2xl rounded-3xl p-8 text-center space-y-4">
+          <span className="grid size-20 place-items-center rounded-3xl bg-rose-400/15 text-rose-300 text-4xl mx-auto shadow-xl">
+            <LockKeyhole className="size-10" />
+          </span>
+          <p className="eyebrow">Estación Bloqueada</p>
+          <h1 className="text-3xl font-display font-extrabold text-white">
+            {mission.title}
+          </h1>
+          <p className="text-sm text-slate-300 leading-relaxed max-w-lg mx-auto">
+            Para desbloquear esta misión, debes completar primero los desafíos de la{' '}
+            <strong className="text-white">Misión {mission.order - 1}</strong> y aprobar su reto evaluativo.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+            <LinkButton to={`/misiones/m${mission.order - 1}`} variant="primary" size="lg">
+              Ir a la Misión {mission.order - 1}
+              <ArrowRight className="size-5" aria-hidden />
+            </LinkButton>
+            <LinkButton to="/estudiante" variant="secondary" size="lg">
+              Volver al mapa de misiones
+            </LinkButton>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   const phaseActivities = mission.activities.filter((act) => act.phase === selectedPhase);
   const completedInPhase = phaseActivities.filter((act) => act.status === 'completed').length;
@@ -148,8 +208,20 @@ export function MissionDetailPage() {
 
             {/* Action buttons */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
+              {completed && nextMissionCode ? (
+                <LinkButton to={`/misiones/${nextMissionCode}`} variant="primary" size="lg">
+                  Siguiente Misión: {nextMissionName}
+                  <ArrowRight className="size-5" aria-hidden />
+                </LinkButton>
+              ) : null}
+
               {nextActivity ? (
-                <Button size="lg" onClick={handleStart} loading={startMission.isPending}>
+                <Button
+                  size="lg"
+                  onClick={handleStart}
+                  loading={startMission.isPending}
+                  variant={completed ? 'secondary' : 'primary'}
+                >
                   <Play className="size-5" aria-hidden />
                   {completed ? 'Repasar actividades' : inProgress ? 'Continuar siguiente actividad' : 'Comenzar misión'}
                 </Button>
@@ -215,7 +287,10 @@ export function MissionDetailPage() {
               <button
                 key={phaseKey}
                 type="button"
-                onClick={() => setSelectedPhase(phaseKey)}
+                onClick={() => {
+                  setSelectedPhase(phaseKey);
+                  navigate(`/misiones/${mission.code}/${phaseKey}`, { replace: true });
+                }}
                 className={cn(
                   'flex min-h-12 items-center gap-2.5 rounded-2xl px-5 text-sm font-bold transition',
                   active
@@ -344,20 +419,41 @@ export function MissionDetailPage() {
       <section className="glass rounded-3xl p-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="grid size-14 place-items-center rounded-2xl bg-amber-400/12 text-amber-300 text-3xl">
-            🏆
+            {completed ? '🎉' : '🏆'}
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">¿Listo para el reto final?</h2>
+            <h2 className="text-lg font-bold text-white">
+              {completed ? '¡Misión conquistada con éxito!' : '¿Listo para el reto final?'}
+            </h2>
             <p className="text-xs text-slate-400">
-              Aprueba el quiz con 70% o más para obtener la insignia <strong>{badge?.name}</strong>.
+              {completed
+                ? nextMissionCode
+                  ? 'Has conquistado los desafíos de esta estación. Avanza a la siguiente misión científica.'
+                  : '¡Has completado todas las misiones del Laboratorio 360! Explora tu vitrina de insignias.'
+                : `Aprueba el quiz con 70% o más para obtener la insignia ${badge?.name}.`}
             </p>
           </div>
         </div>
-        <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
-          <Trophy className="size-5" aria-hidden />
-          Presentar Quiz de la Misión
-          <ArrowRight className="size-4" aria-hidden />
-        </LinkButton>
+        <div className="flex flex-wrap items-center gap-3">
+          {completed && nextMissionCode ? (
+            <LinkButton to={`/misiones/${nextMissionCode}`} variant="primary" size="lg">
+              Siguiente Misión: {nextMissionName}
+              <ArrowRight className="size-5" aria-hidden />
+            </LinkButton>
+          ) : completed ? (
+            <LinkButton to="/logros" variant="gold" size="lg">
+              <Trophy className="size-5" aria-hidden />
+              Ver mis insignias
+              <ArrowRight className="size-5" aria-hidden />
+            </LinkButton>
+          ) : (
+            <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
+              <Trophy className="size-5" aria-hidden />
+              Presentar Quiz de la Misión
+              <ArrowRight className="size-4" aria-hidden />
+            </LinkButton>
+          )}
+        </div>
       </section>
     </div>
   );

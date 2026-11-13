@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
+import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { ApiError } from '../../lib/api';
 import { ACTIVITY_META, PHASE_META } from '../../lib/activityMeta';
 import { celebrate } from '../../lib/celebrate';
@@ -27,6 +28,7 @@ interface Reward {
 }
 
 export function ActivityPage() {
+  const { user } = useAuth();
   const { codigo, activityId } = useParams<{ codigo: string; activityId: string }>();
   const missionQuery = useMission(codigo);
   const startMission = useStartMission(codigo ?? '');
@@ -36,6 +38,19 @@ export function ActivityPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [reward, setReward] = useState<Reward | null>(null);
   const autoStarted = useRef(false);
+
+  const prevActivityIdRef = useRef(activityId);
+  if (prevActivityIdRef.current !== activityId) {
+    prevActivityIdRef.current = activityId;
+    setRuntime({});
+    setConfirmed(false);
+    setReward(null);
+  }
+
+  useEffect(() => {
+    // Al cambiar de actividad, llevar la vista arriba
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activityId]);
 
   const mission = missionQuery.data;
   const activity = mission?.activities.find((item) => item._id === activityId);
@@ -83,6 +98,14 @@ export function ActivityPage() {
     currentIndex >= 0 && currentIndex < mission.activities.length - 1
       ? mission.activities[currentIndex + 1]
       : null;
+
+  const nextMissionCode = mission.code === 'm1' ? 'm2' : mission.code === 'm2' ? 'm3' : null;
+  const nextMissionName =
+    mission.code === 'm1'
+      ? 'Misión 2: Partes de la Célula'
+      : mission.code === 'm2'
+        ? 'Misión 3: Energía Celular'
+        : null;
 
   const getActivityUrl = (act: (typeof mission.activities)[number]) => {
     return act.type === 'quiz' ? `/misiones/${mission.code}/quiz` : `/misiones/${mission.code}/actividades/${act._id}`;
@@ -432,7 +455,12 @@ export function ActivityPage() {
                     : 'Tu progreso quedó guardado. Puedes seguir con la siguiente actividad de la misión.')}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                {nextActivity ? (
+                {reward.missionCompleted && nextMissionCode ? (
+                  <LinkButton to={`/misiones/${nextMissionCode}`} variant="primary" size="sm">
+                    Siguiente Misión: {nextMissionName}
+                    <ArrowRight className="size-4" aria-hidden />
+                  </LinkButton>
+                ) : nextActivity ? (
                   <LinkButton to={getActivityUrl(nextActivity)} variant="primary" size="sm">
                     Siguiente: {nextActivity.title}
                     <ArrowRight className="size-4" aria-hidden />
@@ -451,7 +479,7 @@ export function ActivityPage() {
                   <Trophy className="size-4" aria-hidden />
                   Mis logros
                 </LinkButton>
-                <LinkButton to="/estudiante" variant="ghost" size="sm">
+                <LinkButton to={roleHome(user?.role)} variant="ghost" size="sm">
                   Volver al mapa
                 </LinkButton>
               </div>

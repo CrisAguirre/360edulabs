@@ -87,10 +87,13 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
           <span className="line-clamp-2 max-w-[9rem] leading-tight">{badge?.shortName ?? 'Insignia'}</span>
         </div>
         {locked ? (
-          <span className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-white/8 bg-white/4 px-4 text-sm font-bold text-slate-500">
-            <LockKeyhole className="size-4" aria-hidden />
-            Bloqueada
-          </span>
+          <Link
+            to={`/misiones/${mission.code}`}
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-white/10 bg-white/4 px-4 text-sm font-bold text-slate-400 transition hover:border-white/20 hover:bg-white/8 hover:text-white"
+          >
+            <LockKeyhole className="size-4 text-amber-300" aria-hidden />
+            Ver requisitos
+          </Link>
         ) : (
           <Link
             to={`/misiones/${mission.code}`}

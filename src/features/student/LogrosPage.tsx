@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { CitoMascot } from '../../components/Cito';
 import { BadgeCabinet } from '../../components/gamification/BadgeCabinet';
 import { Card, Chip, ErrorBlock, EvidenceStatusBadge, LinkButton, LoadingBlock, ProgressBar, SectionHeading } from '../../components/ui';
-import { useAuth } from '../../contexts/AuthContext';
+import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { useMyEvidence, useProgress } from '../../lib/queries';
 import type { Evidence, EvidenceLevel } from '../../lib/types';
 import { formatDate } from '../../lib/utils';

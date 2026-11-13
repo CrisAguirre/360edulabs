@@ -176,21 +176,38 @@ export function QuizPage() {
               </p>
 
               <ClickSpark sparkColor={quizResult.passed ? '#58e6c5' : '#fbbf24'}>
-                <div className="mt-6 flex flex-wrap justify-center gap-4">
-                  <Button size="lg" onClick={handleStartAttempt} loading={startQuiz.isPending}>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  {quizResult.passed && (mission.code === 'm1' || mission.code === 'm2') ? (
+                    <LinkButton
+                      to={`/misiones/${mission.code === 'm1' ? 'm2' : 'm3'}`}
+                      variant="primary"
+                      size="lg"
+                    >
+                      Siguiente Misión: {mission.code === 'm1' ? 'M2 Partes de la Célula' : 'M3 Energía Celular'}
+                      <ArrowRight className="size-5" aria-hidden />
+                    </LinkButton>
+                  ) : null}
+
+                  {quizResult.passed && mission.code === 'm3' ? (
+                    <LinkButton to="/logros" variant="gold" size="lg">
+                      <Trophy className="size-5" aria-hidden />
+                      ¡Todas las misiones completadas! Ver Mis Logros
+                      <ArrowRight className="size-5" aria-hidden />
+                    </LinkButton>
+                  ) : null}
+
+                  <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="lg">
+                    Volver a la misión
+                  </LinkButton>
+
+                  <LinkButton to="/estudiante" variant="ghost" size="lg">
+                    Volver al mapa
+                  </LinkButton>
+
+                  <Button size="lg" variant="ghost" onClick={handleStartAttempt} loading={startQuiz.isPending}>
                     <RotateCcw className="size-5" aria-hidden />
                     {quizResult.passed ? 'Mejorar puntaje (opcional)' : 'Intentar el quiz de nuevo'}
                   </Button>
-                  <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="lg">
-                    Volver a la misión
-                    <ArrowRight className="size-5" aria-hidden />
-                  </LinkButton>
-                  {quizResult.passed ? (
-                    <LinkButton to="/logros" variant="gold" size="lg">
-                      <Trophy className="size-5" aria-hidden />
-                      Ver mis insignias
-                    </LinkButton>
-                  ) : null}
                 </div>
               </ClickSpark>
             </div>
@@ -279,6 +296,35 @@ export function QuizPage() {
                 );
               })}
             </AnimatedList>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-ink-950/60 p-4">
+              <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="md">
+                <ArrowLeft className="size-4" aria-hidden />
+                Volver a la misión
+              </LinkButton>
+
+              <div className="flex flex-wrap items-center gap-2">
+                {quizResult.passed && (mission.code === 'm1' || mission.code === 'm2') ? (
+                  <LinkButton
+                    to={`/misiones/${mission.code === 'm1' ? 'm2' : 'm3'}`}
+                    variant="primary"
+                    size="md"
+                  >
+                    Siguiente Misión: {mission.code === 'm1' ? 'M2' : 'M3'}
+                    <ArrowRight className="size-4" aria-hidden />
+                  </LinkButton>
+                ) : quizResult.passed && mission.code === 'm3' ? (
+                  <LinkButton to="/logros" variant="gold" size="md">
+                    <Trophy className="size-4" aria-hidden />
+                    Ver mis insignias
+                    <ArrowRight className="size-4" aria-hidden />
+                  </LinkButton>
+                ) : null}
+                <LinkButton to="/estudiante" variant="ghost" size="md">
+                  Volver al mapa
+                </LinkButton>
+              </div>
+            </div>
           </section>
         </div>
       ) : attemptId ? (
@@ -475,10 +521,29 @@ export function QuizPage() {
 
                 <div className="pt-3">
                   <ClickSpark sparkColor={mission.theme.accent}>
-                    <Button size="lg" onClick={handleStartAttempt} loading={startQuiz.isPending}>
-                      <Play className="size-5" aria-hidden />
-                      {attempts.length > 0 ? 'Iniciar nuevo intento' : 'Comenzar el quiz ahora'}
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Button size="lg" onClick={handleStartAttempt} loading={startQuiz.isPending}>
+                        <Play className="size-5" aria-hidden />
+                        {attempts.length > 0 ? 'Iniciar nuevo intento' : 'Comenzar el quiz ahora'}
+                      </Button>
+                      {bestAttempt >= quiz.passScore && (mission.code === 'm1' || mission.code === 'm2') && (
+                        <LinkButton
+                          to={`/misiones/${mission.code === 'm1' ? 'm2' : 'm3'}`}
+                          variant="primary"
+                          size="lg"
+                        >
+                          Siguiente Misión: {mission.code === 'm1' ? 'M2 Partes de la Célula' : 'M3 Energía Celular'}
+                          <ArrowRight className="size-5" aria-hidden />
+                        </LinkButton>
+                      )}
+                      {bestAttempt >= quiz.passScore && mission.code === 'm3' && (
+                        <LinkButton to="/logros" variant="gold" size="lg">
+                          <Trophy className="size-5" aria-hidden />
+                          Ver mis insignias
+                          <ArrowRight className="size-5" aria-hidden />
+                        </LinkButton>
+                      )}
+                    </div>
                   </ClickSpark>
                 </div>
               </div>
@@ -531,6 +596,35 @@ export function QuizPage() {
               </AnimatedList>
             </Card>
           ) : null}
+
+          {/* Barra inferior de navegación de retorno */}
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-ink-950/60 p-4">
+            <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="md">
+              <ArrowLeft className="size-4" aria-hidden />
+              Volver a la misión
+            </LinkButton>
+            <div className="flex flex-wrap items-center gap-2">
+              {bestAttempt >= quiz.passScore && (mission.code === 'm1' || mission.code === 'm2') ? (
+                <LinkButton
+                  to={`/misiones/${mission.code === 'm1' ? 'm2' : 'm3'}`}
+                  variant="primary"
+                  size="md"
+                >
+                  Siguiente Misión: {mission.code === 'm1' ? 'M2' : 'M3'}
+                  <ArrowRight className="size-4" aria-hidden />
+                </LinkButton>
+              ) : bestAttempt >= quiz.passScore && mission.code === 'm3' ? (
+                <LinkButton to="/logros" variant="gold" size="md">
+                  <Trophy className="size-4" aria-hidden />
+                  Ver mis insignias
+                  <ArrowRight className="size-4" aria-hidden />
+                </LinkButton>
+              ) : null}
+              <LinkButton to="/estudiante" variant="ghost" size="md">
+                Volver al mapa
+              </LinkButton>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -5,6 +5,7 @@ import {
   Home
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { cn } from '../../lib/utils';
 
 interface BreadcrumbBarProps {
@@ -24,6 +25,7 @@ const PHASE_LABELS: Record<string, string> = {
 };
 
 export function BreadcrumbBar({ onOpenSiteMap }: BreadcrumbBarProps) {
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const pathname = location.pathname;
@@ -32,41 +34,40 @@ export function BreadcrumbBar({ onOpenSiteMap }: BreadcrumbBarProps) {
   if (pathname === '/' || pathname === '/login') return null;
 
   const parts = pathname.split('/').filter(Boolean);
+  const homeUrl = roleHome(user?.role);
 
-  // Determinar fallback seguro de retorno
+  // Determinar ruta jerárquica segura de retorno
   const getBackFallback = () => {
     if (pathname.includes('/actividades/')) {
       const match = pathname.match(/\/misiones\/([^/]+)/);
-      return match ? `/misiones/${match[1]}` : '/estudiante';
+      return match ? `/misiones/${match[1]}` : homeUrl;
     }
     if (pathname.includes('/quiz')) {
       const match = pathname.match(/\/misiones\/([^/]+)/);
-      return match ? `/misiones/${match[1]}` : '/estudiante';
+      return match ? `/misiones/${match[1]}` : homeUrl;
     }
     if (pathname.startsWith('/misiones/')) {
-      return '/estudiante';
+      return homeUrl;
     }
     if (pathname.startsWith('/docente/')) {
       return '/docente';
     }
     if (pathname === '/logros') {
-      return '/estudiante';
+      return homeUrl;
     }
-    return '/estudiante';
+    if (pathname === '/admin') {
+      return homeUrl;
+    }
+    return homeUrl;
   };
 
   const handleBack = () => {
-    // Si hay historial en el navegador y no venimos de fuera
-    if (window.history.length > 2) {
-      navigate(-1);
-    } else {
-      navigate(getBackFallback());
-    }
+    navigate(getBackFallback());
   };
 
   // Generar migas de pan dinámicas
   const crumbs: Array<{ label: string; to?: string }> = [
-    { label: 'Lab 360', to: '/estudiante' }
+    { label: 'Lab 360', to: homeUrl }
   ];
 
   if (parts[0] === 'estudiante') {
@@ -124,7 +125,7 @@ export function BreadcrumbBar({ onOpenSiteMap }: BreadcrumbBarProps) {
           {/* Miga de pan */}
           <nav aria-label="Ubicación actual" className="flex items-center gap-1.5 truncate text-xs">
             <Link
-              to="/estudiante"
+              to={homeUrl}
               className="grid size-6 place-items-center rounded-md text-slate-400 transition hover:bg-white/8 hover:text-mint-300"
               title="Ir al inicio del Laboratorio"
             >

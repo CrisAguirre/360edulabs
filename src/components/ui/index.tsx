@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertTriangle,
+  ArrowLeft,
   CheckCircle2,
   Clock,
   Inbox,
@@ -399,12 +400,18 @@ export function ErrorBlock({
         <h2 className="text-xl font-bold text-white">{title}</h2>
         <p className="mt-1 text-sm text-slate-400">{message ?? 'No pudimos cargar esta información.'}</p>
       </div>
-      {onRetry ? (
-        <Button variant="secondary" onClick={onRetry}>
-          <RotateCcw className="size-4" aria-hidden />
-          Intentar de nuevo
-        </Button>
-      ) : null}
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        {onRetry ? (
+          <Button variant="secondary" onClick={onRetry}>
+            <RotateCcw className="size-4" aria-hidden />
+            Intentar de nuevo
+          </Button>
+        ) : null}
+        <LinkButton to="/estudiante" variant="ghost">
+          <ArrowLeft className="size-4" aria-hidden />
+          Volver a misiones
+        </LinkButton>
+      </div>
     </div>
   );
 }
