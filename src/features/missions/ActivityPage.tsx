@@ -20,6 +20,7 @@ import { useCompleteActivity, useMission, useStartMission } from '../../lib/quer
 import type { Evidence } from '../../lib/types';
 import { cn } from '../../lib/utils';
 import { ActivityPlayer } from '../labs/ActivityPlayer';
+import { OfficialSource } from '../labs/OfficialSource';
 
 interface Reward {
   badge: { code: string; name: string; description: string; icon: string } | null;
@@ -426,9 +427,17 @@ export function ActivityPage() {
               {activity.title}
             </h1>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">{activity.instructions}</p>
+            {!activity.required ? (
+              <p className="mt-2 inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-[11px] font-semibold text-slate-400">
+                <Sparkles className="size-3.5 text-mint-300" aria-hidden />
+                Exploración opcional: puedes realizarla, pero no bloquea el avance de la misión.
+              </p>
+            ) : null}
           </div>
         </div>
       </header>
+
+      <OfficialSource activity={activity} />
 
       {starting ? (
         <LoadingBlock message="Iniciando tu misión y preparando la actividad…" />

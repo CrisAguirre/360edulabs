@@ -740,9 +740,8 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
   const subtheme2 = content.subtheme2 as string | undefined;
   const activityDescription = content.activityDescription as string | undefined;
   const initialQuestion = content.initialQuestion as string | undefined;
-  const mandatoryQuestion = (content.mandatoryQuestion as string | undefined) ??
-    'Identifique dos ideas mencionadas en la lectura que usted considera importantes para el estudio de la biología. Argumente cada una de ellas.';
-  const hasEvidenceResponse = Boolean(content.hasEvidenceResponse || content.mandatoryQuestion);
+  const mandatoryQuestion = content.mandatoryQuestion as string | undefined;
+  const hasEvidenceResponse = content.hasEvidenceResponse === true;
   const docUrl = content.docUrl as string | undefined;
   const videoUrl = content.videoUrl as string | undefined;
   const videoEmbedUrl = content.videoEmbedUrl as string | undefined;
@@ -757,6 +756,13 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
   const hasQuiver = Boolean(content.hasQuiver || content.quiverLinks || (sessionTitle && sessionTitle.includes('Sesión 2')));
   const hasCanva = Boolean(content.hasCanva || (sessionTitle && sessionTitle.includes('Sesión 3')));
   const hasMergeCube = Boolean(content.hasMergeCube || (sessionTitle && sessionTitle.includes('Sesión 3')));
+  const hasPedagogicalSupport =
+    scientists.length > 0 ||
+    comparisonTable.length > 0 ||
+    comparison.length > 0 ||
+    sections.length > 0 ||
+    glossary.length > 0 ||
+    Boolean(content.didYouKnow || content.note);
 
   return (
     <article className="space-y-6">
@@ -852,6 +858,33 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
               </p>
               <p className="text-xs text-slate-300">
                 Comparte tus hipótesis de forma oral o escrita con tus compañeros de clase antes de profundizar en los recursos de la plataforma.
+              </p>
+            </div>
+          </div>
+        </SpotlightCard>
+      ) : null}
+
+      {/* ── 3-bis. Pregunta de indagación obligatoria (texto oficial) ── */}
+      {mandatoryQuestion ? (
+        <SpotlightCard
+          spotlightColor="rgba(251, 191, 36, 0.15)"
+          borderColor="rgba(251, 191, 36, 0.35)"
+          className="p-5 sm:p-6"
+        >
+          <div className="flex items-start gap-3.5">
+            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-amber-400/20 text-amber-300">
+              <Quote className="size-5" aria-hidden />
+            </span>
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <Chip tone="gold">Pregunta de indagación · texto oficial</Chip>
+                <span className="text-xs text-slate-400">Respuesta obligatoria de la sesión</span>
+              </div>
+              <p className="font-display text-base font-bold text-white sm:text-lg">{mandatoryQuestion}</p>
+              <p className="text-xs leading-relaxed text-slate-300">
+                {hasEvidenceResponse
+                  ? 'Responde aquí mismo, en el espacio virtual de la plataforma Vercel.'
+                  : 'Esta pregunta se responde en la actividad de cierre de la misión, dentro de la evidencia de aprendizaje.'}
               </p>
             </div>
           </div>
@@ -1117,6 +1150,19 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
         </SpotlightCard>
       ) : null}
 
+      {/* ── 5-bis. Separador de contenido editorial complementario ───── */}
+      {hasPedagogicalSupport ? (
+        <section aria-label="Apoyo pedagógico" className="space-y-2 pt-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <Chip tone="grape">Apoyo pedagógico</Chip>
+            <p className="text-xs text-slate-400">
+              Contenido complementario del Laboratorio 360. Amplía la sesión, pero no forma parte del texto literal del documento curricular.
+            </p>
+          </div>
+          <div className="h-px w-full bg-gradient-to-r from-violet-400/40 via-white/10 to-transparent" aria-hidden />
+        </section>
+      ) : null}
+
       {/* ── 6. Representantes históricos (Línea de tiempo) ─────────── */}
       {scientists.length > 0 ? (
         <section aria-labelledby="scientists-title" className="space-y-3">
@@ -1280,8 +1326,45 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
         </ClickSpark>
       ) : null}
 
+      {/* ── 11-bis. Cuadro de estructura celular del documento (referencia) ── */}
+      {structuresTable.length > 0 && !hasEvidenceResponse ? (
+        <Card className="space-y-3 p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <TableIcon className="size-5 text-amber-300" aria-hidden />
+              <h3 className="text-base font-extrabold text-white sm:text-lg">
+                Cuadro de estructura celular · texto oficial
+              </h3>
+            </div>
+            <Chip tone="gold">Se completa en el cierre</Chip>
+          </div>
+          <p className="text-xs leading-relaxed text-slate-400">
+            El documento pide completar la función principal de cada estructura en la plataforma Vercel. Aquí las
+            tienes como referencia; la entrega se registra en la evidencia de cierre de la misión.
+          </p>
+          <div className="overflow-hidden rounded-2xl border border-white/10">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="bg-white/6 text-[11px] font-extrabold uppercase tracking-wider text-slate-300">
+                  <th className="px-4 py-3" scope="col">Estructura celular</th>
+                  <th className="px-4 py-3" scope="col">Función principal</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/8">
+                {structuresTable.map((item) => (
+                  <tr key={item.id} className="transition hover:bg-white/4">
+                    <th className="px-4 py-3 font-bold text-white" scope="row">{item.name}</th>
+                    <td className="px-4 py-3 text-slate-500">La completas en la actividad de cierre.</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      ) : null}
+
       {/* ── 12. Espacio virtual de la plataforma Vercel (Respuesta escrita integrada) ── */}
-      {hasEvidenceResponse ? (
+      {hasEvidenceResponse && mandatoryQuestion ? (
         <VercelResponseSection
           activity={activity}
           mission={mission}
