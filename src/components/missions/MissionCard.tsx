@@ -2,12 +2,14 @@ import { ArrowRight, CheckCircle2, Clock3, Flame, LockKeyhole, Sparkles, Star, T
 import { Link } from 'react-router-dom';
 import type { MissionSummary } from '../../lib/types';
 import { badgeForCode } from '../../lib/badges';
+import { sessionInfo } from '../../lib/curriculum';
 import { cn } from '../../lib/utils';
 import { MissionStatusBadge, ProgressBar } from '../ui';
 import { AnimatedList, ShinyText, SpotlightCard } from '../reactbits';
 
 export function MissionCard({ mission, index }: { mission: MissionSummary; index: number }) {
   const badge = badgeForCode(mission.badgeCode);
+  const info = sessionInfo(mission.code);
   const locked = mission.progress.status === 'locked';
   const completed = mission.progress.status === 'completed';
 
@@ -37,13 +39,16 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
         <div className="flex flex-col items-end gap-1.5">
           <MissionStatusBadge status={mission.progress.status} />
           <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
-            Estación {index + 1}
+            Sesión {info?.session ?? index + 1}
           </span>
         </div>
       </div>
 
       <div className="relative mt-4 flex-1">
-        <h3 className="text-xl font-bold leading-tight text-white">{mission.title}</h3>
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500">
+          {info?.theme ?? 'Sesión de indagación'}
+        </p>
+        <h3 className="mt-0.5 text-xl font-bold leading-tight text-white">{mission.title}</h3>
         <p className="mt-1 text-sm font-bold" style={{ color: mission.theme.accent }}>
           {mission.bigQuestion}
         </p>
@@ -54,7 +59,7 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
             value={mission.progress.completedActivities}
             max={mission.progress.totalActivities}
             color={mission.theme.accent}
-            label={`${mission.progress.completedActivities} de ${mission.progress.totalActivities} actividades`}
+            label={`${mission.progress.completedActivities} de ${mission.progress.totalActivities} pasos obligatorios`}
           />
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold text-slate-500">
             <span className="inline-flex items-center gap-1">
@@ -108,7 +113,7 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
             ) : mission.progress.status === 'in_progress' ? (
               'Continuar'
             ) : (
-              <ShinyText text="Entrar" speed={3} className="font-extrabold text-ink-950" />
+              <ShinyText text="Ver contenidos" speed={3} className="font-extrabold text-ink-950" />
             )}
             <ArrowRight className="size-4" aria-hidden />
           </Link>

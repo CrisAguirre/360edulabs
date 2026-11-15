@@ -1,10 +1,11 @@
-import { ArrowRight, BookOpenCheck, CheckCircle2, ClipboardCheck, Compass, ShieldCheck, Star, Trophy } from 'lucide-react';
+import { ArrowRight, BookOpenCheck, CheckCircle2, ClipboardCheck, Compass, ShieldCheck, Sparkles, Star, Target, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BadgeCabinet } from '../../components/gamification/BadgeCabinet';
 import { MissionMap, QuickTip } from '../../components/missions/MissionCard';
 import { CitoMascot } from '../../components/Cito';
-import { Button, Card, ErrorBlock, LinkButton, LoadingBlock, ProgressBar, ProgressRing, SectionHeading } from '../../components/ui';
+import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar, ProgressRing, SectionHeading } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
+import { sessionInfo, sessionShortLabel } from '../../lib/curriculum';
 import { useMyEvidence, useProgress } from '../../lib/queries';
 import { AnimatedList, Aurora, DecryptedText } from '../../components/reactbits';
 
@@ -13,7 +14,7 @@ export function StudentHome() {
   const progressQuery = useProgress();
   const evidenceQuery = useMyEvidence();
 
-  if (progressQuery.isLoading) return <LoadingBlock message="Abriendo el mapa de misiones…" />;
+  if (progressQuery.isLoading) return <LoadingBlock message="Abriendo el mapa de sesiones…" />;
   if (progressQuery.isError || !progressQuery.data) {
     return <ErrorBlock message="No pudimos cargar tu progreso." onRetry={() => progressQuery.refetch()} />;
   }
@@ -33,7 +34,7 @@ export function StudentHome() {
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3">
           <div className="flex items-center gap-2 text-xs font-bold text-amber-200">
             <ShieldCheck className="size-4 text-amber-300" aria-hidden />
-            <span>Modo Verificación de Contenidos (Sesión de Administrador): Puedes acceder y probar todas las misiones.</span>
+            <span>Modo Verificación de Contenidos (Sesión de Administrador): Puedes acceder y probar todas las sesiones.</span>
           </div>
           <Link
             to="/admin"
@@ -64,13 +65,15 @@ export function StudentHome() {
             </h1>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">
               {active
-                ? `Tu siguiente estación es “${active.title}”. ${active.bigQuestion}`
-                : 'Completaste todas las misiones. ¡Tu bitácora es digna de un Investigador del Laboratorio 360!'}
+                ? `Tu siguiente sesión es la ${sessionShortLabel(active.code)}: ${
+                    sessionInfo(active.code)?.theme ?? active.title
+                  }. ${active.bigQuestion}`
+                : 'Completaste las tres sesiones. ¡Tu bitácora es digna de un Investigador del Laboratorio 360!'}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
               {active ? (
                 <LinkButton to={`/misiones/${active.code}`} size="lg">
-                  {active.progress.status === 'in_progress' ? 'Continuar misión' : 'Empezar misión'}
+                  {active.progress.status === 'in_progress' ? 'Continuar sesión' : 'Empezar sesión'}
                   <ArrowRight className="size-5" aria-hidden />
                 </LinkButton>
               ) : (
@@ -86,7 +89,7 @@ export function StudentHome() {
             </div>
             <AnimatedList className="mt-5 grid gap-2 sm:grid-cols-3" stagger={0.06}>
               <div className="rounded-2xl border border-white/8 bg-ink-950/35 px-3 py-2.5">
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Misiones completadas</p>
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Sesiones completadas</p>
                 <p className="font-display text-xl font-bold text-white">
                   {completed}<span className="text-sm text-slate-500"> / {missions.length}</span>
                 </p>
@@ -133,11 +136,23 @@ export function StudentHome() {
 
       <section className="space-y-4">
         <SectionHeading
-          eyebrow="Mapa de misiones"
-          title="Tu ruta por la célula"
-          description="Avanza en orden: cada insignia abre la siguiente estación del Laboratorio."
-          action={<QuickTip>Consejo: explora todos los hotspots antes de completar una actividad.</QuickTip>}
+          eyebrow="Ruta de indagación"
+          title="Elige tu sesión"
+          description="Tres sesiones del documento Estrategia Indagación.docx. Cada una tiene una ruta obligatoria y una exploración de apoyo opcional."
+          action={
+            <QuickTip>Entra a una sesión para ver primero los pasos obligatorios y, al final, la exploración de apoyo.</QuickTip>
+          }
         />
+        <div className="flex flex-wrap items-center gap-2">
+          <Chip tone="gold">
+            <Target className="size-3.5" aria-hidden />
+            Obligatorio: pasos del documento
+          </Chip>
+          <Chip tone="neutral">
+            <Sparkles className="size-3.5 text-mint-300" aria-hidden />
+            Opcional: apoyo y exploración
+          </Chip>
+        </div>
         <MissionMap missions={missions} />
       </section>
 
@@ -158,7 +173,7 @@ export function StudentHome() {
           </div>
           {progress.badges.length === 0 ? (
             <p className="mt-3 rounded-2xl border border-dashed border-white/12 p-4 text-sm text-slate-400">
-              Aún no tienes insignias. Completa la primera misión y Cito te entregará la insignia{' '}
+              Aún no tienes insignias. Completa la primera sesión y Cito te entregará la insignia{' '}
               <strong className="text-white">Explorador Celular</strong>.
             </p>
           ) : null}
@@ -174,7 +189,7 @@ export function StudentHome() {
                 <h2 className="text-lg font-bold text-white">Mi bitácora</h2>
                 <p className="mt-1 text-sm text-slate-400">
                   {evidence.length === 0
-                    ? 'Tus evidencias aparecerán aquí. Cada misión tiene un espacio para argumentar.'
+                    ? 'Tus evidencias aparecerán aquí. Cada sesión tiene un espacio para argumentar.'
                     : `${evidence.length} evidencia${evidence.length === 1 ? '' : 's'} guardada${evidence.length === 1 ? '' : 's'} en tu bitácora.`}
                 </p>
               </div>
@@ -203,27 +218,33 @@ export function StudentHome() {
                 <Compass className="size-5" aria-hidden />
               </span>
               <div>
-                <h2 className="text-lg font-bold text-white">¿Cómo avanzar?</h2>
-                <p className="text-sm text-slate-400">Tres pasos simples en cada estación.</p>
+                <h2 className="text-lg font-bold text-white">Cómo leer cada sesión</h2>
+                <p className="text-sm text-slate-400">Dos bloques bien separados.</p>
               </div>
             </div>
-            <ol className="mt-4 space-y-3 text-sm text-slate-300">
-              {[
-                'Explora las actividades de Inicio y Desarrollo.',
-                'Escribe tu evidencia y revisa la rúbrica.',
-                'Aprueba el quiz final para ganar la insignia.'
-              ].map((step, index) => (
-                <li key={step} className="flex items-start gap-3">
-                  <span className="grid size-6 shrink-0 place-items-center rounded-full bg-mint-400/15 text-[11px] font-extrabold text-mint-300">
-                    {index + 1}
-                  </span>
-                  {step}
-                </li>
-              ))}
-            </ol>
+            <ul className="mt-4 space-y-3 text-sm text-slate-300">
+              <li className="flex items-start gap-2.5">
+                <Chip tone="gold">Obligatorio</Chip>
+                <span className="text-xs leading-relaxed">
+                  Los pasos que describe el documento: lectura, recursos, evidencia y reto final.
+                </span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Chip tone="neutral">Opcional</Chip>
+                <span className="text-xs leading-relaxed">
+                  Modelos 3D, cubos, animaciones y laboratorios de apoyo. No bloquean el avance.
+                </span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Chip tone="mint">Insignia</Chip>
+                <span className="text-xs leading-relaxed">
+                  Completa la ruta obligatoria y aprueba el quiz con 70 % o más.
+                </span>
+              </li>
+            </ul>
             <div className="mt-4 flex items-center gap-2 rounded-xl bg-amber-400/8 px-3 py-2 text-xs font-bold text-amber-200">
               <Star className="size-4" aria-hidden />
-              Necesitas 70 % en el quiz para completar cada misión.
+              La exploración opcional queda abierta aunque termines la sesión.
             </div>
           </Card>
         </div>

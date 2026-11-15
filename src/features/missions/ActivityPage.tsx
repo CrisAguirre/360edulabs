@@ -16,6 +16,7 @@ import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { ApiError } from '../../lib/api';
 import { ACTIVITY_META, PHASE_META } from '../../lib/activityMeta';
 import { celebrate } from '../../lib/celebrate';
+import { activityUrl, splitActivities } from '../../lib/curriculum';
 import { useCompleteActivity, useMission, useStartMission } from '../../lib/queries';
 import type { Evidence } from '../../lib/types';
 import { cn } from '../../lib/utils';
@@ -105,24 +106,21 @@ export function ActivityPage() {
   const completed = activity.status === 'completed';
   const starting = startMission.isPending || (mission.progress.status === 'available' && !startMission.isError);
 
-  const currentIndex = mission.activities.findIndex((item) => item._id === activityId);
-  const previousActivity = currentIndex > 0 ? mission.activities[currentIndex - 1] : null;
-  const nextActivity =
-    currentIndex >= 0 && currentIndex < mission.activities.length - 1
-      ? mission.activities[currentIndex + 1]
-      : null;
+  const { required: requiredRoute, support: supportRoute } = splitActivities(mission);
+  const route = activity.required ? requiredRoute : supportRoute;
+  const stepIndex = route.findIndex((item) => item._id === activityId);
+  const previousActivity = stepIndex > 0 ? route[stepIndex - 1] : null;
+  const nextActivity = stepIndex >= 0 && stepIndex < route.length - 1 ? route[stepIndex + 1] : null;
 
   const nextMissionCode = mission.code === 'm1' ? 'm2' : mission.code === 'm2' ? 'm3' : null;
   const nextMissionName =
     mission.code === 'm1'
-      ? 'Misión 2: Partes de la Célula'
+      ? 'Sesión 2: Concepto de célula'
       : mission.code === 'm2'
-        ? 'Misión 3: Energía Celular'
+        ? 'Sesión 3: Procesos metabólicos de la célula'
         : null;
 
-  const getActivityUrl = (act: (typeof mission.activities)[number]) => {
-    return act.type === 'quiz' ? `/misiones/${mission.code}/quiz` : `/misiones/${mission.code}/actividades/${act._id}`;
-  };
+  const getActivityUrl = (act: (typeof mission.activities)[number]) => activityUrl(mission.code, act);
 
   const completePayload = (): Record<string, unknown> | null => {
     if (activity.completionRule.type === 'confirm') return { confirmed: true };
@@ -234,6 +232,10 @@ export function ActivityPage() {
                 <LinkButton to={getActivityUrl(nextActivity)} variant="primary" size="sm">
                   Siguiente actividad
                   <ArrowRight className="size-4" aria-hidden />
+                </LinkButton>
+              ) : !activity.required ? (
+                <LinkButton to={`/misiones/${mission.code}#apoyo`} variant="secondary" size="sm">
+                  Volver a la exploración
                 </LinkButton>
               ) : (
                 <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="sm">
@@ -361,11 +363,11 @@ export function ActivityPage() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Link
-            to={`/misiones/${mission.code}/${activity.phase}`}
+            to={`/misiones/${mission.code}`}
             className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-bold text-slate-400 transition hover:bg-white/6 hover:text-white"
           >
             <ArrowLeft className="size-4" aria-hidden />
-            Volver a la misión
+            Volver a la sesión
           </Link>
           {previousActivity && (
             <Link
@@ -378,11 +380,14 @@ export function ActivityPage() {
             </Link>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <Chip tone="neutral">
+        <div className="flex flex-wrap items-center gap-2">
+          <Chip tone={activity.required ? 'gold' : 'neutral'}>
             <ListChecks className="size-3.5" aria-hidden />
-            {phase.label} · actividad {activity.order}
+            {activity.required
+              ? `Paso ${stepIndex + 1} de ${route.length} · Obligatoria`
+              : `Exploración opcional · ${stepIndex + 1} de ${route.length}`}
           </Chip>
+          <Chip tone="neutral">{phase.label}</Chip>
           {nextActivity && (
             <Link
               to={getActivityUrl(nextActivity)}
@@ -412,7 +417,7 @@ export function ActivityPage() {
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <Chip tone="mint">{meta.label}</Chip>
-              <Chip tone="neutral">{activity.required ? 'Obligatoria' : 'Optativa'}</Chip>
+              <Chip tone="neutral">{activity.required ? 'Del documento' : 'De apoyo'}</Chip>
               {completed ? (
                 <Chip tone="mint">
                   <CheckCircle2 className="size-3.5" aria-hidden />
@@ -524,16 +529,31 @@ export function ActivityPage() {
         )}
 
         <Link
-          to={`/misiones/${mission.code}/${activity.phase}`}
+          to={
+            activity.required
+              ? `/misiones/${mission.code}#ruta`
+              : `/misiones/${mission.code}#apoyo`
+          }
           className="text-xs font-bold text-slate-400 hover:text-mint-300 transition"
         >
-          {phase.label} · {currentIndex + 1} de {mission.activities.length}
+          {activity.required ? 'Ruta obligatoria' : 'Exploración opcional'} · {stepIndex + 1} de{' '}
+          {route.length}
         </Link>
 
         {nextActivity ? (
           <LinkButton to={getActivityUrl(nextActivity)} variant="secondary" size="sm">
             <span className="hidden sm:inline">Siguiente:</span> {nextActivity.title.length > 25 ? nextActivity.title.slice(0, 25) + '…' : nextActivity.title}
             <ArrowRight className="size-4" aria-hidden />
+          </LinkButton>
+        ) : !activity.required ? (
+          <LinkButton to={`/misiones/${mission.code}#apoyo`} variant="secondary" size="sm">
+            <ArrowLeft className="size-4" aria-hidden />
+            Volver a la exploración
+          </LinkButton>
+        ) : activity.type === 'quiz' ? (
+          <LinkButton to={`/misiones/${mission.code}`} variant="secondary" size="sm">
+            <ArrowLeft className="size-4" aria-hidden />
+            Volver a la sesión
           </LinkButton>
         ) : (
           <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="sm">

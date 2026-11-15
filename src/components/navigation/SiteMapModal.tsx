@@ -15,6 +15,7 @@ import {
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { SESSION_INFO } from '../../lib/curriculum';
 import { cn } from '../../lib/utils';
 import { ShinyText, SpotlightCard } from '../reactbits';
 
@@ -29,47 +30,26 @@ interface MissionNode {
   title: string;
   icon: string;
   color: string;
-  phases: Array<{ key: string; label: string }>;
+  links: Array<{ key: string; label: string; to: string }>;
 }
 
-const MISSIONS_MAP: MissionNode[] = [
-  {
-    code: 'm1',
-    order: 1,
-    title: 'El Ojo de Hooke y la Teoría Celular',
-    icon: '🔬',
-    color: '#58e6c5',
-    phases: [
-      { key: 'inicio', label: '1. Inicio (Video 360 y Lectura)' },
-      { key: 'desarrollo', label: '2. Desarrollo (Microscopio 3D y Cubo AR)' },
-      { key: 'cierre', label: '3. Cierre (Bitácora y Quiz M1)' }
+const MISSION_ICONS = ['🔬', '🏙️', '⚡'];
+const MISSION_COLORS = ['#58e6c5', '#38bdf8', '#fbbf24'];
+
+const MISSIONS_MAP: MissionNode[] = (['m1', 'm2', 'm3'] as const).map((code, index) => {
+  const info = SESSION_INFO[code];
+  return {
+    code,
+    order: info.session,
+    title: info.theme,
+    icon: MISSION_ICONS[index],
+    color: MISSION_COLORS[index],
+    links: [
+      { key: 'ruta', label: 'Ruta obligatoria (documento)', to: `/misiones/${code}#ruta` },
+      { key: 'apoyo', label: 'Exploración opcional', to: `/misiones/${code}#apoyo` }
     ]
-  },
-  {
-    code: 'm2',
-    order: 2,
-    title: 'La Ciudad Celular: Fábricas y Fronteras',
-    icon: '🏙️',
-    color: '#38bdf8',
-    phases: [
-      { key: 'inicio', label: '1. Inicio (Video 360 Ciudad Celular)' },
-      { key: 'desarrollo', label: '2. Desarrollo (Visor 3D y Organelos)' },
-      { key: 'cierre', label: '3. Cierre (Bitácora y Quiz M2)' }
-    ]
-  },
-  {
-    code: 'm3',
-    order: 3,
-    title: 'El Gran Equilibrio Celular: Ósmosis y Plasmólisis',
-    icon: '⚡',
-    color: '#fbbf24',
-    phases: [
-      { key: 'inicio', label: '1. Inicio (Misterio de la lechuga marchita)' },
-      { key: 'desarrollo', label: '2. Desarrollo (Plasmólisis 2D y Laboratorio)' },
-      { key: 'cierre', label: '3. Cierre (Infografía y Quiz M3)' }
-    ]
-  }
-];
+  };
+});
 
 export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
   const location = useLocation();
@@ -129,7 +109,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                     <ShinyText text="Mapa del Laboratorio 360 La Célula" speed={3} className="text-white" />
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Guía de orientación y salto rápido a cualquier estación o recurso de la plataforma.
+                    Guía de orientación y salto rápido a cualquier sesión o recurso de la plataforma.
                   </p>
                 </div>
               </div>
@@ -148,7 +128,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
               {/* Estación Central del Estudiante */}
               <div>
                 <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                  Estación Central de Aprendizaje
+                  Zona central de aprendizaje
                 </span>
                 <div className="mt-2.5 grid gap-3 sm:grid-cols-2">
                   <Link
@@ -167,14 +147,14 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                       </span>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-bold text-white">Mapa de Misiones</h3>
+                          <h3 className="text-sm font-bold text-white">Mapa de sesiones</h3>
                           {isActive('/estudiante', true) && (
                             <span className="rounded-full bg-mint-400/20 px-2 py-0.5 text-[10px] font-extrabold text-mint-300">
                               📍 Estás aquí
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-400">Ruta principal con las 3 misiones celulares</p>
+                        <p className="text-xs text-slate-400">Ruta principal con las 3 sesiones de indagación</p>
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-white" />
@@ -214,7 +194,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
               {/* Las 3 Misiones de Indagación */}
               <div className="space-y-3">
                 <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                  Ruta de Indagación Científica (Misiones 1, 2 y 3)
+                  Ruta de Indagación Científica (Sesiones 1, 2 y 3)
                 </span>
 
                 <div className="grid gap-4 md:grid-cols-3">
@@ -239,7 +219,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                               className="rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider"
                               style={{ background: `${m.color}22`, color: m.color }}
                             >
-                              Misión {m.order}
+                              Sesión {m.order}
                             </span>
                           </div>
 
@@ -254,32 +234,24 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                             {isMissionActive && (
                               <p className="mt-1 flex items-center gap-1 text-[11px] font-extrabold text-mint-300">
                                 <MapPin className="size-3" />
-                                Misión actual
+                                Sesión actual
                               </p>
                             )}
                           </div>
 
-                          {/* Fases */}
+                          {/* Contenido de la sesión */}
                           <div className="space-y-1 pt-2 border-t border-white/8 text-xs">
-                            {m.phases.map((ph) => {
-                              const isPhaseActive = isActive(`/misiones/${m.code}/${ph.key}`);
-                              return (
-                                <Link
-                                  key={ph.key}
-                                  to={`/misiones/${m.code}/${ph.key}`}
-                                  onClick={onClose}
-                                  className={cn(
-                                    'flex items-center justify-between rounded-lg px-2 py-1 text-[11px] transition',
-                                    isPhaseActive
-                                      ? 'bg-mint-400/15 font-bold text-mint-300'
-                                      : 'text-slate-400 hover:bg-white/6 hover:text-white'
-                                  )}
-                                >
-                                  <span>{ph.label}</span>
-                                  {isPhaseActive && <span className="size-1.5 rounded-full bg-mint-400" />}
-                                </Link>
-                              );
-                            })}
+                            {m.links.map((link) => (
+                              <Link
+                                key={link.key}
+                                to={link.to}
+                                onClick={onClose}
+                                className="flex items-center justify-between rounded-lg px-2 py-1 text-[11px] text-slate-400 transition hover:bg-white/6 hover:text-white"
+                              >
+                                <span>{link.label}</span>
+                                <ChevronRight className="size-3 text-slate-600" aria-hidden />
+                              </Link>
+                            ))}
                           </div>
                         </div>
 
@@ -298,7 +270,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                             onClick={onClose}
                             className="font-extrabold text-slate-300 hover:text-white text-[11px]"
                           >
-                            Abrir estación →
+                            Abrir sesión →
                           </Link>
                         </div>
                       </SpotlightCard>

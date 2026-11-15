@@ -21,18 +21,18 @@ import { SplashCursor } from '../reactbits';
 
 const navByRole = {
   student: [
-    { to: '/estudiante', label: 'Misiones', icon: Compass },
+    { to: '/estudiante', label: 'Sesiones', icon: Compass },
     { to: '/logros', label: 'Mis logros', icon: Trophy }
   ],
   teacher: [
     { to: '/docente', label: 'Panel', icon: LayoutDashboard },
     { to: '/docente/evidencias', label: 'Evidencias', icon: ClipboardCheck },
     { to: '/docente/reportes', label: 'Reportes', icon: ChartNoAxesColumnIncreasing },
-    { to: '/docente/misiones', label: 'Misiones', icon: BookOpenCheck }
+    { to: '/docente/misiones', label: 'Sesiones', icon: BookOpenCheck }
   ],
   admin: [
     { to: '/admin', label: 'Administración', icon: ShieldCheck },
-    { to: '/estudiante', label: 'Misiones', icon: Compass },
+    { to: '/estudiante', label: 'Sesiones', icon: Compass },
     { to: '/logros', label: 'Logros', icon: Trophy },
     { to: '/docente', label: 'Aulas', icon: LayoutDashboard },
     { to: '/docente/evidencias', label: 'Evidencias', icon: ClipboardCheck },

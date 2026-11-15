@@ -6,17 +6,12 @@ import {
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { roleHome, useAuth } from '../../contexts/AuthContext';
+import { sessionInfo } from '../../lib/curriculum';
 import { cn } from '../../lib/utils';
 
 interface BreadcrumbBarProps {
   onOpenSiteMap: () => void;
 }
-
-const MISSION_TITLES: Record<string, string> = {
-  m1: 'Misión 1: El Ojo de Hooke',
-  m2: 'Misión 2: La Ciudad Celular',
-  m3: 'Misión 3: El Gran Equilibrio Celular'
-};
 
 const PHASE_LABELS: Record<string, string> = {
   inicio: 'Fase Inicio',
@@ -71,7 +66,7 @@ export function BreadcrumbBar({ onOpenSiteMap }: BreadcrumbBarProps) {
   ];
 
   if (parts[0] === 'estudiante') {
-    crumbs.push({ label: 'Mapa de Misiones' });
+    crumbs.push({ label: 'Mapa de sesiones' });
   } else if (parts[0] === 'logros') {
     crumbs.push({ label: 'Vitrina de Logros' });
   } else if (parts[0] === 'admin') {
@@ -85,13 +80,16 @@ export function BreadcrumbBar({ onOpenSiteMap }: BreadcrumbBarProps) {
       crumbs.push({ label: 'Reportes de Aula' });
     } else if (parts[1] === 'misiones') {
       crumbs.push({ label: 'Panel Docente', to: '/docente' });
-      crumbs.push({ label: 'Catálogo de Misiones' });
+      crumbs.push({ label: 'Catálogo de sesiones' });
     } else {
       crumbs.push({ label: 'Panel Docente (Aulas)' });
     }
   } else if (parts[0] === 'misiones' && parts[1]) {
     const missionCode = parts[1].toLowerCase();
-    const missionName = MISSION_TITLES[missionCode] ?? `Misión ${missionCode.toUpperCase()}`;
+    const info = sessionInfo(missionCode);
+    const missionName = info
+      ? `Sesión ${info.session} · ${info.theme}`
+      : `Sesión ${missionCode.toUpperCase()}`;
     crumbs.push({ label: missionName, to: `/misiones/${missionCode}` });
 
     if (parts[2] === 'quiz') {
