@@ -323,7 +323,7 @@ export function ActivityPage() {
               Completar actividad (+{activity.xp} XP)
             </Button>
             {value < min ? (
-              <span className="text-xs text-slate-500">Te falta {Math.ceil(min - value)} % de recorrido.</span>
+              <span className="text-xs text-slate-400">Te falta {Math.ceil(min - value)} % de recorrido.</span>
             ) : (
               <span className="text-xs text-mint-300">¡Listo para cerrar la actividad!</span>
             )}
@@ -349,7 +349,7 @@ export function ActivityPage() {
               <CheckCircle2 className="size-4" aria-hidden />
               Completar actividad (+{activity.xp} XP)
             </Button>
-            {value < min ? <span className="text-xs text-slate-500">Explora {min - value} cara(s) más.</span> : null}
+            {value < min ? <span className="text-xs text-slate-400">Explora {min - value} cara(s) más.</span> : null}
           </div>
         </Card>
       );
@@ -424,7 +424,7 @@ export function ActivityPage() {
                   Completada
                 </Chip>
               ) : null}
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                 +{activity.xp} XP
               </span>
             </div>

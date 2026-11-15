@@ -89,19 +89,19 @@ export function StudentHome() {
             </div>
             <AnimatedList className="mt-5 grid gap-2 sm:grid-cols-3" stagger={0.06}>
               <div className="rounded-2xl border border-white/8 bg-ink-950/35 px-3 py-2.5">
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Sesiones completadas</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Sesiones completadas</p>
                 <p className="font-display text-xl font-bold text-white">
-                  {completed}<span className="text-sm text-slate-500"> / {missions.length}</span>
+                  {completed}<span className="text-sm text-slate-400"> / {missions.length}</span>
                 </p>
               </div>
               <div className="rounded-2xl border border-white/8 bg-ink-950/35 px-3 py-2.5">
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Insignias</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Insignias</p>
                 <p className="font-display text-xl font-bold text-white">
-                  {progress.badges.length}<span className="text-sm text-slate-500"> / 5</span>
+                  {progress.badges.length}<span className="text-sm text-slate-400"> / 5</span>
                 </p>
               </div>
               <div className="rounded-2xl border border-white/8 bg-ink-950/35 px-3 py-2.5">
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Evidencias aprobadas</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Evidencias aprobadas</p>
                 <p className="font-display text-xl font-bold text-white">{approved}</p>
               </div>
             </AnimatedList>
@@ -114,7 +114,7 @@ export function StudentHome() {
             <div className="glass-soft w-full rounded-2xl p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Nivel explorador</p>
+                  <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Nivel explorador</p>
                   <p className="font-display text-2xl font-extrabold text-white">{progress.level}</p>
                 </div>
                 <ProgressRing value={levelProgress} size={64} stroke={6} color="#58e6c5">
@@ -128,7 +128,7 @@ export function StudentHome() {
                 color="#58e6c5"
                 label={`${progress.totalXP} XP en total`}
               />
-              <p className="mt-1 text-[10px] text-slate-500">{progress.xpToNextLevel} XP para el siguiente nivel</p>
+              <p className="mt-1 text-[11px] text-slate-400">{progress.xpToNextLevel} XP para el siguiente nivel</p>
             </div>
           </div>
         </div>
@@ -200,7 +200,7 @@ export function StudentHome() {
                   <span className="truncate text-xs font-bold text-slate-300">
                     {typeof item.missionId === 'object' ? item.missionId.title : 'Evidencia'}
                   </span>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                     {item.status === 'approved' ? 'Aprobada' : item.status === 'submitted' ? 'En revisión' : item.status === 'changes_requested' ? 'Ajustes' : 'Borrador'}
                   </span>
                 </div>
@@ -250,7 +250,7 @@ export function StudentHome() {
         </div>
       </section>
 
-      <div className="flex items-center justify-center gap-2 text-xs font-bold text-slate-500">
+      <div className="flex items-center justify-center gap-2 text-xs font-bold text-slate-400">
         <CheckCircle2 className="size-4 text-mint-300" aria-hidden />
         Tu progreso se guarda automáticamente en el Laboratorio.
         <Button variant="ghost" size="sm" onClick={() => progressQuery.refetch()} className="ml-1">

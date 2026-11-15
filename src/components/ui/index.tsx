@@ -28,14 +28,14 @@ type ButtonSize = 'sm' | 'md' | 'lg';
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-mint-400 text-ink-950 hover:bg-mint-300 shadow-[0_12px_30px_-10px_rgba(88,230,197,0.7)] font-extrabold',
+    'bg-mint-400 text-ink-950 hover:bg-mint-300 shadow-[0_12px_28px_-14px_rgba(0,0,0,0.9)] font-extrabold',
   secondary:
     'bg-white/8 text-white border border-white/14 hover:bg-white/14 hover:border-white/25 font-bold',
   ghost: 'bg-transparent text-slate-200 hover:bg-white/8 font-bold',
   danger:
-    'bg-rose-500/90 text-white hover:bg-rose-500 shadow-[0_12px_30px_-12px_rgba(244,63,94,0.7)] font-extrabold',
+    'bg-rose-500/90 text-white hover:bg-rose-500 shadow-[0_12px_28px_-14px_rgba(0,0,0,0.9)] font-extrabold',
   gold:
-    'bg-sun-glow text-ink-950 hover:bg-amber-300 shadow-[0_12px_30px_-10px_rgba(251,191,36,0.65)] font-extrabold',
+    'bg-sun-glow text-ink-950 hover:bg-amber-300 shadow-[0_12px_28px_-14px_rgba(0,0,0,0.9)] font-extrabold',
   soft: 'bg-mint-400/12 text-mint-300 border border-mint-400/25 hover:bg-mint-400/20 font-bold'
 };
 
@@ -117,8 +117,14 @@ export function SectionHeading({
   return (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-2xl space-y-1.5">
-        {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
-        <h2 className="text-2xl font-bold text-white sm:text-3xl">{title}</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          {eyebrow ? (
+            <span className="inline-flex items-center rounded-full border border-mint-400/25 bg-mint-400/10 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-mint-300">
+              {eyebrow}
+            </span>
+          ) : null}
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">{title}</h2>
+        </div>
         {description ? <p className="text-sm leading-relaxed text-slate-400 sm:text-base">{description}</p> : null}
       </div>
       {action}
@@ -160,8 +166,7 @@ export function ProgressBar({
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${percent}%`,
-            background: `linear-gradient(90deg, ${color}bb, ${color})`,
-            boxShadow: `0 0 18px ${color}66`
+            background: `linear-gradient(90deg, ${color}bb, ${color})`
           }}
         />
       </div>
@@ -202,14 +207,14 @@ export function ProgressRing({
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.8s ease', filter: `drop-shadow(0 0 6px ${color}66)` }}
+          style={{ transition: 'stroke-dashoffset 0.8s ease' }}
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center text-center">
         {children ?? (
           <span className="font-display text-xl font-bold text-white">
             {Math.round(percent)}%
-            {label ? <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</span> : null}
+            {label ? <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</span> : null}
           </span>
         )}
       </div>

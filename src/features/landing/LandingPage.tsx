@@ -6,7 +6,6 @@ import { CitoMascot } from '../../components/Cito';
 import { LinkButton } from '../../components/ui';
 import {
   AnimatedList,
-  Aurora,
   BlurText,
   Particles,
   ShinyText,
@@ -72,7 +71,7 @@ export function LandingPage() {
             <span className="block font-display text-lg font-extrabold text-white">
               Laboratorio <span className="text-mint-300">360</span>
             </span>
-            <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+            <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
               La Célula
             </span>
           </span>
@@ -125,23 +124,22 @@ export function LandingPage() {
             ].map(([value, label]) => (
               <div key={label} className="glass-soft rounded-2xl px-4 py-3">
                 <dt className="font-display text-2xl font-extrabold text-mint-300">{value}</dt>
-                <dd className="text-xs font-bold uppercase tracking-wider text-slate-500">{label}</dd>
+                <dd className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</dd>
               </div>
             ))}
           </dl>
         </div>
 
         <div className="relative mx-auto w-full max-w-md">
-          <div className="absolute inset-8 rounded-full bg-mint-400/20 blur-3xl" aria-hidden />
           <div className="relative rounded-[2.5rem] border border-white/10 bg-gradient-to-b from-white/8 to-white/2 p-6 shadow-2xl backdrop-blur-xl">
-            <div className="relative mx-auto grid aspect-square max-w-sm place-items-center rounded-[2rem] bg-ink-900/70 p-6">
+            <div className="relative mx-auto grid aspect-square max-w-sm place-items-center p-6">
               <div className="orbit-ring" aria-hidden />
               <div className="orbit-ring scale-75 opacity-70" aria-hidden />
               <div className="cell-blob left-8 top-12 h-24 w-28 bg-mint-400/30" aria-hidden />
               <div className="cell-blob bottom-10 right-8 h-20 w-24 bg-sky-400/30" aria-hidden style={{ animationDelay: '-4s' }} />
               <CitoMascot size={230} mood="celebrating" className="animate-float" />
             </div>
-            <div className="mt-4 rounded-2xl border border-white/8 bg-ink-950/60 p-4">
+            <div className="mt-4 border-t border-white/10 pt-4">
               <p className="text-xs font-extrabold uppercase tracking-wider text-mint-300">Cito dice…</p>
               <p className="mt-1 text-sm font-semibold leading-relaxed text-slate-200">
                 “¡Hola, explorador! Hoy vamos a descubrir de qué está hecha la vida. Trae tu curiosidad y tu
@@ -154,8 +152,7 @@ export function LandingPage() {
 
       <section id="misiones" className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
         <div className="mb-8 max-w-2xl">
-          <p className="eyebrow">El mapa del Laboratorio</p>
-          <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Tres estaciones, una gran pregunta</h2>
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">Tres estaciones, una gran pregunta</h2>
           <p className="mt-2 text-slate-400">
             Cada misión combina observación, manipulación y argumentación. Completa la anterior para abrir la
             siguiente.
@@ -179,7 +176,7 @@ export function LandingPage() {
                   <span className="grid size-14 place-items-center rounded-2xl text-3xl" style={{ background: `${mission.accent}1f` }}>
                     {mission.icon}
                   </span>
-                  <span className="font-display text-4xl font-extrabold text-white/10">0{index + 1}</span>
+                  <span className="font-display text-4xl font-extrabold text-white/40" aria-hidden>0{index + 1}</span>
                 </div>
                 <h3 className="mt-4 text-xl font-bold text-white">{mission.title}</h3>
                 <p className="mt-1 text-sm font-semibold" style={{ color: mission.accent }}>
@@ -194,8 +191,7 @@ export function LandingPage() {
 
       <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
         <div className="mb-8 max-w-2xl">
-          <p className="eyebrow">Un laboratorio completo</p>
-          <h2 className="mt-2 text-3xl font-bold text-white sm:text-4xl">Aprender haciendo, con evidencia</h2>
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">Aprender haciendo, con evidencia</h2>
         </div>
         <AnimatedList className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" stagger={0.06}>
           {features.map((feature) => (
@@ -210,10 +206,8 @@ export function LandingPage() {
 
       <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6">
         <div className="relative overflow-hidden grid items-center gap-6 rounded-[2rem] border border-white/10 bg-gradient-to-br from-mint-400/12 via-sky-400/8 to-violet-400/10 p-6 sm:p-10 lg:grid-cols-[1fr_1fr]">
-          <Aurora className="rounded-[2rem]" opacity={0.25} />
           <div>
-            <p className="eyebrow">Para docentes</p>
-            <h2 className="mt-2 text-3xl font-bold text-white">Tu aula, en una sola mirada</h2>
+            <h2 className="text-3xl font-bold text-white">Tu aula, en una sola mirada</h2>
             <p className="mt-3 max-w-xl text-slate-300">
               Consulta el avance de cada estudiante, revisa evidencias con rúbrica, identifica quién necesita
               acompañamiento y descarga un reporte para tu consejo de aula.
@@ -230,7 +224,7 @@ export function LandingPage() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {BADGE_CATALOG.slice(0, 4).map((badge: BadgeInfo) => (
-              <div key={badge.code} className="rounded-2xl border border-white/10 bg-ink-950/45 p-4">
+              <div key={badge.code} className="border-l-2 border-white/12 py-1 pl-3">
                 <span className="text-2xl" aria-hidden>{badge.icon}</span>
                 <p className="mt-2 text-sm font-extrabold text-white">{badge.name}</p>
                 <p className="mt-1 text-xs leading-relaxed text-slate-400">{badge.description}</p>
@@ -241,7 +235,7 @@ export function LandingPage() {
       </section>
 
       <footer className="border-t border-white/8 px-4 py-8 sm:px-6">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
           <p>Laboratorio 360 La Célula · Plataforma de indagación científica escolar · v1.0.0</p>
           <p>Diseñado para 5.º de primaria · WCAG 2.1 AA · Datos de menores protegidos</p>
         </div>

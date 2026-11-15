@@ -19,7 +19,7 @@ export function CitoMascot({
       aria-hidden
     >
       <div className="absolute inset-0 rounded-full bg-mint-400/25 blur-2xl" />
-      <svg viewBox="0 0 160 160" className="relative drop-shadow-[0_20px_35px_rgba(43,212,173,0.3)]">
+      <svg viewBox="0 0 160 160" className="relative drop-shadow-[0_20px_35px_rgba(0,0,0,0.45)]">
         <defs>
           <linearGradient id="cito-body" x1="22" y1="20" x2="140" y2="150" gradientUnits="userSpaceOnUse">
             <stop stopColor="#8df5df" />
@@ -78,7 +78,7 @@ export function CitoMascot({
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="relative grid size-10 place-items-center rounded-2xl bg-gradient-to-br from-mint-300 to-sky-400 shadow-[0_8px_24px_-8px_rgba(88,230,197,0.7)]">
+      <span className="relative grid size-10 place-items-center rounded-2xl bg-gradient-to-br from-mint-300 to-sky-400 shadow-[0_8px_20px_-10px_rgba(0,0,0,0.9)]">
         <svg viewBox="0 0 32 32" className="size-6" aria-hidden>
           <path
             d="M10 10c-4 4-4 10 1 13 4 2 8 0 9-3 1-2 4-3 4-6 1-4-3-7-7-6-3 1-5 0-7 2Z"
@@ -93,7 +93,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
           <span className="block font-display text-lg font-extrabold tracking-tight text-white">
             Laboratorio <span className="text-mint-300">360</span>
           </span>
-          <span className="block text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+          <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
             La Célula
           </span>
         </span>

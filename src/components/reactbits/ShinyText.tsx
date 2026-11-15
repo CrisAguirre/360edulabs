@@ -1,7 +1,10 @@
 /**
  * ShinyText — React Bits (reactbits.dev)
  *
- * Metallic light-sweep animation flowing continuously across text elements.
+ * Texto destacado con color sólido. Se conserva el nombre y la API del
+ * componente original para no tocar a sus consumidores, pero se evita el
+ * degradado con `background-clip: text` porque reduce la legibilidad y el
+ * detector de diseño lo marca como anti-patrón.
  */
 import { cn } from '../../lib/utils';
 
@@ -12,38 +15,9 @@ export interface ShinyTextProps {
   speed?: number;
 }
 
-export function ShinyText({
-  text,
-  className,
-  disabled = false,
-  speed = 3
-}: ShinyTextProps) {
+export function ShinyText({ text, className }: ShinyTextProps) {
   return (
-    <span
-      className={cn(
-        'relative inline-block font-bold text-slate-300',
-        disabled ? '' : 'shine-animate',
-        className
-      )}
-      style={
-        disabled
-          ? undefined
-          : {
-              backgroundImage:
-                'linear-gradient(120deg, rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 65%)',
-              backgroundSize: '200% 100%',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              animation: `shine-sweep ${speed}s linear infinite`
-            }
-      }
-    >
-      <style>{`
-        @keyframes shine-sweep {
-          0% { background-position: 150% 0; }
-          100% { background-position: -50% 0; }
-        }
-      `}</style>
+    <span className={cn('inline-block font-bold text-slate-300', className)}>
       {text}
     </span>
   );

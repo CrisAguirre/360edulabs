@@ -220,9 +220,13 @@ export function MissionDetailPage() {
                 <Clock3 className="size-3.5 text-slate-400" aria-hidden />
                 {mission.estimatedMinutes} min estimados
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                <Target className="size-3.5 text-mint-300" aria-hidden />
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
+                <Target className="size-3.5 text-amber-300" aria-hidden />
                 {required.length} pasos obligatorios
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                <Sparkles className="size-3.5 text-mint-300" aria-hidden />
+                {support.length} actividades opcionales
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
                 <Star className="size-3.5 text-amber-300" aria-hidden />
@@ -267,7 +271,7 @@ export function MissionDetailPage() {
                 {badge?.icon ?? '🏅'}
               </span>
               <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Insignia en juego</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Insignia en juego</p>
                 <h3 className="font-display text-base font-extrabold text-white">{badge?.name ?? 'Insignia de sesión'}</h3>
                 <p className="mt-1 line-clamp-2 text-xs text-slate-400">{badge?.description}</p>
                 <p className="mt-1 text-[11px] font-bold text-mint-300">+{badge?.xpBonus ?? 50} XP al conquistar</p>
@@ -275,7 +279,7 @@ export function MissionDetailPage() {
             </div>
 
             <div className="w-full max-w-sm rounded-2xl border border-white/8 bg-ink-950/40 p-4">
-              <p className="mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+              <p className="mb-2 text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                 Avance de la ruta obligatoria
               </p>
               <ProgressBar
@@ -298,7 +302,7 @@ export function MissionDetailPage() {
         <ul className="mt-3 grid gap-2 sm:grid-cols-2">
           {mission.objectives.map((objective, index) => (
             <li key={objective} className="flex items-start gap-2.5 text-xs leading-relaxed text-slate-300">
-              <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-lg bg-mint-400/12 text-[10px] font-extrabold text-mint-300">
+              <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-lg bg-mint-400/12 text-[11px] font-extrabold text-mint-300">
                 {index + 1}
               </span>
               {objective}
@@ -465,7 +469,7 @@ function RouteStep({
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                   Paso {index + 1} · {meta.label}
                 </span>
                 <Chip tone="neutral">{phase.label}</Chip>
@@ -487,7 +491,7 @@ function RouteStep({
           </div>
 
           <div className="flex shrink-0 flex-col items-end gap-1.5">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
               +{activity.xp} XP
             </span>
             <LinkButton
@@ -529,13 +533,13 @@ function SupportCard({ activity, missionCode }: { activity: Activity; missionCod
             Opcional
           </Chip>
         </div>
-        <p className="mt-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">{meta.label}</p>
+        <p className="mt-3 text-[11px] font-extrabold uppercase tracking-wider text-slate-400">{meta.label}</p>
         <h3 className="mt-0.5 font-display text-sm font-bold leading-snug text-white">{activity.title}</h3>
         <p className="mt-1.5 line-clamp-2 text-[11px] leading-relaxed text-slate-400">{activity.instructions}</p>
       </div>
 
       <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-2.5">
-        <span className="text-[10px] font-bold text-slate-500">{activity.xp} XP de apoyo</span>
+        <span className="text-[11px] font-bold text-slate-400">{activity.xp} XP de apoyo</span>
         <Link
           to={activityUrl(missionCode, activity)}
           className="inline-flex items-center gap-1 text-xs font-extrabold text-mint-300 transition hover:text-mint-200"

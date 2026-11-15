@@ -44,10 +44,7 @@
     color: #eef4ff;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    background-image:
-      radial-gradient(900px 520px at 78% -10%, rgb(43 212 173 / 0.16), transparent 65%),
-      radial-gradient(760px 460px at 8% 8%, rgb(125 211 252 / 0.12), transparent 60%),
-      radial-gradient(700px 520px at 50% 110%, rgb(167 139 250 / 0.09), transparent 65%);
+    background-image: linear-gradient(180deg, #070c1e 0%, #050817 55%, #04060f 100%);
     background-attachment: fixed;
   }
 
@@ -111,7 +108,6 @@
 
   .text-gradient {
     color: #8df5df;
-    text-shadow: 0 0 24px rgba(141, 245, 223, 0.35);
   }
 
   .eyebrow {
@@ -265,7 +261,7 @@
     border-radius: 9999px;
     background: #f8fafc;
     border: 4px solid #2bd4ad;
-    box-shadow: 0 4px 18px rgb(43 212 173 / 0.5);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.45);
   }
 
   .range-glow::-moz-range-thumb {

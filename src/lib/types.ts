@@ -22,6 +22,7 @@ export interface ProgressView {
   bestQuizPercentage: number;
   completedActivities: number;
   totalActivities: number;
+  optionalActivities: number;
   startedAt?: string | null;
   completedAt?: string | null;
 }

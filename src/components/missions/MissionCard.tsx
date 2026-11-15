@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, Clock3, Flame, LockKeyhole, Sparkles, Star, Trophy } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Clock3, Flame, LockKeyhole, Sparkles, Star, Target, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { MissionSummary } from '../../lib/types';
 import { badgeForCode } from '../../lib/badges';
@@ -38,14 +38,14 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
         </span>
         <div className="flex flex-col items-end gap-1.5">
           <MissionStatusBadge status={mission.progress.status} />
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
+          <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
             Sesión {info?.session ?? index + 1}
           </span>
         </div>
       </div>
 
       <div className="relative mt-4 flex-1">
-        <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500">
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">
           {info?.theme ?? 'Sesión de indagación'}
         </p>
         <h3 className="mt-0.5 text-xl font-bold leading-tight text-white">{mission.title}</h3>
@@ -55,13 +55,23 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
         <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-400">{mission.description}</p>
 
         <div className="mt-4 space-y-2">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-amber-200">
+              <Target className="size-3" aria-hidden />
+              {mission.progress.totalActivities} obligatorios
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-slate-400">
+              <Sparkles className="size-3 text-mint-300" aria-hidden />
+              {mission.progress.optionalActivities} opcionales
+            </span>
+          </div>
           <ProgressBar
             value={mission.progress.completedActivities}
             max={mission.progress.totalActivities}
             color={mission.theme.accent}
             label={`${mission.progress.completedActivities} de ${mission.progress.totalActivities} pasos obligatorios`}
           />
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold text-slate-500">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold text-slate-400">
             <span className="inline-flex items-center gap-1">
               <Clock3 className="size-3.5" aria-hidden />
               {mission.estimatedMinutes} min
