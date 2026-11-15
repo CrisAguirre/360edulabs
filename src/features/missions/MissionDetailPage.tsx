@@ -9,10 +9,10 @@ import {
   Trophy,
   CheckCircle2
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar } from '../../components/ui';
-import { useAuth } from '../../contexts/AuthContext';
+import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { ACTIVITY_META, PHASE_META } from '../../lib/activityMeta';
 import { badgeForCode } from '../../lib/badges';
 import { useMission, useStartMission } from '../../lib/queries';
@@ -28,8 +28,11 @@ export function MissionDetailPage() {
   const startMission = useStartMission(codigo ?? '');
   const validPhase =
     paramPhase === 'inicio' || paramPhase === 'desarrollo' || paramPhase === 'cierre' ? paramPhase : null;
-  const [internalPhase, setInternalPhase] = useState<PhaseKey>('inicio');
-  const selectedPhase: PhaseKey = validPhase ?? internalPhase;
+  const selectedPhase: PhaseKey = validPhase ?? 'inicio';
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [codigo, paramPhase]);
 
   if (missionQuery.isLoading) return <LoadingBlock message="Cargando estación de la misión…" />;
   if (missionQuery.isError || !missionQuery.data) {
@@ -55,7 +58,7 @@ export function MissionDetailPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
           <Link
-            to="/estudiante"
+            to={roleHome(user?.role)}
             className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-bold text-slate-400 transition hover:bg-white/6 hover:text-white"
           >
             <ArrowLeft className="size-4" aria-hidden />
@@ -85,7 +88,7 @@ export function MissionDetailPage() {
               Ir a la Misión {mission.order - 1}
               <ArrowRight className="size-5" aria-hidden />
             </LinkButton>
-            <LinkButton to="/estudiante" variant="secondary" size="lg">
+            <LinkButton to={roleHome(user?.role)} variant="secondary" size="lg">
               Volver al mapa de misiones
             </LinkButton>
           </div>
@@ -117,7 +120,7 @@ export function MissionDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <Link
-          to="/estudiante"
+          to={roleHome(user?.role)}
           className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-bold text-slate-400 transition hover:bg-white/6 hover:text-white"
         >
           <ArrowLeft className="size-4" aria-hidden />
@@ -283,7 +286,6 @@ export function MissionDetailPage() {
                 key={phaseKey}
                 type="button"
                 onClick={() => {
-                  setInternalPhase(phaseKey);
                   navigate(`/misiones/${mission.code}/${phaseKey}`, { replace: true });
                 }}
                 className={cn(

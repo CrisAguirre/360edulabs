@@ -78,11 +78,19 @@ export function ActivityPage() {
   }
   if (!activity) {
     return (
-      <ErrorBlock
-        title="Actividad no encontrada"
-        message="Esta actividad no existe en la misión o fue movida."
-        onRetry={() => missionQuery.refetch()}
-      />
+      <div className="space-y-4">
+        <ErrorBlock
+          title="Actividad no encontrada"
+          message="Esta actividad no existe en la misión o fue movida."
+          onRetry={() => missionQuery.refetch()}
+        />
+        <div className="text-center">
+          <LinkButton to={`/misiones/${codigo}`} variant="primary" size="md">
+            <ArrowLeft className="size-4" aria-hidden />
+            Volver a la estación de la misión
+          </LinkButton>
+        </div>
+      </div>
     );
   }
 

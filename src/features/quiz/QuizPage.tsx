@@ -12,6 +12,7 @@ import { Link, useParams } from 'react-router-dom';
 import { CitoMascot } from '../../components/Cito';
 import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
+import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { ApiError } from '../../lib/api';
 import { celebrate } from '../../lib/celebrate';
 import { useAttempts, useMission, useQuiz, useStartQuiz, useSubmitQuiz } from '../../lib/queries';
@@ -21,6 +22,7 @@ import { AnimatedList, Aurora, ClickSpark, ShinyText, SpotlightCard } from '../.
 
 export function QuizPage() {
   const { codigo } = useParams<{ codigo: string }>();
+  const { user } = useAuth();
   const toast = useToast();
 
   const missionQuery = useMission(codigo);
@@ -200,7 +202,7 @@ export function QuizPage() {
                     Volver a la misión
                   </LinkButton>
 
-                  <LinkButton to="/estudiante" variant="ghost" size="lg">
+                  <LinkButton to={roleHome(user?.role)} variant="ghost" size="lg">
                     Volver al mapa
                   </LinkButton>
 
@@ -320,7 +322,7 @@ export function QuizPage() {
                     <ArrowRight className="size-4" aria-hidden />
                   </LinkButton>
                 ) : null}
-                <LinkButton to="/estudiante" variant="ghost" size="md">
+                <LinkButton to={roleHome(user?.role)} variant="ghost" size="md">
                   Volver al mapa
                 </LinkButton>
               </div>
@@ -342,6 +344,19 @@ export function QuizPage() {
                 <Chip tone="neutral">
                   Respondidas: {answeredCount}/{quiz.questions.length}
                 </Chip>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm('¿Deseas salir del examen? Tu progreso actual se pausará y podrás volver a intentarlo cuando lo desees.')) {
+                      setAttemptId(null);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-bold text-slate-300 transition hover:bg-white/12 hover:text-white"
+                  title="Pausar el examen y salir"
+                >
+                  <ArrowLeft className="size-3.5" aria-hidden />
+                  Salir
+                </button>
               </div>
             </div>
             <ProgressBar
@@ -620,7 +635,7 @@ export function QuizPage() {
                   <ArrowRight className="size-4" aria-hidden />
                 </LinkButton>
               ) : null}
-              <LinkButton to="/estudiante" variant="ghost" size="md">
+              <LinkButton to={roleHome(user?.role)} variant="ghost" size="md">
                 Volver al mapa
               </LinkButton>
             </div>

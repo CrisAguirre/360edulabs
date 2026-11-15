@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { ToastProvider } from './components/ui/Toast';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, roleHome, useAuth } from './contexts/AuthContext';
 import { AdminPage } from './features/admin/AdminPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { LandingPage } from './features/landing/LandingPage';
@@ -16,6 +16,12 @@ import { TeacherDashboard } from './features/teacher/TeacherDashboard';
 import { TeacherEvidencePage } from './features/teacher/TeacherEvidencePage';
 import { TeacherReportsPage } from './features/teacher/TeacherReportsPage';
 import { queryClient } from './lib/queryClient';
+
+function NotFoundRedirect() {
+  const { user, status } = useAuth();
+  if (status === 'loading') return null;
+  return <Navigate to={user ? roleHome(user.role) : '/'} replace />;
+}
 
 export function App() {
   return (
@@ -55,8 +61,8 @@ export function App() {
                 </Route>
               </Route>
 
-              {/* 404 Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* 404 Resilient Fallback */}
+              <Route path="*" element={<NotFoundRedirect />} />
             </Routes>
           </BrowserRouter>
         </ToastProvider>
