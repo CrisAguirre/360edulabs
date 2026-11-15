@@ -1,4 +1,18 @@
-import { BookOpenCheck, ChevronDown, ChevronUp, FlaskConical, Lightbulb, Microscope, Quote, Sparkles, Star } from 'lucide-react';
+import {
+  BookOpenCheck,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  FileText,
+  FlaskConical,
+  HelpCircle,
+  Lightbulb,
+  Microscope,
+  Play,
+  Quote,
+  Sparkles,
+  Star
+} from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Card, Chip } from '../../components/ui';
 import type { ActivityRuntimeProps } from './types';
@@ -284,6 +298,87 @@ export function ReadingPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">{content.intro as string}</p>
         </div>
       </header>
+
+      {/* ── Pregunta motivadora / obligatoria de la sesión ── */}
+      {content.mandatoryQuestion ? (
+        <div className="flex items-start gap-3.5 rounded-2xl border border-amber-400/35 bg-gradient-to-r from-amber-400/12 to-amber-500/5 p-4 shadow-lg sm:p-5">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-400/20 text-amber-300">
+            <HelpCircle className="size-5" aria-hidden />
+          </span>
+          <div className="space-y-1">
+            <p className="text-[11px] font-extrabold uppercase tracking-wider text-amber-300">
+              Pregunta de Indagación Obligatoria (Estrategia MEN)
+            </p>
+            <p className="text-sm font-bold text-white leading-relaxed sm:text-base">
+              {content.mandatoryQuestion as string}
+            </p>
+            <p className="text-xs text-slate-300">
+              Ten presente esta pregunta durante la lectura y el video. Al final formularás tus argumentos en la bitácora de evidencias.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {/* ── Documento Oficial en Google Docs ───────────────── */}
+      {content.docUrl ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-sky-400/30 bg-sky-400/10 p-4">
+          <div className="flex items-center gap-3">
+            <span className="grid size-10 place-items-center rounded-xl bg-sky-400/20 text-sky-200">
+              <FileText className="size-5" aria-hidden />
+            </span>
+            <div>
+              <h4 className="text-sm font-bold text-white">Documento Oficial de Lectura (Google Docs)</h4>
+              <p className="text-xs text-slate-300">Texto completo y actividades curriculares compartidas por la docente.</p>
+            </div>
+          </div>
+          <a
+            href={content.docUrl as string}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-10 items-center gap-1.5 rounded-xl bg-sky-400 px-4 py-2 text-xs font-extrabold text-ink-950 transition hover:bg-sky-300 shadow-md"
+          >
+            <ExternalLink className="size-4" aria-hidden />
+            Abrir lectura en Google Docs
+          </a>
+        </div>
+      ) : null}
+
+      {/* ── Video Oficial de YouTube ───────────────────────── */}
+      {content.videoEmbedUrl || content.videoUrl ? (
+        <Card className="overflow-hidden border-rose-400/25 p-5 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-9 place-items-center rounded-xl bg-rose-500/20 text-rose-400">
+                <Play className="size-4 fill-current" aria-hidden />
+              </span>
+              <div>
+                <h3 className="text-base font-bold text-white">
+                  {(content.videoTitle as string) ?? 'Video educativo: La extraña historia de la teoría celular'}
+                </h3>
+                <p className="text-xs text-slate-400">Recurso audiovisual de apoyo para la sesión</p>
+              </div>
+            </div>
+            <a
+              href={(content.videoUrl as string) ?? 'https://youtu.be/OOXO3fGImoU'}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-white/10 hover:text-rose-200 transition"
+            >
+              <ExternalLink className="size-3.5" aria-hidden />
+              Ver en YouTube
+            </a>
+          </div>
+          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
+            <iframe
+              src={(content.videoEmbedUrl as string) ?? 'https://www.youtube-nocookie.com/embed/OOXO3fGImoU'}
+              title="Video de YouTube: La extraña historia de la teoría celular"
+              className="absolute inset-0 size-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </Card>
+      ) : null}
 
       {/* ── Sections (chapters) ─────────────────────────── */}
       {sections.length > 0 ? (

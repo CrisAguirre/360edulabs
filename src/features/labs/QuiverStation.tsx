@@ -87,22 +87,42 @@ export function QuiverStation({ activity }: Pick<ActivityRuntimeProps, 'activity
           <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-400">{content.intro}</p>
         </div>
         <ClickSpark sparkColor="#fbbf24">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href={content.plantTemplateDriveUrl ?? 'https://drive.google.com/file/d/1Rc_5xG1CsOAcfSwXpzT3dA5aBwOfNMMa/view?usp=sharing'}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-emerald-400/40 bg-emerald-400/15 px-3 py-2 text-xs font-extrabold text-emerald-200 transition hover:border-emerald-400/60 hover:bg-emerald-400/25 shadow-md"
+            >
+              <ExternalLink className="size-4" aria-hidden />
+              Plantilla Vegetal (Google Drive)
+            </a>
+            <a
+              href={content.animalTemplateDriveUrl ?? 'https://drive.google.com/file/d/1euCki6yPm4LXeIMCyWAKvnBfRPPVmJmu/view?usp=sharing'}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-sky-400/40 bg-sky-400/15 px-3 py-2 text-xs font-extrabold text-sky-200 transition hover:border-sky-400/60 hover:bg-sky-400/25 shadow-md"
+            >
+              <ExternalLink className="size-4" aria-hidden />
+              Plantilla Animal (Google Drive)
+            </a>
             <Button
               size="sm"
               variant="secondary"
               onClick={() => downloadText('plantilla_celula_animal.svg', CELL_TEMPLATES.animal, 'image/svg+xml;charset=utf-8')}
+              title="Descargar versión SVG para colorear en pantalla o imprimir localmente"
             >
               <Download className="size-4" aria-hidden />
-              Plantilla animal
+              SVG Animal (Offline)
             </Button>
             <Button
               size="sm"
               variant="secondary"
               onClick={() => downloadText('plantilla_celula_vegetal.svg', CELL_TEMPLATES.plant, 'image/svg+xml;charset=utf-8')}
+              title="Descargar versión SVG para colorear en pantalla o imprimir localmente"
             >
               <Download className="size-4" aria-hidden />
-              Plantilla vegetal
+              SVG Vegetal (Offline)
             </Button>
           </div>
         </ClickSpark>

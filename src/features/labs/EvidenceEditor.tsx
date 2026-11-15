@@ -1,5 +1,5 @@
-import { AlertTriangle, CheckCircle2, ClipboardCheck, Cloud, Loader2, Send, ShieldCheck, Sparkles } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { AlertTriangle, CheckCircle2, ClipboardCheck, Cloud, Loader2, Send, ShieldCheck, Sparkles, Table } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, Chip, EvidenceStatusBadge } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
 import { ApiError } from '../../lib/api';
@@ -31,6 +31,34 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
   const requiresLink = Boolean(content.requiresLink);
   const checklist: string[] = Array.isArray(content.checklist) ? content.checklist : [];
   const rubric: Array<{ level: string; description: string }> = Array.isArray(content.rubric) ? content.rubric : [];
+  const structuresTable: Array<{ id: string; name: string; placeholder: string }> = useMemo(
+    () => (Array.isArray(content.structuresTable) ? content.structuresTable : []),
+    [content.structuresTable]
+  );
+
+  const parseExistingTable = useCallback(
+    (rawText?: string) => {
+      const map: Record<string, string> = {};
+      if (!rawText) return map;
+      for (const item of structuresTable) {
+        const match = rawText.match(new RegExp(`•\\s*${item.name}\\s*:\\s*(.+)`, 'i'));
+        if (match) map[item.id] = match[1].trim();
+      }
+      return map;
+    },
+    [structuresTable]
+  );
+
+  const parseExistingReflection = useCallback(
+    (rawText?: string) => {
+      if (!rawText) return '';
+      if (structuresTable.length > 0 && rawText.includes('--- Reflexión y análisis ---')) {
+        return rawText.split('--- Reflexión y análisis ---')[1]?.trim() ?? '';
+      }
+      return rawText;
+    },
+    [structuresTable.length]
+  );
 
   const evidenceQuery = useMyEvidence();
   const saveMutation = useSaveEvidence(mission.code);
@@ -40,12 +68,38 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
   const existing = evidenceForActivity(evidenceQuery.data, activity._id);
   const [evidence, setEvidence] = useState<Evidence | undefined>(existing);
   const [text, setText] = useState(existing?.text ?? '');
+  const [tableAnswers, setTableAnswers] = useState<Record<string, string>>(() => parseExistingTable(existing?.text));
+  const [reflectionText, setReflectionText] = useState<string>(() => parseExistingReflection(existing?.text));
   const [linkUrl, setLinkUrl] = useState(existing?.linkUrl ?? '');
   const [dirty, setDirty] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
   const [checked, setChecked] = useState<Set<number>>(new Set());
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const buildCompositeText = useCallback(
+    (answers: Record<string, string>, reflection: string) => {
+      if (structuresTable.length === 0) return reflection;
+      const lines = structuresTable.map((item) => `• ${item.name}: ${answers[item.id]?.trim() || 'Sin completar'}`);
+      return `--- Cuadro de Estructuras Celulares ---\n${lines.join('\n')}\n\n--- Reflexión y análisis ---\n${reflection}`;
+    },
+    [structuresTable]
+  );
+
+  const handleTableCellChange = (id: string, value: string) => {
+    const updated = { ...tableAnswers, [id]: value };
+    setTableAnswers(updated);
+    const composite = buildCompositeText(updated, reflectionText);
+    setText(composite);
+    setDirty(true);
+  };
+
+  const handleReflectionChange = (value: string) => {
+    setReflectionText(value);
+    const composite = buildCompositeText(tableAnswers, value);
+    setText(composite);
+    setDirty(true);
+  };
 
   const saveRef = useRef(saveMutation.mutateAsync);
   useEffect(() => {
@@ -64,8 +118,12 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
       setEvidence(existing);
       setText(existing.text ?? '');
       setLinkUrl(existing.linkUrl ?? '');
+      if (structuresTable.length > 0) {
+        setTableAnswers(parseExistingTable(existing.text));
+        setReflectionText(parseExistingReflection(existing.text));
+      }
     }
-  }, [existing]);
+  }, [existing, parseExistingReflection, parseExistingTable, structuresTable.length]);
 
   // Autoguardado del borrador: espera 1,4 s después del último cambio.
   useEffect(() => {
@@ -234,23 +292,79 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
 
       <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
         <Card className="p-5">
-          <label className="block">
-            <span className="mb-2 flex items-center justify-between gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-400">
-              <span>Mi respuesta</span>
-              <span className={cn('normal-case tracking-normal', text.trim().length >= minLength ? 'text-mint-300' : 'text-slate-500')}>
-                {text.trim().length} / {minLength}
+          {structuresTable.length > 0 ? (
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-mint-400/25 bg-ink-950/70 p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/8 pb-2">
+                  <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-mint-300">
+                    <Table className="size-4 text-mint-400" aria-hidden />
+                    Cuadro de Estructura y Función Celular (Plataforma Vercel)
+                  </span>
+                  <span className="text-[11px] font-bold text-slate-400">
+                    {Object.values(tableAnswers).filter((v) => v.trim().length > 0).length} de {structuresTable.length} completados
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  Completa la función principal de cada estructura celular para el metabolismo (puedes apoyarte en el Cubo Merge y las lecturas):
+                </p>
+
+                <div className="space-y-2.5">
+                  {structuresTable.map((item) => (
+                    <div key={item.id} className="grid sm:grid-cols-[11rem_1fr] items-center gap-2 rounded-xl bg-white/3 p-2.5 border border-white/6">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <span className="size-2 rounded-full bg-mint-400 shrink-0" aria-hidden />
+                        {item.name}
+                      </span>
+                      <input
+                        type="text"
+                        value={tableAnswers[item.id] ?? ''}
+                        onChange={(e) => handleTableCellChange(item.id, e.target.value)}
+                        readOnly={locked}
+                        placeholder={item.placeholder}
+                        className="w-full rounded-lg border border-white/10 bg-ink-900/90 px-3 py-1.5 text-xs text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none disabled:opacity-60"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <label className="block">
+                <span className="mb-2 flex items-center justify-between gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                  <span>Reflexión y análisis</span>
+                  <span className={cn('normal-case tracking-normal', text.trim().length >= minLength ? 'text-mint-300' : 'text-slate-500')}>
+                    {text.trim().length} / {minLength} caracteres totales
+                  </span>
+                </span>
+                <textarea
+                  value={reflectionText}
+                  onChange={(event) => handleReflectionChange(event.target.value)}
+                  readOnly={locked}
+                  rows={6}
+                  className="w-full resize-y rounded-2xl border border-white/12 bg-ink-950/55 p-4 text-sm leading-relaxed text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none disabled:opacity-60"
+                  placeholder="Escribe tu reflexión sobre por qué la energía y los nutrientes son indispensables para la vida de las células vegetales y animales..."
+                  aria-describedby="evidence-help"
+                />
+              </label>
+            </div>
+          ) : (
+            <label className="block">
+              <span className="mb-2 flex items-center justify-between gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                <span>Mi respuesta</span>
+                <span className={cn('normal-case tracking-normal', text.trim().length >= minLength ? 'text-mint-300' : 'text-slate-500')}>
+                  {text.trim().length} / {minLength}
+                </span>
               </span>
-            </span>
-            <textarea
-              value={text}
-              onChange={(event) => updateText(event.target.value)}
-              readOnly={locked}
-              rows={10}
-              className="w-full resize-y rounded-2xl border border-white/12 bg-ink-950/55 p-4 text-sm leading-relaxed text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none disabled:opacity-60"
-              placeholder="Escribe con tus propias palabras. Nombra las ideas, explica por qué son importantes y usa vocabulario científico…"
-              aria-describedby="evidence-help"
-            />
-          </label>
+              <textarea
+                value={text}
+                onChange={(event) => updateText(event.target.value)}
+                readOnly={locked}
+                rows={10}
+                className="w-full resize-y rounded-2xl border border-white/12 bg-ink-950/55 p-4 text-sm leading-relaxed text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none disabled:opacity-60"
+                placeholder="Escribe con tus propias palabras. Nombra las ideas, explica por qué son importantes y usa vocabulario científico…"
+                aria-describedby="evidence-help"
+              />
+            </label>
+          )}
           <p id="evidence-help" className="mt-2 text-[11px] text-slate-500">
             {locked
               ? 'La evidencia ya fue enviada. Si necesitas cambiar algo, pide a tu docente que habilite una nueva revisión.'
