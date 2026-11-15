@@ -7,25 +7,31 @@ import {
   Cloud,
   Download,
   ExternalLink,
+  Eye,
   FileText,
   FlaskConical,
   GraduationCap,
   Layout,
   Lightbulb,
   Loader2,
+  MessageSquare,
   Microscope,
   Palette,
   Play,
   Quote,
   Send,
+  Share2,
   Sparkles,
   Star,
-  Table as TableIcon
+  Table as TableIcon,
+  Trophy
 } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Card, Chip, EvidenceStatusBadge } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
 import { ApiError } from '../../lib/api';
+import { activityUrl } from '../../lib/curriculum';
 import {
   evidenceForActivity,
   useMyEvidence,
@@ -148,38 +154,36 @@ function ScientistCard({ scientist }: { scientist: Scientist }) {
       </span>
       <ClickSpark sparkColor="#38bdf8" sparkCount={5}>
         <SpotlightCard
-          spotlightColor="rgba(88, 230, 197, 0.15)"
-          borderColor="rgba(88, 230, 197, 0.3)"
-          className="cursor-pointer p-4 transition-all duration-300 sm:p-5"
-          onClick={() => setExpanded(!expanded)}
+          spotlightColor="rgba(56, 189, 248, 0.15)"
+          borderColor="rgba(56, 189, 248, 0.3)"
+          className="cursor-pointer p-4 transition-all hover:border-sky-400/50"
+          onClick={() => setExpanded((prev) => !prev)}
         >
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-base font-extrabold text-white">{scientist.name}</h3>
-              <Chip tone="sky">{scientist.year}</Chip>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <span className="rounded-lg border border-sky-400/30 bg-sky-400/10 px-2.5 py-0.5 text-xs font-bold text-sky-200">
+                {scientist.year ?? 'Histórico'}
+              </span>
+              <h4 className="mt-1 text-base font-extrabold text-white sm:text-lg">
+                {scientist.name}
+              </h4>
             </div>
-            {expanded ? (
-              <ChevronUp className="size-4 text-mint-300 transition-transform" aria-hidden />
-            ) : (
-              <ChevronDown className="size-4 text-slate-400 transition-transform" aria-hidden />
-            )}
+            <button
+              type="button"
+              className="grid size-7 place-items-center rounded-lg border border-white/10 text-slate-400 transition hover:bg-white/10 hover:text-white"
+              aria-label={expanded ? 'Ocultar aporte' : 'Ver aporte'}
+            >
+              {expanded ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+            </button>
           </div>
 
-          <div
-            className={cn(
-              'overflow-hidden transition-all duration-500 ease-in-out',
-              expanded ? 'mt-2 max-h-96 opacity-100' : 'max-h-0 opacity-0'
-            )}
-          >
-            <div className="text-sm leading-relaxed text-slate-300">
-              <BlurText text={description} delay={0.015} className="text-slate-300" animateBy="words" />
-            </div>
-          </div>
-
-          {!expanded && description.length > 0 && (
-            <p className="mt-1.5 text-xs text-slate-500">
-              <Sparkles className="mb-0.5 mr-1 inline size-3 text-mint-400/60" aria-hidden />
-              Toca para conocer su aporte científico
+          {expanded ? (
+            <p className="mt-2 text-xs leading-relaxed text-slate-200 sm:text-sm animate-in fade-in duration-300">
+              {description}
+            </p>
+          ) : (
+            <p className="mt-2 line-clamp-1 text-xs text-slate-400">
+              {description} <span className="text-sky-300 font-bold">(toca para leer más)</span>
             </p>
           )}
         </SpotlightCard>
@@ -188,36 +192,33 @@ function ScientistCard({ scientist }: { scientist: Scientist }) {
   );
 }
 
-/* ── Interactive glossary term ──────────────────────────────── */
+/* ── Interactive Glossary Term ──────────────────────────────── */
 function GlossaryTerm({ item }: { item: GlossaryItem }) {
-  const [hovered, setHovered] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
-    <SpotlightCard
-      spotlightColor="rgba(167, 139, 250, 0.15)"
-      borderColor="rgba(167, 139, 250, 0.3)"
-      className="cursor-pointer p-3 transition-all hover:scale-[1.02]"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-    >
-      <dt className="text-sm font-extrabold text-mint-300">
-        <DecryptedText
-          text={item.term}
-          speed={40}
-          triggerOnHover={false}
-          className="text-mint-300"
-        />
-      </dt>
-      <dd className="mt-1 text-sm leading-relaxed text-slate-300">
-        {hovered ? (
-          <BlurText text={item.definition} delay={0.01} className="text-slate-300" animateBy="words" />
-        ) : (
-          <span className="text-xs text-slate-500">Pasa el cursor para revelar...</span>
-        )}
-      </dd>
-    </SpotlightCard>
+    <ClickSpark sparkColor="#a78bfa" sparkCount={5}>
+      <SpotlightCard
+        spotlightColor="rgba(167, 139, 250, 0.15)"
+        borderColor="rgba(167, 139, 250, 0.3)"
+        className="cursor-pointer p-3.5 transition-all hover:border-violet-400/50"
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-display text-sm font-bold text-violet-200">
+            <DecryptedText text={item.term} speed={30} triggerOnHover />
+          </span>
+          <span className="text-xs text-slate-400 font-bold">
+            {open ? '−' : '+'}
+          </span>
+        </div>
+        {open ? (
+          <p className="mt-2 border-t border-white/10 pt-2 text-xs leading-relaxed text-slate-300 animate-in fade-in duration-200">
+            {item.definition}
+          </p>
+        ) : null}
+      </SpotlightCard>
+    </ClickSpark>
   );
 }
 
@@ -575,28 +576,23 @@ function VercelResponseSection({
         </div>
       ) : null}
 
-      {/* ── Editor de texto para la argumentación ── */}
+      {/* ── Área de redacción y argumentación ── */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between gap-2">
-          <label htmlFor="student-argument-text" className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <label htmlFor="student-reflection-text" className="text-xs font-extrabold uppercase tracking-wider text-amber-300">
             {structuresTable.length > 0
-              ? 'Paso 2: Escribe tu respuesta y análisis pedagógico'
-              : 'Paso 2: Escribe tu argumentación detallada'}
+              ? 'Paso 2: Argumenta los cuestionamientos de la docente'
+              : 'Paso 2: Escribe tu respuesta y argumentación científica'}
           </label>
-          <span
-            className={cn(
-              'text-xs font-bold',
-              text.trim().length >= 40 ? 'text-mint-300' : 'text-slate-400'
-            )}
-          >
-            {text.trim().length} / mín. 40 caracteres
+          <span className="text-xs text-slate-400">
+            {text.trim().length} caracteres (mínimo 40 para entregar)
           </span>
         </div>
 
         <textarea
-          id="student-argument-text"
-          value={text}
+          id="student-reflection-text"
           disabled={isSubmitted && !isChangesRequested}
+          value={text}
           onChange={(e) => {
             setText(e.target.value);
             setDirty(true);
@@ -711,6 +707,772 @@ function VercelResponseSection({
   );
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   SESIÓN 1 · SUB-ACTIVIDADES 1.1 A 1.5 ESPECÍFICAS
+   ══════════════════════════════════════════════════════════════ */
+interface Session1SubactivitiesProps {
+  activity: Activity;
+  mission?: MissionDetail;
+  content: Record<string, unknown>;
+  postulates: string[];
+  scientists: Scientist[];
+  glossary: GlossaryItem[];
+  mandatoryQuestion?: string;
+  docUrl?: string;
+  videoUrl?: string;
+  videoEmbedUrl?: string;
+  onEvidenceSubmitted?: ReadingPlayerProps['onEvidenceSubmitted'];
+}
+
+function Session1Subactivities({
+  activity,
+  mission,
+  postulates,
+  scientists,
+  glossary,
+  mandatoryQuestion,
+  docUrl,
+  videoUrl,
+  videoEmbedUrl,
+  onEvidenceSubmitted
+}: Session1SubactivitiesProps) {
+  const [initialAporte, setInitialAporte] = useState('');
+  const [aporteShared, setAporteShared] = useState(false);
+  const [revealedPostulates, setRevealedPostulates] = useState(0);
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [showGlossary, setShowGlossary] = useState(false);
+  const [activeTab, setActiveTab] = useState<'1.1' | '1.2' | '1.3' | '1.4' | '1.5'>('1.1');
+  const toast = useToast();
+
+  const scrollToSub = (
+    id: 'sub-1-1' | 'sub-1-2' | 'sub-1-3' | 'sub-1-4' | 'sub-1-5',
+    tab: '1.1' | '1.2' | '1.3' | '1.4' | '1.5'
+  ) => {
+    setActiveTab(tab);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleShareAporte = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!initialAporte.trim()) {
+      toast.info('Escribe primero tus ideas o hipótesis antes de compartir.');
+      return;
+    }
+    setAporteShared(true);
+    toast.success('¡Aporte registrado! Ahora socializa tu respuesta con el grupo.');
+  };
+
+  const handlePostulateReveal = () => {
+    setRevealedPostulates((prev) => prev + 1);
+  };
+
+  // Extra activities from mission to link in 1.5
+  const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
+  const extraModel3d = mission?.activities.find((a) => a.type === 'model3d');
+  const extraArCube = mission?.activities.find((a) => a.type === 'ar_cube');
+  const extraAnimation3d = mission?.activities.find((a) => a.type === 'animation3d');
+  const extraAnimation2d = mission?.activities.find((a) => a.type === 'animation2d');
+
+  return (
+    <div className="space-y-8">
+      {/* ── Barra de navegación rápida por sub-actividades ── */}
+      <nav
+        aria-label="Navegación de sub-actividades de la Sesión 1"
+        className="sticky top-20 z-20 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-white/10 bg-ink-950/90 p-2 backdrop-blur-md shadow-xl"
+      >
+        <span className="hidden px-3 text-xs font-extrabold uppercase tracking-wider text-slate-400 sm:inline">
+          Ruta Sesión 1:
+        </span>
+        <div className="flex flex-wrap items-center gap-1.5">
+          {[
+            { id: 'sub-1-1' as const, tab: '1.1' as const, label: '1.1 Aportes y socialización' },
+            { id: 'sub-1-2' as const, tab: '1.2' as const, label: '1.2 Aporte conceptual' },
+            { id: 'sub-1-3' as const, tab: '1.3' as const, label: '1.3 Video: Historia celular' },
+            { id: 'sub-1-4' as const, tab: '1.4' as const, label: '1.4 Lectura y Espacio Vercel' },
+            { id: 'sub-1-5' as const, tab: '1.5' as const, label: '1.5 Contenidos extras (Opcional)' }
+          ].map((item) => (
+            <button
+              key={item.tab}
+              type="button"
+              onClick={() => scrollToSub(item.id, item.tab)}
+              className={cn(
+                'rounded-xl px-2.5 py-1.5 text-xs font-bold transition-all',
+                activeTab === item.tab
+                  ? 'bg-mint-400 text-ink-950 shadow-md shadow-mint-400/20'
+                  : 'text-slate-300 hover:bg-white/8 hover:text-white'
+              )}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* ══════════════════════════════════════════════════════════════
+          1.1 APORTES Y SOCIALIZACIÓN
+          ══════════════════════════════════════════════════════════════ */}
+      <section id="sub-1-1" className="scroll-mt-36 space-y-4">
+        <SpotlightCard
+          spotlightColor="rgba(56, 189, 248, 0.15)"
+          borderColor="rgba(56, 189, 248, 0.35)"
+          className="p-5 sm:p-7 space-y-5"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sky-400/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-9 place-items-center rounded-xl bg-sky-400/20 text-sky-300 font-extrabold text-sm">
+                1.1
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <Chip tone="sky">Sub-actividad 1.1 · Apertura e Indagación Inicial</Chip>
+                </div>
+                <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                  Aportes y socialización
+                </h3>
+              </div>
+            </div>
+            <span className="text-xs text-slate-400 font-semibold">Participación oral y escrita</span>
+          </div>
+
+          {/* Texto literal de la docente */}
+          <div className="rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 sm:p-5 space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl shrink-0">👩‍🏫</span>
+              <p className="text-sm leading-relaxed text-slate-100 sm:text-base font-medium">
+                La docente inicia la sesión motivando a los estudiantes a dar respuesta a la pregunta{' '}
+                <strong className="text-sky-200 font-bold">
+                  ¿Sabías que tu cuerpo, las plantas y los animales están formados por millones de pequeñas estructuras que no podemos ver a simple vista? ¿se imaginan cómo son y qué hacen para mantenernos vivos?
+                </strong>
+              </p>
+            </div>
+          </div>
+
+          {/* Texto literal de participación */}
+          <div className="rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-300 sm:text-sm space-y-1.5">
+            <p className="font-bold text-white flex items-center gap-2">
+              <Share2 className="size-4 text-mint-400" aria-hidden />
+              Dinámica de la sesión:
+            </p>
+            <p>
+              Los estudiantes participan de forma oral y escrita en la plataforma, dan a conocer sus aportes y socializan con el grupo sus ideas, la docente, proyecta un recurso multimedial que explica los aportes, sus inicios y representantes en la construcción del conocimiento de lo que actualmente se reconoce como teoría celular,
+            </p>
+          </div>
+
+          {/* Interacción escrita del estudiante */}
+          <form onSubmit={handleShareAporte} className="space-y-3 rounded-2xl border border-sky-400/25 bg-ink-950/70 p-4 sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label htmlFor="aporte-input" className="text-xs font-extrabold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+                <MessageSquare className="size-3.5" aria-hidden />
+                Tu aporte escrito para la socialización:
+              </label>
+              <span className="text-[11px] text-slate-400">Comparte con el grupo</span>
+            </div>
+
+            <textarea
+              id="aporte-input"
+              rows={3}
+              value={initialAporte}
+              onChange={(e) => setInitialAporte(e.target.value)}
+              placeholder="¿Cómo te imaginas que son estas estructuras invisibles y qué hacen para mantenernos vivos? Escribe aquí tus hipótesis..."
+              className="w-full rounded-xl border border-white/15 bg-ink-950/90 p-3 text-xs leading-relaxed text-white placeholder-slate-500 focus:border-sky-400 outline-none sm:text-sm"
+            />
+
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-xs text-slate-400">
+                {aporteShared
+                  ? '✨ Tu aporte ha sido registrado en la plataforma para socializar con la docente y tus compañeros.'
+                  : 'Escribe tu respuesta y pulsa compartir para sumar tu voz al debate grupal.'}
+              </p>
+              <Button type="submit" variant="primary" size="sm">
+                <Send className="size-3.5" aria-hidden />
+                {aporteShared ? 'Actualizar mi aporte' : 'Compartir mi aporte'}
+              </Button>
+            </div>
+          </form>
+
+          {/* Muro de ideas de la clase */}
+          <div className="space-y-2 pt-2">
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Aportes para la socialización en clase:
+            </p>
+            <div className="grid gap-2.5 sm:grid-cols-2">
+              {aporteShared && initialAporte.trim() ? (
+                <div className="rounded-xl border border-mint-400/40 bg-mint-400/10 p-3 space-y-1 animate-in fade-in">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-extrabold text-mint-300">Tú (en esta sesión)</span>
+                    <Chip tone="mint">Mi aporte</Chip>
+                  </div>
+                  <p className="text-xs text-slate-200 leading-relaxed italic">“{initialAporte.trim()}”</p>
+                </div>
+              ) : null}
+
+              <div className="rounded-xl border border-white/10 bg-white/4 p-3 space-y-1">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-extrabold text-sky-300">Sofía Rojas (5.º A)</span>
+                  <span className="text-[11px] text-slate-400">Hipótesis inicial</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed italic">
+                  “Me imagino que son como pequeños ladrillitos transparentes que respiran, absorben agua de la comida y nos dan fuerza para movernos y crecer.”
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-white/4 p-3 space-y-1">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-extrabold text-amber-300">Mateo García (5.º A)</span>
+                  <span className="text-[11px] text-slate-400">Hipótesis inicial</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed italic">
+                  “Creo que son como fábricas microscópicas donde se cocina la energía para que el corazón lata y las plantas puedan mantenerse de pie.”
+                </p>
+              </div>
+            </div>
+          </div>
+        </SpotlightCard>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          1.2 APORTE CONCEPTUAL (LOS 4 POSTULADOS)
+          ══════════════════════════════════════════════════════════════ */}
+      <section id="sub-1-2" className="scroll-mt-36 space-y-4">
+        <SpotlightCard
+          spotlightColor="rgba(88, 230, 197, 0.2)"
+          borderColor="rgba(88, 230, 197, 0.4)"
+          className="p-5 sm:p-7 space-y-5"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-mint-400/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-9 place-items-center rounded-xl bg-mint-400/20 text-mint-300 font-extrabold text-sm">
+                1.2
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <Chip tone="mint">Sub-actividad 1.2 · Aporte conceptual</Chip>
+                </div>
+                <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                  <ShinyText text="Aporte conceptual: La Teoría Celular" speed={4} className="font-extrabold text-mint-200" />
+                </h3>
+              </div>
+            </div>
+            <span className="text-xs text-slate-400 font-semibold">
+              {revealedPostulates}/{postulates.length} postulados revelados
+            </span>
+          </div>
+
+          {/* Texto literal del aporte conceptual */}
+          <div className="rounded-2xl border border-mint-400/30 bg-mint-400/8 p-4 sm:p-5">
+            <p className="text-sm leading-relaxed text-slate-100 sm:text-base">
+              La docente realiza un aporte conceptual explicando que{' '}
+              <strong className="text-mint-200 font-extrabold">
+                La Teoría celular explica por qué razón la célula es la unidad estructural y funcional de todos los seres vivos que habitan el planeta, excepto los virus que son acelulares.
+              </strong>{' '}
+              Incluye los siguientes postulados:
+            </p>
+          </div>
+
+          {/* Tarjetas interactivas de los 4 postulados literales */}
+          <ol className="grid gap-3 sm:grid-cols-2">
+            {postulates.map((postulate, index) => (
+              <PostulateCard
+                key={postulate}
+                postulate={postulate}
+                index={index}
+                onReveal={handlePostulateReveal}
+              />
+            ))}
+          </ol>
+
+          {/* Nota especial sobre virus acelulares */}
+          <div className="flex items-start gap-3 rounded-2xl border border-amber-400/25 bg-amber-400/8 p-4">
+            <Lightbulb className="size-5 text-amber-300 shrink-0 mt-0.5" aria-hidden />
+            <div className="text-xs leading-relaxed text-amber-100 sm:text-sm space-y-1">
+              <p className="font-bold text-amber-300">¿Por qué la teoría celular excluye a los virus?</p>
+              <p>
+                Los virus son <strong className="text-white">acelulares</strong>: carecen de citoplasma y metabolismo propio, y no pueden nutrirse ni reproducirse por sí mismos; dependen obligatoriamente de invadir una célula viva. Por eso, la célula es la unidad de vida universal.
+              </p>
+            </div>
+          </div>
+        </SpotlightCard>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          1.3 VIDEO MULTIMEDIAL (YOUTUBE)
+          ══════════════════════════════════════════════════════════════ */}
+      <section id="sub-1-3" className="scroll-mt-36 space-y-4">
+        <SpotlightCard
+          spotlightColor="rgba(244, 63, 94, 0.15)"
+          borderColor="rgba(244, 63, 94, 0.35)"
+          className="p-5 sm:p-7 space-y-5"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rose-400/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-9 place-items-center rounded-xl bg-rose-500/20 text-rose-300 font-extrabold text-sm">
+                1.3
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <Chip tone="rose">Sub-actividad 1.3 · Recurso audiovisual</Chip>
+                </div>
+                <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                  Video: La extraña historia de la teoría celular
+                </h3>
+              </div>
+            </div>
+
+            {videoUrl ? (
+              <a
+                href={videoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-rose-400/30 bg-rose-500/10 px-3.5 py-1.5 text-xs font-bold text-rose-200 transition hover:bg-rose-500/20 hover:text-white"
+              >
+                <ExternalLink className="size-3.5" aria-hidden />
+                Abrir en YouTube
+              </a>
+            ) : null}
+          </div>
+
+          {/* Texto de solicitud literal */}
+          <p className="text-sm leading-relaxed text-slate-200 sm:text-base font-medium">
+            Se solicita a los estudiantes visualizar el video{' '}
+            <strong className="text-rose-200">
+              «Video YouTube: La extraña historia de la teoría celular»
+            </strong>{' '}
+            (<a href="https://youtu.be/OOXO3fGImoU" target="_blank" rel="noreferrer" className="text-sky-300 underline hover:text-sky-200">https://youtu.be/OOXO3fGImoU</a>).
+          </p>
+
+          {/* Reproductor embebido sin cookies */}
+          {videoEmbedUrl ? (
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
+              <iframe
+                src={videoEmbedUrl}
+                title="Video YouTube: La extraña historia de la teoría celular"
+                className="absolute inset-0 size-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : null}
+
+          {/* Descripción pedagógica del video */}
+          <div className="space-y-2 rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-300 sm:text-sm">
+            <h4 className="font-bold text-white flex items-center gap-2">
+              <Play className="size-4 text-rose-400 fill-current" aria-hidden />
+              Descripción del video:
+            </h4>
+            <p>
+              Este video animado (basado en la famosa lección de TED-Ed escrita por Lauren Royal-Woods) narra de manera divertida cómo se construyeron los cimientos de la biología moderna. Muestra que el progreso científico no fue un camino recto ni limpio, sino una apasionante aventura repleta de microscopios artesanales, personajes excéntricos, rivalidades y debates históricos.
+            </p>
+          </div>
+
+          {/* ¿Para qué se mira este video? */}
+          <div className="space-y-3 rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 sm:p-5">
+            <h4 className="text-sm font-extrabold text-sky-200 uppercase tracking-wider flex items-center gap-2">
+              <Star className="size-4 text-sky-300 fill-current" aria-hidden />
+              ¿Para qué se mira este video? (Propósito pedagógico):
+            </h4>
+            <ul className="grid gap-2 sm:grid-cols-2 text-xs leading-relaxed text-slate-200 sm:text-sm">
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-sky-400 shrink-0">1.</span>
+                <span>
+                  <strong>Comprender el rol de la tecnología:</strong> Ver cómo Zacharias Janssen y Anton van Leeuwenhoek abrieron una ventana al mundo microscópico.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-sky-400 shrink-0">2.</span>
+                <span>
+                  <strong>Descubrir el origen de la palabra «célula»:</strong> Robert Hooke comparó las cavidades del corcho con las celdas de un monasterio.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-sky-400 shrink-0">3.</span>
+                <span>
+                  <strong>Identificar los «animálculos»:</strong> Leeuwenhoek descubrió bacterias vivas y protozoos en agua de lluvia y sarro dental.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-sky-400 shrink-0">4.</span>
+                <span>
+                  <strong>Conectar los reinos biológicos:</strong> Schleiden (plantas) y Schwann (animales) demostraron que todos los seres vivos están hechos de células.
+                </span>
+              </li>
+              <li className="flex items-start gap-2 sm:col-span-2">
+                <span className="font-bold text-sky-400 shrink-0">5.</span>
+                <span>
+                  <strong>Desmentir la generación espontánea:</strong> Rudolf Virchow demostró que las células no aparecen de la nada: proceden de la división celular (*omnis cellula e cellula*).
+                </span>
+              </li>
+            </ul>
+          </div>
+        </SpotlightCard>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          1.4 LECTURA ADAPTADA Y ESPACIO VIRTUAL DE VERCEL
+          ══════════════════════════════════════════════════════════════ */}
+      <section id="sub-1-4" className="scroll-mt-36 space-y-6">
+        <SpotlightCard
+          spotlightColor="rgba(251, 191, 36, 0.15)"
+          borderColor="rgba(251, 191, 36, 0.4)"
+          className="p-5 sm:p-7 space-y-6"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-400/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-9 place-items-center rounded-xl bg-amber-400/20 text-amber-300 font-extrabold text-sm">
+                1.4
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <Chip tone="gold">Sub-actividad 1.4 · Lectura oficial y respuesta en plataforma</Chip>
+                </div>
+                <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                  Lectura adaptada y Espacio Virtual de Vercel
+                </h3>
+              </div>
+            </div>
+
+            {docUrl ? (
+              <a
+                href={docUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-3.5 py-1.5 text-xs font-extrabold text-ink-950 transition hover:bg-amber-300 shadow-md shadow-amber-400/20"
+              >
+                <ExternalLink className="size-3.5" aria-hidden />
+                Abrir en Google Docs oficial
+              </a>
+            ) : null}
+          </div>
+
+          {/* Texto de instrucción oficial */}
+          <div className="rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-200 sm:text-sm space-y-2">
+            <p className="font-bold text-white">Instrucción de la docente:</p>
+            <p>
+              Realizar la lectura que se aloja en la plataforma (disponible abajo y en Google Docs) para dar respuesta a la siguiente pregunta en el espacio virtual de la plataforma Vercel:
+            </p>
+            <p className="rounded-xl border border-amber-400/30 bg-amber-400/10 p-3 font-display text-sm font-bold text-amber-200 sm:text-base">
+              «{mandatoryQuestion}»
+            </p>
+          </div>
+
+          {/* ── Lectura adaptada maquetada en la plataforma ── */}
+          <div className="space-y-4 rounded-3xl border border-white/15 bg-gradient-to-b from-ink-900 via-ink-950 to-ink-950 p-6 sm:p-8 shadow-inner">
+            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+              <span className="grid size-12 place-items-center rounded-2xl bg-amber-400/15 text-2xl text-amber-300">
+                📖
+              </span>
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
+                  Lectura curricular adaptada para 5.º grado
+                </span>
+                <h4 className="font-display text-xl font-extrabold text-white sm:text-2xl">
+                  La extraña historia de la teoría celular
+                </h4>
+              </div>
+            </div>
+
+            <div className="space-y-5 text-sm leading-relaxed text-slate-200 sm:text-base">
+              <p>
+                Durante miles de años, la humanidad vivió rodeada de un secreto maravilloso: no sabíamos que los árboles gigantes, los pájaros en el cielo, las flores del jardín y nuestro propio cuerpo estamos construidos exactamente con los mismos bloques diminutos. Las personas creían que las cosas vivas aparecían espontáneamente del lodo o de la fruta podrida, porque nadie tenía ojos capaces de ver lo microscópico.
+              </p>
+
+              <div className="rounded-2xl border border-sky-400/20 bg-sky-400/5 p-4 sm:p-5 space-y-2">
+                <h5 className="text-sm font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
+                  <span>1.</span> El invento que abrió una ventana a lo invisible (Principios del siglo XVII)
+                </h5>
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+                  En los Países Bajos, el fabricante de lentes <strong>Zacharias Janssen</strong>, junto con su padre, descubrió que al alinear dos lentes de aumento en un tubo, los objetos pequeños se veían enormes. Acababa de nacer el <strong>primer microscopio compuesto</strong>. Aunque al principio se usó como una curiosidad para examinar telas o insectos, muy pronto se convirtió en la llave mágica de la ciencia.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4 sm:p-5 space-y-2">
+                <h5 className="text-sm font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-2">
+                  <span>2.</span> Robert Hooke y el bautizo de la «célula» (1665)
+                </h5>
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+                  En Inglaterra, el científico <strong>Robert Hooke</strong> puso bajo su microscopio una rebanada muy fina de corcho (la corteza de un árbol). Lo que vio lo dejó boquiabierto: cientos de pequeñas cavidades vacías organizadas en hileras, como un panal de abejas. Hooke pensó que se parecían a las pequeñas habitaciones o «celdas» donde dormían los monjes en los monasterios, y decidió llamarlas <strong>células</strong>. Aunque Hooke solo estaba observando las paredes vacías de células que ya no estaban vivas, acababa de acuñar la palabra más importante de la biología.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4 sm:p-5 space-y-2">
+                <h5 className="text-sm font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+                  <span>3.</span> Anton van Leeuwenhoek y sus diminutos «animálculos» (1674)
+                </h5>
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+                  Poco después, un comerciante holandés llamado <strong>Anton van Leeuwenhoek</strong> aprendió a pulir lentes diminutos pero de una claridad asombrosa. Empezó a observar todo lo que caía en sus manos: gotas de agua estancada, lluvia y hasta el sarro de sus propios dientes. Vio con emoción a millones de seres vivos nadando y moviéndose con energía. Los llamó <em>«animálculos»</em>. Sin saberlo, Leeuwenhoek fue el primer ser humano en ver bacterias vivas y protozoos unicelulares.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-violet-400/20 bg-violet-400/5 p-4 sm:p-5 space-y-2">
+                <h5 className="text-sm font-bold text-violet-300 uppercase tracking-wider flex items-center gap-2">
+                  <span>4.</span> El gran acuerdo: Las plantas y los animales están hechos de células (1838 - 1839)
+                </h5>
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+                  Pasaron casi dos siglos hasta que dos amigos científicos juntaron las piezas. El botánico <strong>Matthias Schleiden</strong> concluyó tras años de estudio que todas las plantas están hechas de células. Al compartir su café con el zoólogo <strong>Theodor Schwann</strong>, este último se dio cuenta de que los tejidos de los animales también estaban formados por células. Juntos proclamaron que <em>todos los seres vivos del planeta están formados por células</em> y que la célula es la unidad básica de la estructura y función de la vida.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4 sm:p-5 space-y-2">
+                <h5 className="text-sm font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
+                  <span>5.</span> Rudolf Virchow y el origen de la vida celular (1855)
+                </h5>
+                <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+                  Había un problema: Schleiden creía que las células nacían por una especie de «cristalización espontánea». Fue el médico <strong>Rudolf Virchow</strong> quien demostró la verdad con su famosa frase en latín: <em>«Omnis cellula e cellula»</em> (Toda célula procede de otra célula preexistente). Las células copian su información genética y se dividen en dos células hijas. La vida no surge por arte de magia: se hereda de célula en célula.
+                </p>
+              </div>
+
+              <p className="rounded-2xl border border-mint-400/30 bg-mint-400/10 p-4 text-xs font-semibold text-mint-200 sm:text-sm leading-relaxed">
+                💡 <strong>Conclusión para la biología moderna:</strong> La teoría celular cambió nuestra forma de entender el mundo: demostró que una hormiga diminuta, una hoja de árbol, una bacteria y tú mismo compartimos exactamente la misma arquitectura y las mismas biomoléculas (agua, proteínas, lípidos, carbohidratos y ácidos nucleicos).
+              </p>
+            </div>
+          </div>
+
+          {/* ── Espacio Virtual de Vercel (Formulario de Respuesta y Entrega) ── */}
+          {mandatoryQuestion ? (
+            <VercelResponseSection
+              activity={activity}
+              mission={mission}
+              mandatoryQuestion={mandatoryQuestion}
+              onEvidenceSubmitted={onEvidenceSubmitted}
+            />
+          ) : null}
+        </SpotlightCard>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          1.5 CONTENIDOS EXTRAS (OPCIONALES PARA EL ESTUDIANTE)
+          ══════════════════════════════════════════════════════════════ */}
+      <section id="sub-1-5" className="scroll-mt-36 space-y-4">
+        <SpotlightCard
+          spotlightColor="rgba(167, 139, 250, 0.15)"
+          borderColor="rgba(167, 139, 250, 0.35)"
+          className="p-5 sm:p-7 space-y-5"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-violet-400/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid size-9 place-items-center rounded-xl bg-violet-500/20 text-violet-300 font-extrabold text-sm">
+                1.5
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <Chip tone="grape">Sub-actividad 1.5 · Exploración opcional</Chip>
+                  <span className="text-xs text-slate-400">No bloquea tu avance</span>
+                </div>
+                <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                  Contenidos extras de apoyo (Opcionales para el estudiante)
+                </h3>
+              </div>
+            </div>
+            <Chip tone="neutral">7 recursos de profundización</Chip>
+          </div>
+
+          <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+            Los contenidos extras que no se encuentran en 1.1, 1.2, 1.3 ni 1.4 están reunidos en esta sección de manera opcional para enriquecer tu experiencia científica con modelos 3D, simulaciones y laboratorios sin bloquear tu avance curricular:
+          </p>
+
+          {/* Rejilla de contenidos extras con lanzadores */}
+          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Extra 1: Dentro de una gota de agua */}
+            <div className="flex flex-col justify-between rounded-2xl border border-sky-400/25 bg-sky-400/5 p-4 space-y-3 transition hover:border-sky-400/40">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-2xl">💧</span>
+                  <Chip tone="sky">Video 360 · +20 XP</Chip>
+                </div>
+                <h5 className="text-sm font-extrabold text-white">Dentro de una gota de agua</h5>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Simulación panorámica de microscopía acuática con paramecios y signos explícitos de nutrición, crecimiento celular y reproducción por bipartición.
+                </p>
+              </div>
+              {extraVideo360 && mission ? (
+                <Link
+                  to={activityUrl(mission.code, extraVideo360)}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3 py-2 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
+                >
+                  <Eye className="size-3.5" /> Explorar escena 360
+                </Link>
+              ) : null}
+            </div>
+
+            {/* Extra 2: Microscopio 3D */}
+            <div className="flex flex-col justify-between rounded-2xl border border-mint-400/25 bg-mint-400/5 p-4 space-y-3 transition hover:border-mint-400/40">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-2xl">🔬</span>
+                  <Chip tone="mint">Modelo 3D · +20 XP</Chip>
+                </div>
+                <h5 className="text-sm font-extrabold text-white">El microscopio y la célula</h5>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Visor 3D interactivo en Three.js con aumentos 10x, 40x y 100x y exploración de componentes ópticos (ocular, objetivos y platina).
+                </p>
+              </div>
+              {extraModel3d && mission ? (
+                <Link
+                  to={activityUrl(mission.code, extraModel3d)}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-mint-400/30 bg-mint-400/10 px-3 py-2 text-xs font-bold text-mint-200 transition hover:bg-mint-400/20"
+                >
+                  <Eye className="size-3.5" /> Abrir microscopio 3D
+                </Link>
+              ) : null}
+            </div>
+
+            {/* Extra 3: Cubo Merge AR */}
+            <div className="flex flex-col justify-between rounded-2xl border border-amber-400/25 bg-amber-400/5 p-4 space-y-3 transition hover:border-amber-400/40">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-2xl">🧊</span>
+                  <Chip tone="gold">Cubo AR · +15 XP</Chip>
+                </div>
+                <h5 className="text-sm font-extrabold text-white">Cubo de la teoría celular</h5>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Simulador 3D virtual del Cubo Merge con matrices CSS para girar 6 caras de científicos y organismos unicelulares/pluricelulares.
+                </p>
+              </div>
+              {extraArCube && mission ? (
+                <Link
+                  to={activityUrl(mission.code, extraArCube)}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs font-bold text-amber-200 transition hover:bg-amber-400/20"
+                >
+                  <Eye className="size-3.5" /> Girar Cubo Merge
+                </Link>
+              ) : null}
+            </div>
+
+            {/* Extra 4: Zoom microscópico */}
+            <div className="flex flex-col justify-between rounded-2xl border border-violet-400/25 bg-violet-400/5 p-4 space-y-3 transition hover:border-violet-400/40">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-2xl">🔎</span>
+                  <Chip tone="grape">Animación 3D · +15 XP</Chip>
+                </div>
+                <h5 className="text-sm font-extrabold text-white">Zoom microscópico</h5>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Viaje visual guiado paso a paso desde el cuerpo completo del organismo hasta el tejido, la célula y el núcleo con material genético.
+                </p>
+              </div>
+              {extraAnimation3d && mission ? (
+                <Link
+                  to={activityUrl(mission.code, extraAnimation3d)}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-violet-400/30 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-200 transition hover:bg-violet-400/20"
+                >
+                  <Eye className="size-3.5" /> Ver zoom animado
+                </Link>
+              ) : null}
+            </div>
+
+            {/* Extra 5: Línea de tiempo interactiva */}
+            <div className="flex flex-col justify-between rounded-2xl border border-sky-400/25 bg-sky-400/5 p-4 space-y-3 transition hover:border-sky-400/40">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-2xl">⏳</span>
+                  <Chip tone="sky">Línea de tiempo · +15 XP</Chip>
+                </div>
+                <h5 className="text-sm font-extrabold text-white">Línea de tiempo de científicos</h5>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Cronología desplegable con los aportes de Hooke (1665), Leeuwenhoek (1674), Schleiden (1838), Schwann (1839) y Virchow (1855).
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowTimeline((prev) => !prev)}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-sky-300 hover:text-sky-200"
+                >
+                  {showTimeline ? 'Ocultar aquí' : 'Ver aquí abajo'}
+                </button>
+                {extraAnimation2d && mission ? (
+                  <Link
+                    to={activityUrl(mission.code, extraAnimation2d)}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-white"
+                  >
+                    Abrir estación →
+                  </Link>
+                ) : null}
+              </div>
+            </div>
+
+            {/* Extra 6: Reto final (Quiz) */}
+            <div className="flex flex-col justify-between rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 space-y-3 transition hover:border-amber-400/50">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-2xl">🏆</span>
+                  <Chip tone="gold">Reto Evaluativo · +30 XP</Chip>
+                </div>
+                <h5 className="text-sm font-extrabold text-white">Quiz de la Sesión 1</h5>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Examen interactivo de 6 preguntas con Cito como guía. Necesitas el 70% para aprobar y conquistar la sesión.
+                </p>
+              </div>
+              <Link
+                to={`/misiones/${mission?.code ?? 'm1'}/quiz`}
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-extrabold text-ink-950 transition hover:bg-amber-300 shadow-md shadow-amber-400/20"
+              >
+                <Trophy className="size-3.5" /> Presentar Quiz
+              </Link>
+            </div>
+          </div>
+
+          {/* Vista desplegada de la Línea de tiempo si el estudiante la activa */}
+          {showTimeline && scientists.length > 0 ? (
+            <div className="rounded-2xl border border-sky-400/30 bg-ink-950/80 p-5 space-y-4 animate-in fade-in duration-300">
+              <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+                <h4 className="font-bold text-white flex items-center gap-2 text-sm">
+                  <Microscope className="size-4 text-sky-400" />
+                  Científicos históricos de la teoría celular
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => setShowTimeline(false)}
+                  className="text-xs text-slate-400 hover:text-white"
+                >
+                  Cerrar vista
+                </button>
+              </div>
+              <div className="relative pl-6 sm:pl-8 pt-2">
+                <div className="timeline-rail" aria-hidden />
+                <div className="space-y-3">
+                  {scientists.map((scientist) => (
+                    <ScientistCard key={`${scientist.name}-${scientist.year}`} scientist={scientist} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {/* Vista desplegada del Glosario si el estudiante la activa */}
+          <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="size-4 text-violet-300" />
+                <h5 className="text-xs font-extrabold uppercase tracking-wider text-violet-200">
+                  Glosario científico y datos clave
+                </h5>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGlossary((prev) => !prev)}
+                className="text-xs font-bold text-violet-300 hover:underline"
+              >
+                {showGlossary ? 'Ocultar términos' : 'Explorar términos (+)'}
+              </button>
+            </div>
+
+            {showGlossary && glossary.length > 0 ? (
+              <div className="grid gap-2.5 sm:grid-cols-2 pt-2 animate-in fade-in">
+                {glossary.map((item) => (
+                  <GlossaryTerm key={item.term} item={item} />
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </SpotlightCard>
+      </section>
+    </div>
+  );
+}
+
 /* ── Main ReadingPlayer component ───────────────────────────── */
 export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: ReadingPlayerProps) {
   const content = (activity.content ?? {}) as Record<string, unknown>;
@@ -756,13 +1518,11 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
   const hasQuiver = Boolean(content.hasQuiver || content.quiverLinks || (sessionTitle && sessionTitle.includes('Sesión 2')));
   const hasCanva = Boolean(content.hasCanva || (sessionTitle && sessionTitle.includes('Sesión 3')));
   const hasMergeCube = Boolean(content.hasMergeCube || (sessionTitle && sessionTitle.includes('Sesión 3')));
-  const hasPedagogicalSupport =
-    scientists.length > 0 ||
-    comparisonTable.length > 0 ||
-    comparison.length > 0 ||
-    sections.length > 0 ||
-    glossary.length > 0 ||
-    Boolean(content.didYouKnow || content.note);
+
+  const isSession1 =
+    mission?.code === 'm1' ||
+    content.sessionNumber === 1 ||
+    (typeof sessionTitle === 'string' && sessionTitle.includes('Sesión 1'));
 
   return (
     <article className="space-y-6">
@@ -810,569 +1570,464 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
         </div>
       </header>
 
-      {/* ── 2. Descripción pedagógica de la actividad (Texto exacto) ── */}
-      {activityDescription ? (
-        <SpotlightCard
-          spotlightColor="rgba(56, 189, 248, 0.12)"
-          borderColor="rgba(56, 189, 248, 0.3)"
-          className="p-5 sm:p-6"
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="grid size-9 place-items-center rounded-xl bg-sky-400/20 text-sky-300">
-              <GraduationCap className="size-5" aria-hidden />
-            </span>
-            <div>
-              <h3 className="text-base font-extrabold text-white sm:text-lg">
-                <ShinyText text="Descripción de la actividad" speed={4} className="font-extrabold text-sky-200" />
-              </h3>
-              <p className="text-xs text-slate-400">Orientación pedagógica y ruta de aprendizaje para el estudiante</p>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-white/10 bg-white/3 p-4 sm:p-5">
-            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-200 sm:text-base">
-              {activityDescription}
-            </p>
-          </div>
-        </SpotlightCard>
-      ) : null}
-
-      {/* ── 3. Activación de saberes previos: Pregunta motivadora ── */}
-      {initialQuestion ? (
-        <SpotlightCard
-          spotlightColor="rgba(88, 230, 197, 0.15)"
-          borderColor="rgba(88, 230, 197, 0.35)"
-          className="p-5 sm:p-6"
-        >
-          <div className="flex items-start gap-3.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-mint-400/20 text-xl text-mint-300">
-              🧬
-            </span>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2">
-                <Chip tone="mint">Pregunta motivadora inicial</Chip>
-                <span className="text-xs text-slate-400">Reflexión de apertura con Cito</span>
-              </div>
-              <p className="font-display text-base font-bold text-white sm:text-lg">
-                {initialQuestion}
-              </p>
-              <p className="text-xs text-slate-300">
-                Comparte tus hipótesis de forma oral o escrita con tus compañeros de clase antes de profundizar en los recursos de la plataforma.
-              </p>
-            </div>
-          </div>
-        </SpotlightCard>
-      ) : null}
-
-      {/* ── 3-bis. Pregunta de indagación obligatoria (texto oficial) ── */}
-      {mandatoryQuestion ? (
-        <SpotlightCard
-          spotlightColor="rgba(251, 191, 36, 0.15)"
-          borderColor="rgba(251, 191, 36, 0.35)"
-          className="p-5 sm:p-6"
-        >
-          <div className="flex items-start gap-3.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-amber-400/20 text-amber-300">
-              <Quote className="size-5" aria-hidden />
-            </span>
-            <div className="space-y-1.5">
-              <div className="flex flex-wrap items-center gap-2">
-                <Chip tone="gold">Pregunta de indagación · texto oficial</Chip>
-                <span className="text-xs text-slate-400">Respuesta obligatoria de la sesión</span>
-              </div>
-              <p className="font-display text-base font-bold text-white sm:text-lg">{mandatoryQuestion}</p>
-              <p className="text-xs leading-relaxed text-slate-300">
-                {hasEvidenceResponse
-                  ? 'Responde aquí mismo, en el espacio virtual de la plataforma Vercel.'
-                  : 'Esta pregunta se responde en la actividad de cierre de la misión, dentro de la evidencia de aprendizaje.'}
-              </p>
-            </div>
-          </div>
-        </SpotlightCard>
-      ) : null}
-
-      {/* ── 4. Recursos obligatorios de la sesión ── */}
-      <section aria-labelledby="session-resources-title" className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Sparkles className="size-5 text-mint-300" aria-hidden />
-          <h3 id="session-resources-title" className="text-lg font-extrabold text-white">
-            Recursos obligatorios de la sesión
-          </h3>
-        </div>
-
-        {/* Video Oficial (YouTube si aplica) */}
-        {(videoEmbedUrl || videoUrl) ? (
-          <Card className="overflow-hidden border-rose-400/25 p-5 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-2xl bg-rose-500/20 text-rose-400">
-                  <Play className="size-5 fill-current" aria-hidden />
-                </span>
-                <div>
-                  <h4 className="text-base font-extrabold text-white">
-                    {videoTitle}
-                  </h4>
-                  <p className="text-xs text-slate-400">
-                    Recurso audiovisual de apoyo para la sesión
-                  </p>
-                </div>
-              </div>
-
-              {videoUrl ? (
-                <a
-                  href={videoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-rose-400/30 bg-rose-500/10 px-3.5 py-2 text-xs font-bold text-rose-200 transition hover:bg-rose-500/20 hover:text-white"
-                >
-                  <ExternalLink className="size-4" aria-hidden />
-                  Ver video
-                </a>
-              ) : null}
-            </div>
-
-            {videoEmbedUrl ? (
-              <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
-                <iframe
-                  src={videoEmbedUrl}
-                  title={videoTitle}
-                  className="absolute inset-0 size-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            ) : null}
-          </Card>
-        ) : null}
-
-        {/* Documento Oficial en Google Docs (M1 o M3) */}
-        {docUrl ? (
-          <SpotlightCard
-            spotlightColor="rgba(56, 189, 248, 0.15)"
-            borderColor="rgba(56, 189, 248, 0.35)"
-            className="p-5"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3.5">
-                <span className="grid size-11 place-items-center rounded-2xl bg-sky-400/20 text-sky-200">
-                  <FileText className="size-6" aria-hidden />
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-base font-extrabold text-white">
-                      Lectura oficial: Documento de la sesión
-                    </h4>
-                    <Chip tone="sky">Google Docs</Chip>
-                  </div>
-                  <p className="mt-0.5 text-xs text-slate-300">
-                    Texto oficial que contiene los fundamentos teóricos y las actividades curriculares.
-                  </p>
-                </div>
-              </div>
-
-              <a
-                href={docUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-sky-400 px-4 py-2 text-xs font-extrabold text-ink-950 transition hover:bg-sky-300 shadow-md shadow-sky-400/20"
-              >
-                <ExternalLink className="size-4" aria-hidden />
-                Abrir lectura en Google Docs
-              </a>
-            </div>
-          </SpotlightCard>
-        ) : null}
-
-        {/* Estación de Realidad Aumentada Quiver (Sesión 2) */}
-        {hasQuiver ? (
-          <SpotlightCard
-            spotlightColor="rgba(167, 139, 250, 0.15)"
-            borderColor="rgba(167, 139, 250, 0.35)"
-            className="p-5 sm:p-6"
-          >
-            <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
-              <div className="flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-2xl bg-violet-500/20 text-violet-300">
-                  <Palette className="size-5" aria-hidden />
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-base font-extrabold text-white">
-                      Aplicación de Realidad Aumentada Quiver
-                    </h4>
-                    <Chip tone="grape">Plantillas Imprimibles</Chip>
-                  </div>
-                  <p className="text-xs text-slate-400">
-                    Descarga, imprime y colorea las plantillas para proyectarlas en 3D con la app de Quiver
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <p className="mt-3 text-xs text-slate-300 leading-relaxed">
-              A fin de afianzar el concepto de la célula y sus partes, descarga el material de Quiver para colorear la estructura vegetal y animal, e identificar semejanzas y diferencias entre ellas:
-            </p>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <a
-                href={plantTemplateDriveUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4 transition hover:bg-emerald-400/20 hover:border-emerald-400/50"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xl">🌿</span>
-                  <div>
-                    <span className="block text-sm font-bold text-emerald-200">
-                      Plantilla Célula Vegetal
-                    </span>
-                    <span className="text-[11px] text-slate-400">Google Drive oficial</span>
-                  </div>
-                </div>
-                <Download className="size-4 text-emerald-300" aria-hidden />
-              </a>
-
-              <a
-                href={animalTemplateDriveUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-between gap-3 rounded-2xl border border-sky-400/30 bg-sky-400/10 p-4 transition hover:bg-sky-400/20 hover:border-sky-400/50"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xl">🐾</span>
-                  <div>
-                    <span className="block text-sm font-bold text-sky-200">
-                      Plantilla Célula Animal
-                    </span>
-                    <span className="text-[11px] text-slate-400">Google Drive oficial</span>
-                  </div>
-                </div>
-                <Download className="size-4 text-sky-300" aria-hidden />
-              </a>
-            </div>
-          </SpotlightCard>
-        ) : null}
-
-        {/* Herramienta Canva y Cubo Merge (Sesión 3) */}
-        {hasCanva || hasMergeCube ? (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {hasCanva ? (
-              <SpotlightCard
-                spotlightColor="rgba(56, 189, 248, 0.15)"
-                borderColor="rgba(56, 189, 248, 0.3)"
-                className="p-4"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-cyan-400/20 text-cyan-300">
-                    <Layout className="size-5" aria-hidden />
-                  </span>
-                  <div>
-                    <h5 className="text-sm font-bold text-white">Herramienta Canva</h5>
-                    <p className="mt-1 text-xs text-slate-300">
-                      Elabora una infografía que responda cómo las células obtienen y usan energía y eliminan desechos.
-                    </p>
-                    <a
-                      href="https://www.canva.com"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-cyan-300 hover:text-cyan-200"
-                    >
-                      <ExternalLink className="size-3" aria-hidden /> Abrir Canva
-                    </a>
-                  </div>
-                </div>
-              </SpotlightCard>
-            ) : null}
-
-            {hasMergeCube ? (
-              <SpotlightCard
-                spotlightColor="rgba(251, 191, 36, 0.15)"
-                borderColor="rgba(251, 191, 36, 0.3)"
-                className="p-4"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-400/20 text-amber-300">
-                    <Box className="size-5" aria-hidden />
-                  </span>
-                  <div>
-                    <h5 className="text-sm font-bold text-white">Aplicación RA Cubo Merge</h5>
-                    <p className="mt-1 text-xs text-slate-300">
-                      Superpón la imagen de la célula vegetal para identificar las estructuras que realizan el metabolismo.
-                    </p>
-                  </div>
-                </div>
-              </SpotlightCard>
-            ) : null}
-          </div>
-        ) : null}
-      </section>
-
-      {/* ── 5. Aporte conceptual: Los 4 postulados (Misión 1) ──────── */}
-      {postulates.length > 0 ? (
-        <SpotlightCard
-          spotlightColor="rgba(88, 230, 197, 0.2)"
-          borderColor="rgba(88, 230, 197, 0.4)"
-          className="p-5 sm:p-6"
-        >
-          <div className="flex items-center justify-between gap-2 border-b border-mint-400/20 pb-3">
-            <div className="flex items-center gap-2.5">
-              <Microscope className="size-5 text-mint-300" aria-hidden />
-              <h3 className="text-base font-extrabold text-white sm:text-lg">
-                <ShinyText text="Aporte conceptual: Los postulados de la teoría celular" speed={4} className="font-extrabold text-mint-200" />
-              </h3>
-            </div>
-            <span className="text-xs text-slate-400">
-              {revealedPostulates}/{postulates.length} revelados
-            </span>
-          </div>
-
-          <p className="mt-3 text-sm leading-relaxed text-slate-200">
-            La Teoría celular explica por qué razón la célula es la unidad estructural y funcional de todos los seres vivos que habitan el planeta, excepto los virus que son acelulares. Incluye los siguientes postulados:
-          </p>
-
-          <ol className="mt-4 grid gap-3 sm:grid-cols-2">
-            {postulates.map((postulate, index) => (
-              <PostulateCard
-                key={postulate}
-                postulate={postulate}
-                index={index}
-                onReveal={handlePostulateReveal}
-              />
-            ))}
-          </ol>
-
-          {revealedPostulates === postulates.length && postulates.length > 0 && (
-            <div className="mt-4 rounded-xl border border-mint-400/30 bg-mint-400/10 p-3 text-center text-sm font-semibold text-mint-300">
-              <Sparkles className="mb-0.5 mr-1 inline size-4" aria-hidden />
-              ¡Excelente! Has descubierto los 4 postulados de la teoría celular.
-            </div>
-          )}
-        </SpotlightCard>
-      ) : null}
-
-      {/* ── 5-bis. Separador de contenido editorial complementario ───── */}
-      {hasPedagogicalSupport ? (
-        <section aria-label="Apoyo pedagógico" className="space-y-2 pt-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <Chip tone="grape">Apoyo pedagógico</Chip>
-            <p className="text-xs text-slate-400">
-              Contenido complementario del Laboratorio 360. Amplía la sesión, pero no forma parte del texto literal del documento curricular.
-            </p>
-          </div>
-          <div className="h-px w-full bg-gradient-to-r from-violet-400/40 via-white/10 to-transparent" aria-hidden />
-        </section>
-      ) : null}
-
-      {/* ── 6. Representantes históricos (Línea de tiempo) ─────────── */}
-      {scientists.length > 0 ? (
-        <section aria-labelledby="scientists-title" className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Microscope className="size-5 text-sky-300" aria-hidden />
-            <h3 id="scientists-title" className="text-lg font-extrabold text-white">
-              Representantes en la construcción del conocimiento científico
-            </h3>
-          </div>
-          <p className="text-xs text-slate-400">
-            Abre cada tarjeta para descubrir el aporte y la época de los investigadores que formularon la teoría celular:
-          </p>
-
-          <div className="relative pl-6 sm:pl-8 pt-2">
-            <div className="timeline-rail" aria-hidden />
-            <AnimatedList className="space-y-3" stagger={0.06}>
-              {scientists.map((scientist) => (
-                <ScientistCard key={`${scientist.name}-${scientist.year}`} scientist={scientist} />
-              ))}
-            </AnimatedList>
-          </div>
-        </section>
-      ) : null}
-
-      {/* ── 7. Tabla de comparación entre célula animal y vegetal ─── */}
-      {comparisonTable.length > 0 ? (
-        <Card className="p-5 sm:p-6 space-y-3">
-          <div className="flex items-center gap-2">
-            <TableIcon className="size-5 text-mint-300" aria-hidden />
-            <h3 className="text-base font-extrabold text-white sm:text-lg">
-              Comparación de estructuras: Célula Animal vs. Célula Vegetal
-            </h3>
-          </div>
-          <p className="text-xs text-slate-400">
-            Identifica qué estructuras comparten y cuáles son exclusivas de cada tipo celular:
-          </p>
-
-          <div className="overflow-hidden rounded-2xl border border-white/10 mt-3">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[38rem] border-collapse text-left text-sm">
-                <thead>
-                  <tr className="bg-white/6 text-[11px] font-extrabold uppercase tracking-wider text-slate-300">
-                    <th className="px-4 py-3" scope="col">Estructura celular</th>
-                    <th className="px-4 py-3" scope="col">Célula animal</th>
-                    <th className="px-4 py-3" scope="col">Célula vegetal</th>
-                    <th className="px-4 py-3" scope="col">Función biológica</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/6">
-                  {comparisonTable.map((row) => (
-                    <tr key={row.structure} className="hover:bg-white/4 transition align-top">
-                      <th className="px-4 py-3 font-extrabold text-white" scope="row">{row.structure}</th>
-                      <td className="px-4 py-3 text-slate-300">{row.animal}</td>
-                      <td className="px-4 py-3 text-slate-300">{row.plant}</td>
-                      <td className="px-4 py-3 text-slate-400">{row.function}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </Card>
-      ) : null}
-
-      {/* ── 8. Comparación de procesos (Metabolismo celular: Fotosíntesis vs Respiración) ── */}
-      {comparison.length > 0 ? (
-        <section className="space-y-3">
-          <div className="flex items-center gap-2">
-            <FlaskConical className="size-5 text-amber-300" aria-hidden />
-            <h3 className="text-lg font-extrabold text-white">
-              Procesos metabólicos clave: Fotosíntesis y Respiración celular
-            </h3>
-          </div>
-          <AnimatedList className="grid gap-3 md:grid-cols-2" stagger={0.06}>
-            {comparison.map((row) => (
-              <SpotlightCard
-                key={row.process}
-                spotlightColor="rgba(251, 191, 36, 0.15)"
-                borderColor="rgba(251, 191, 36, 0.3)"
-                className="p-5"
-              >
-                <div className="flex items-center gap-2">
-                  <FlaskConical className="size-5 text-amber-300" aria-hidden />
-                  <h4 className="text-lg font-bold text-white">{row.process}</h4>
-                </div>
-                <dl className="mt-3 space-y-2 text-sm">
-                  {([
-                    ['Ocurre en', row.where],
-                    ['Necesita', row.needs],
-                    ['Produce', row.produces],
-                    ['Quién lo realiza', row.who]
-                  ] as const).map(([label, value]) => (
-                    <div key={label} className="grid grid-cols-[8rem_1fr] gap-2 border-t border-white/6 pt-2">
-                      <dt className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">{label}</dt>
-                      <dd className="text-slate-300">{value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </SpotlightCard>
-            ))}
-          </AnimatedList>
-        </section>
-      ) : null}
-
-      {/* ── 9. Capítulos o secciones adicionales ─────────────────────── */}
-      {sections.length > 0 ? (
-        <AnimatedList className="grid gap-3 md:grid-cols-2" stagger={0.05}>
-          {sections.map((section, index) => (
-            <SpotlightCard
-              key={section.heading}
-              spotlightColor="rgba(56, 189, 248, 0.15)"
-              borderColor="rgba(56, 189, 248, 0.3)"
-              className="p-5"
-            >
-              <div className="flex items-center gap-2">
-                <span className="grid size-8 place-items-center rounded-xl bg-sky-400/12 text-xs font-extrabold text-sky-200">
-                  {index + 1}
-                </span>
-                <h4 className="text-lg font-bold text-white">{section.heading}</h4>
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">{section.body}</p>
-            </SpotlightCard>
-          ))}
-        </AnimatedList>
-      ) : null}
-
-      {/* ── 10. Glosario interactivo de términos clave ─────────────── */}
-      {glossary.length > 0 ? (
-        <Card className="p-5 sm:p-6">
-          <div className="flex items-center gap-2">
-            <Sparkles className="size-5 text-violet-300" aria-hidden />
-            <h3 className="text-base font-extrabold text-white sm:text-lg">
-              <ShinyText text="Glosario científico de la sesión" speed={3} className="font-extrabold text-violet-200" />
-            </h3>
-          </div>
-          <p className="mt-1 text-xs text-slate-400">
-            Toca o pasa el cursor por cada término para visualizar su definición científica
-          </p>
-          <AnimatedList className="mt-3 grid gap-2.5 sm:grid-cols-2" stagger={0.04}>
-            {glossary.map((item) => (
-              <GlossaryTerm key={item.term} item={item} />
-            ))}
-          </AnimatedList>
-        </Card>
-      ) : null}
-
-      {/* ── 11. Nota científica o ¿Sabías que...? ───────────────────── */}
-      {(content.didYouKnow || content.note) ? (
-        <ClickSpark sparkColor="#fbbf24" sparkCount={10}>
-          <div className="flex cursor-pointer items-start gap-3 rounded-2xl border border-amber-400/25 bg-amber-400/8 p-4 transition-all hover:border-amber-400/40 hover:bg-amber-400/12">
-            <Lightbulb className="mt-0.5 size-5 shrink-0 animate-pulse text-amber-300" aria-hidden />
-            <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300">
-                {content.didYouKnow ? '¿Sabías que…?' : 'Nota científica de la docente'}
-              </p>
-              <p className="mt-1 text-sm leading-relaxed text-amber-100">
-                {(content.didYouKnow ?? content.note) as string}
-              </p>
-            </div>
-          </div>
-        </ClickSpark>
-      ) : null}
-
-      {/* ── 11-bis. Cuadro de estructura celular del documento (referencia) ── */}
-      {structuresTable.length > 0 && !hasEvidenceResponse ? (
-        <Card className="space-y-3 p-5 sm:p-6">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <TableIcon className="size-5 text-amber-300" aria-hidden />
-              <h3 className="text-base font-extrabold text-white sm:text-lg">
-                Cuadro de estructura celular · texto oficial
-              </h3>
-            </div>
-            <Chip tone="gold">Se completa en el cierre</Chip>
-          </div>
-          <p className="text-xs leading-relaxed text-slate-400">
-            El documento pide completar la función principal de cada estructura en la plataforma Vercel. Aquí las
-            tienes como referencia; la entrega se registra en la evidencia de cierre de la misión.
-          </p>
-          <div className="overflow-hidden rounded-2xl border border-white/10">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead>
-                <tr className="bg-white/6 text-[11px] font-extrabold uppercase tracking-wider text-slate-300">
-                  <th className="px-4 py-3" scope="col">Estructura celular</th>
-                  <th className="px-4 py-3" scope="col">Función principal</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/8">
-                {structuresTable.map((item) => (
-                  <tr key={item.id} className="transition hover:bg-white/4">
-                    <th className="px-4 py-3 font-bold text-white" scope="row">{item.name}</th>
-                    <td className="px-4 py-3 text-slate-500">La completas en la actividad de cierre.</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      ) : null}
-
-      {/* ── 12. Espacio virtual de la plataforma Vercel (Respuesta escrita integrada) ── */}
-      {hasEvidenceResponse && mandatoryQuestion ? (
-        <VercelResponseSection
+      {/* ── Si es Sesión 1: Renderizamos la estructura específica de sub-actividades 1.1 a 1.5 ── */}
+      {isSession1 ? (
+        <Session1Subactivities
           activity={activity}
           mission={mission}
+          content={content}
+          postulates={postulates}
+          scientists={scientists}
+          glossary={glossary}
           mandatoryQuestion={mandatoryQuestion}
-          structuresTable={structuresTable}
+          docUrl={docUrl}
+          videoUrl={videoUrl}
+          videoEmbedUrl={videoEmbedUrl}
           onEvidenceSubmitted={onEvidenceSubmitted}
         />
-      ) : null}
+      ) : (
+        /* ── Sesión 2 o Sesión 3: Renderizado tradicional multimodal ── */
+        <div className="space-y-6">
+          {/* Descripción pedagógica */}
+          {activityDescription ? (
+            <SpotlightCard
+              spotlightColor="rgba(56, 189, 248, 0.12)"
+              borderColor="rgba(56, 189, 248, 0.3)"
+              className="p-5 sm:p-6"
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-9 place-items-center rounded-xl bg-sky-400/20 text-sky-300">
+                  <GraduationCap className="size-5" aria-hidden />
+                </span>
+                <div>
+                  <h3 className="text-base font-extrabold text-white sm:text-lg">
+                    <ShinyText text="Descripción de la actividad" speed={4} className="font-extrabold text-sky-200" />
+                  </h3>
+                  <p className="text-xs text-slate-400">Orientación pedagógica y ruta de aprendizaje para el estudiante</p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-white/10 bg-white/3 p-4 sm:p-5">
+                <p className="whitespace-pre-line text-sm leading-relaxed text-slate-200 sm:text-base">
+                  {activityDescription}
+                </p>
+              </div>
+            </SpotlightCard>
+          ) : null}
+
+          {/* Pregunta motivadora inicial */}
+          {initialQuestion ? (
+            <SpotlightCard
+              spotlightColor="rgba(88, 230, 197, 0.15)"
+              borderColor="rgba(88, 230, 197, 0.35)"
+              className="p-5 sm:p-6"
+            >
+              <div className="flex items-start gap-3.5">
+                <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-mint-400/20 text-xl text-mint-300">
+                  🧬
+                </span>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <Chip tone="mint">Pregunta motivadora inicial</Chip>
+                    <span className="text-xs text-slate-400">Reflexión de apertura con Cito</span>
+                  </div>
+                  <p className="font-display text-base font-bold text-white sm:text-lg">
+                    {initialQuestion}
+                  </p>
+                  <p className="text-xs text-slate-300">
+                    Comparte tus hipótesis de forma oral o escrita con tus compañeros de clase antes de profundizar en los recursos de la plataforma.
+                  </p>
+                </div>
+              </div>
+            </SpotlightCard>
+          ) : null}
+
+          {/* Recursos obligatorios de la sesión (Sesión 2 y 3) */}
+          <section aria-labelledby="session-resources-title" className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-5 text-mint-300" aria-hidden />
+              <h3 id="session-resources-title" className="text-lg font-extrabold text-white">
+                Recursos obligatorios de la sesión
+              </h3>
+            </div>
+
+            {/* Video Oficial (YouTube si aplica) */}
+            {(videoEmbedUrl || videoUrl) ? (
+              <Card className="overflow-hidden border-rose-400/25 p-5 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-2xl bg-rose-500/20 text-rose-400">
+                      <Play className="size-5 fill-current" aria-hidden />
+                    </span>
+                    <div>
+                      <h4 className="text-base font-extrabold text-white">
+                        {videoTitle}
+                      </h4>
+                      <p className="text-xs text-slate-400">
+                        Recurso audiovisual de apoyo para la sesión
+                      </p>
+                    </div>
+                  </div>
+
+                  {videoUrl ? (
+                    <a
+                      href={videoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-rose-400/30 bg-rose-500/10 px-3.5 py-2 text-xs font-bold text-rose-200 transition hover:bg-rose-500/20 hover:text-white"
+                    >
+                      <ExternalLink className="size-4" aria-hidden />
+                      Ver video
+                    </a>
+                  ) : null}
+                </div>
+
+                {videoEmbedUrl ? (
+                  <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
+                    <iframe
+                      src={videoEmbedUrl}
+                      title={videoTitle}
+                      className="absolute inset-0 size-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : null}
+              </Card>
+            ) : null}
+
+            {/* Documento Oficial en Google Docs */}
+            {docUrl ? (
+              <SpotlightCard
+                spotlightColor="rgba(56, 189, 248, 0.15)"
+                borderColor="rgba(56, 189, 248, 0.35)"
+                className="p-5"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <span className="grid size-11 place-items-center rounded-2xl bg-sky-400/20 text-sky-200">
+                      <FileText className="size-6" aria-hidden />
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-base font-extrabold text-white">
+                          Lectura oficial: Documento de la sesión
+                        </h4>
+                        <Chip tone="sky">Google Docs</Chip>
+                      </div>
+                      <p className="mt-0.5 text-xs text-slate-300">
+                        Texto oficial que contiene los fundamentos teóricos y las actividades curriculares.
+                      </p>
+                    </div>
+                  </div>
+
+                  <a
+                    href={docUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-sky-400 px-4 py-2 text-xs font-extrabold text-ink-950 transition hover:bg-sky-300 shadow-md shadow-sky-400/20"
+                  >
+                    <ExternalLink className="size-4" aria-hidden />
+                    Abrir lectura en Google Docs
+                  </a>
+                </div>
+              </SpotlightCard>
+            ) : null}
+
+            {/* Estación de Realidad Aumentada Quiver (Sesión 2) */}
+            {hasQuiver ? (
+              <SpotlightCard
+                spotlightColor="rgba(167, 139, 250, 0.15)"
+                borderColor="rgba(167, 139, 250, 0.35)"
+                className="p-5 sm:p-6"
+              >
+                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-2xl bg-violet-500/20 text-violet-300">
+                      <Palette className="size-5" aria-hidden />
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-base font-extrabold text-white">
+                          Aplicación de Realidad Aumentada Quiver
+                        </h4>
+                        <Chip tone="grape">Plantillas Imprimibles</Chip>
+                      </div>
+                      <p className="text-xs text-slate-400">
+                        Descarga, imprime y colorea las plantillas para proyectarlas en 3D con la app de Quiver
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="mt-3 text-xs text-slate-300 leading-relaxed">
+                  A fin de afianzar el concepto de la célula y sus partes, descarga el material de Quiver para colorear la estructura vegetal y animal, e identificar semejanzas y diferencias entre ellas:
+                </p>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <a
+                    href={plantTemplateDriveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4 transition hover:bg-emerald-400/20 hover:border-emerald-400/50"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">🌿</span>
+                      <div>
+                        <span className="block text-sm font-bold text-emerald-200">
+                          Plantilla Célula Vegetal
+                        </span>
+                        <span className="text-[11px] text-slate-400">Google Drive oficial</span>
+                      </div>
+                    </div>
+                    <Download className="size-4 text-emerald-300" aria-hidden />
+                  </a>
+
+                  <a
+                    href={animalTemplateDriveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-sky-400/30 bg-sky-400/10 p-4 transition hover:bg-sky-400/20 hover:border-sky-400/50"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">🐾</span>
+                      <div>
+                        <span className="block text-sm font-bold text-sky-200">
+                          Plantilla Célula Animal
+                        </span>
+                        <span className="text-[11px] text-slate-400">Google Drive oficial</span>
+                      </div>
+                    </div>
+                    <Download className="size-4 text-sky-300" aria-hidden />
+                  </a>
+                </div>
+              </SpotlightCard>
+            ) : null}
+
+            {/* Herramienta Canva y Cubo Merge (Sesión 3) */}
+            {hasCanva || hasMergeCube ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {hasCanva ? (
+                  <SpotlightCard
+                    spotlightColor="rgba(56, 189, 248, 0.15)"
+                    borderColor="rgba(56, 189, 248, 0.3)"
+                    className="p-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-cyan-400/20 text-cyan-300">
+                        <Layout className="size-5" aria-hidden />
+                      </span>
+                      <div>
+                        <h5 className="text-sm font-bold text-white">Herramienta Canva</h5>
+                        <p className="mt-1 text-xs text-slate-300">
+                          Elabora una infografía que responda cómo las células obtienen y usan energía y eliminan desechos.
+                        </p>
+                        <a
+                          href="https://www.canva.com"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-cyan-300 hover:text-cyan-200"
+                        >
+                          <ExternalLink className="size-3" aria-hidden /> Abrir Canva
+                        </a>
+                      </div>
+                    </div>
+                  </SpotlightCard>
+                ) : null}
+
+                {hasMergeCube ? (
+                  <SpotlightCard
+                    spotlightColor="rgba(251, 191, 36, 0.15)"
+                    borderColor="rgba(251, 191, 36, 0.3)"
+                    className="p-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-400/20 text-amber-300">
+                        <Box className="size-5" aria-hidden />
+                      </span>
+                      <div>
+                        <h5 className="text-sm font-bold text-white">Aplicación RA Cubo Merge</h5>
+                        <p className="mt-1 text-xs text-slate-300">
+                          Superpón la imagen de la célula vegetal para identificar las estructuras que realizan el metabolismo.
+                        </p>
+                      </div>
+                    </div>
+                  </SpotlightCard>
+                ) : null}
+              </div>
+            ) : null}
+          </section>
+
+          {/* Aporte conceptual: Los 4 postulados si existen */}
+          {postulates.length > 0 ? (
+            <SpotlightCard
+              spotlightColor="rgba(88, 230, 197, 0.2)"
+              borderColor="rgba(88, 230, 197, 0.4)"
+              className="p-5 sm:p-6"
+            >
+              <div className="flex items-center justify-between gap-2 border-b border-mint-400/20 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <Microscope className="size-5 text-mint-300" aria-hidden />
+                  <h3 className="text-base font-extrabold text-white sm:text-lg">
+                    <ShinyText text="Aporte conceptual: Los postulados de la teoría celular" speed={4} className="font-extrabold text-mint-200" />
+                  </h3>
+                </div>
+                <span className="text-xs text-slate-400">
+                  {revealedPostulates}/{postulates.length} revelados
+                </span>
+              </div>
+
+              <p className="mt-3 text-sm leading-relaxed text-slate-200">
+                La Teoría celular explica por qué razón la célula es la unidad estructural y funcional de todos los seres vivos que habitan el planeta, excepto los virus que son acelulares. Incluye los siguientes postulados:
+              </p>
+
+              <ol className="mt-4 grid gap-3 sm:grid-cols-2">
+                {postulates.map((postulate, index) => (
+                  <PostulateCard
+                    key={postulate}
+                    postulate={postulate}
+                    index={index}
+                    onReveal={handlePostulateReveal}
+                  />
+                ))}
+              </ol>
+            </SpotlightCard>
+          ) : null}
+
+          {/* Tabla de comparación entre célula animal y vegetal (Sesión 2) */}
+          {comparisonTable.length > 0 ? (
+            <Card className="p-5 sm:p-6 space-y-3">
+              <div className="flex items-center gap-2">
+                <TableIcon className="size-5 text-mint-300" aria-hidden />
+                <h3 className="text-base font-extrabold text-white sm:text-lg">
+                  Comparación de estructuras: Célula Animal vs. Célula Vegetal
+                </h3>
+              </div>
+              <p className="text-xs text-slate-400">
+                Identifica qué estructuras comparten y cuáles son exclusivas de cada tipo celular:
+              </p>
+
+              <div className="overflow-hidden rounded-2xl border border-white/10 mt-3">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[38rem] border-collapse text-left text-sm">
+                    <thead>
+                      <tr className="bg-white/6 text-[11px] font-extrabold uppercase tracking-wider text-slate-300">
+                        <th className="px-4 py-3" scope="col">Estructura celular</th>
+                        <th className="px-4 py-3" scope="col">Célula animal</th>
+                        <th className="px-4 py-3" scope="col">Célula vegetal</th>
+                        <th className="px-4 py-3" scope="col">Función biológica</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/6">
+                      {comparisonTable.map((row) => (
+                        <tr key={row.structure} className="hover:bg-white/4 transition align-top">
+                          <th className="px-4 py-3 font-extrabold text-white" scope="row">{row.structure}</th>
+                          <td className="px-4 py-3 text-slate-300">{row.animal}</td>
+                          <td className="px-4 py-3 text-slate-300">{row.plant}</td>
+                          <td className="px-4 py-3 text-slate-400">{row.function}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Card>
+          ) : null}
+
+          {/* Comparación de procesos (Sesión 3) */}
+          {comparison.length > 0 ? (
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <FlaskConical className="size-5 text-amber-300" aria-hidden />
+                <h3 className="text-lg font-extrabold text-white">
+                  Procesos metabólicos clave: Fotosíntesis y Respiración celular
+                </h3>
+              </div>
+              <AnimatedList className="grid gap-3 md:grid-cols-2" stagger={0.06}>
+                {comparison.map((row) => (
+                  <SpotlightCard
+                    key={row.process}
+                    spotlightColor="rgba(251, 191, 36, 0.15)"
+                    borderColor="rgba(251, 191, 36, 0.3)"
+                    className="p-5"
+                  >
+                    <div className="flex items-center gap-2">
+                      <FlaskConical className="size-5 text-amber-300" aria-hidden />
+                      <h4 className="text-lg font-bold text-white">{row.process}</h4>
+                    </div>
+                    <dl className="mt-3 space-y-2 text-sm">
+                      {([
+                        ['Ocurre en', row.where],
+                        ['Necesita', row.needs],
+                        ['Produce', row.produces],
+                        ['Quién lo realiza', row.who]
+                      ] as const).map(([label, value]) => (
+                        <div key={label} className="grid grid-cols-[8rem_1fr] gap-2 border-t border-white/6 pt-2">
+                          <dt className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">{label}</dt>
+                          <dd className="text-slate-300">{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </SpotlightCard>
+                ))}
+              </AnimatedList>
+            </section>
+          ) : null}
+
+          {/* Capítulos o secciones adicionales */}
+          {sections.length > 0 ? (
+            <AnimatedList className="grid gap-3 md:grid-cols-2" stagger={0.05}>
+              {sections.map((section, index) => (
+                <SpotlightCard
+                  key={section.heading}
+                  spotlightColor="rgba(56, 189, 248, 0.15)"
+                  borderColor="rgba(56, 189, 248, 0.3)"
+                  className="p-5"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="grid size-8 place-items-center rounded-xl bg-sky-400/12 text-xs font-extrabold text-sky-200">
+                      {index + 1}
+                    </span>
+                    <h4 className="text-lg font-bold text-white">{section.heading}</h4>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-300">{section.body}</p>
+                </SpotlightCard>
+              ))}
+            </AnimatedList>
+          ) : null}
+
+          {/* Glosario en sesiones 2 y 3 */}
+          {glossary.length > 0 ? (
+            <Card className="p-5 sm:p-6">
+              <div className="flex items-center gap-2">
+                <Sparkles className="size-5 text-violet-300" aria-hidden />
+                <h3 className="text-base font-extrabold text-white sm:text-lg">
+                  <ShinyText text="Glosario científico de la sesión" speed={3} className="font-extrabold text-violet-200" />
+                </h3>
+              </div>
+              <p className="mt-1 text-xs text-slate-400">
+                Toca o pasa el cursor por cada término para visualizar su definición científica
+              </p>
+              <AnimatedList className="mt-3 grid gap-2.5 sm:grid-cols-2" stagger={0.04}>
+                {glossary.map((item) => (
+                  <GlossaryTerm key={item.term} item={item} />
+                ))}
+              </AnimatedList>
+            </Card>
+          ) : null}
+
+          {/* Espacio virtual de la plataforma Vercel */}
+          {hasEvidenceResponse && mandatoryQuestion ? (
+            <VercelResponseSection
+              activity={activity}
+              mission={mission}
+              mandatoryQuestion={mandatoryQuestion}
+              structuresTable={structuresTable}
+              onEvidenceSubmitted={onEvidenceSubmitted}
+            />
+          ) : null}
+        </div>
+      )}
     </article>
   );
 }
