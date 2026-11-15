@@ -24,7 +24,7 @@ export function ActivityPlayer({ activity, mission, onProgressChange, onEvidence
     case 'video360':
       return <Video360Player activity={activity} mission={mission} onProgressChange={onProgressChange} />;
     case 'reading':
-      return <ReadingPlayer activity={activity} />;
+      return <ReadingPlayer activity={activity} mission={mission} onEvidenceSubmitted={onEvidenceSubmitted} />;
     case 'model3d':
       return <Model3DPlayer activity={activity} />;
     case 'animation3d':
