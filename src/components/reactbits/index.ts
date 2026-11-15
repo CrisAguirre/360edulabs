@@ -1,6 +1,6 @@
 /**
  * React Bits (reactbits.dev) component exports
- * Adapted for CitoIndagar 360 Educational Platform
+ * Adapted for Laboratorio 360 Educational Platform
  */
 
 export { SpotlightCard, type SpotlightCardProps } from './SpotlightCard';

@@ -41,7 +41,7 @@ export const BADGE_CATALOG: BadgeInfo[] = [
     accent: '#fbbf24'
   },
   {
-    code: 'cientifico-citoindagar',
+    code: 'cientifico-360',
     name: 'Científico Laboratorio 360',
     shortName: 'Científico 360',
     description: 'Completaste la ruta y presentaste tu bitácora como un verdadero científico.',
