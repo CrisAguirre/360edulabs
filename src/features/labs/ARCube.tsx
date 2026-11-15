@@ -1,5 +1,5 @@
 import { Box, Camera, Check, MousePointer2, RotateCcw, ScanLine } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, ProgressBar } from '../../components/ui';
 import { cn } from '../../lib/utils';
 import type { ActivityRuntimeProps } from './types';
@@ -44,9 +44,14 @@ export function ARCube({ activity, onProgressChange }: ActivityRuntimeProps) {
 
   const exploredCount = explored.size;
 
+  const onProgressChangeRef = useRef(onProgressChange);
   useEffect(() => {
-    onProgressChange({ faces: exploredCount });
-  }, [exploredCount, onProgressChange]);
+    onProgressChangeRef.current = onProgressChange;
+  }, [onProgressChange]);
+
+  useEffect(() => {
+    onProgressChangeRef.current?.({ faces: exploredCount });
+  }, [exploredCount]);
 
   const selectFace = (index: number) => {
     setActiveIndex(index);

@@ -8,7 +8,7 @@ import {
   Sparkles,
   Trophy
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Card, Chip, ErrorBlock, LinkButton, LoadingBlock, ProgressBar } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
@@ -34,23 +34,27 @@ export function ActivityPage() {
   const startMission = useStartMission(codigo ?? '');
   const completeActivity = useCompleteActivity(codigo ?? '');
   const toast = useToast();
-  const [prevId, setPrevId] = useState(activityId);
   const [runtime, setRuntime] = useState<{ progress?: number; faces?: number }>({});
   const [confirmed, setConfirmed] = useState(false);
   const [reward, setReward] = useState<Reward | null>(null);
   const autoStarted = useRef(false);
 
-  if (activityId !== prevId) {
-    setPrevId(activityId);
-    setRuntime({});
-    setConfirmed(false);
-    setReward(null);
-  }
-
+  // Llevar la vista arriba al cambiar de actividad
   useEffect(() => {
-    // Al cambiar de actividad, llevar la vista arriba
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activityId]);
+
+  // Memoized progress updater to completely prevent infinite re-render loops in child players
+  const handleProgressChange = useCallback((value: { progress?: number; faces?: number }) => {
+    setRuntime((current) => {
+      const nextProgress = value.progress ?? current.progress;
+      const nextFaces = value.faces ?? current.faces;
+      if (nextProgress === current.progress && nextFaces === current.faces) {
+        return current;
+      }
+      return { progress: nextProgress, faces: nextFaces };
+    });
+  }, []);
 
   const mission = missionQuery.data;
   const activity = mission?.activities.find((item) => item._id === activityId);
@@ -433,7 +437,7 @@ export function ActivityPage() {
           <ActivityPlayer
             activity={activity}
             mission={mission}
-            onProgressChange={(value) => setRuntime((current) => ({ ...current, ...value }))}
+            onProgressChange={handleProgressChange}
             onEvidenceSubmitted={handleEvidenceSubmitted}
           />
           {renderCompletion()}

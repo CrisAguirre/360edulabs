@@ -83,9 +83,14 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
     return () => window.clearInterval(interval);
   }, [playing, rate, duration]);
 
+  const onProgressChangeRef = useRef(onProgressChange);
   useEffect(() => {
-    onProgressChange({ progress });
-  }, [progress, onProgressChange]);
+    onProgressChangeRef.current = onProgressChange;
+  }, [onProgressChange]);
+
+  useEffect(() => {
+    onProgressChangeRef.current?.({ progress });
+  }, [progress]);
 
   const reset = () => {
     setTime(0);
@@ -93,7 +98,9 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
   };
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    (event.target as HTMLElement).setPointerCapture?.(event.pointerId);
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {}
     dragRef.current = { x: event.clientX, y: event.clientY, originX: view.x, originY: view.y };
   };
 
@@ -107,7 +114,12 @@ export function Video360Player({ activity, onProgressChange }: ActivityRuntimePr
     });
   };
 
-  const endDrag = () => {
+  const endDrag = (event: PointerEvent<HTMLDivElement>) => {
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch {}
     dragRef.current = null;
   };
 
