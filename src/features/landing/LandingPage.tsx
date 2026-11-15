@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth, roleHome } from '../../contexts/AuthContext';
 import { BADGE_CATALOG, type BadgeInfo } from '../../lib/badges';
@@ -8,7 +8,6 @@ import {
   AnimatedList,
   BlurText,
   Particles,
-  ShinyText,
   SpotlightCard
 } from '../../components/reactbits';
 
@@ -89,10 +88,6 @@ export function LandingPage() {
 
       <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 pb-16 pt-8 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:pb-24 lg:pt-14">
         <div className="relative space-y-7">
-          <span className="inline-flex items-center gap-2 rounded-full border border-mint-400/25 bg-mint-400/10 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wider text-mint-300">
-            <Sparkles className="size-4 text-mint-300" aria-hidden />
-            <ShinyText text="Ciencia para 5.º de primaria" className="text-mint-300" speed={2.5} />
-          </span>
           <h1 className="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] text-white sm:text-6xl lg:text-7xl">
             La célula se vuelve una{' '}
             <span className="text-gradient inline-block">
@@ -101,8 +96,9 @@ export function LandingPage() {
             .
           </h1>
           <p className="max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
-            Tres misiones gamificadas para descubrir lo invisible: video 360, modelos 3D, realidad aumentada,
-            experimentos y evidencias. Cito, tu mascota mitocondria, te acompaña en cada paso.
+            Ciencia para 5.º de primaria: tres misiones gamificadas para descubrir lo invisible. Video 360,
+            modelos 3D, realidad aumentada, experimentos y evidencias. Cito, tu mascota mitocondria, te acompaña
+            en cada paso.
           </p>
           <div className="flex flex-wrap gap-3">
             <LinkButton to={user ? roleHome(user.role) : '/login'} size="lg">

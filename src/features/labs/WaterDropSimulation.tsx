@@ -116,7 +116,7 @@ export function WaterDropSimulation({
         >
           {/* Label indicator */}
           <div className="absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-400/40 bg-ink-950/85 px-2.5 py-1 text-[11px] font-extrabold text-emerald-300 shadow-lg backdrop-blur">
-            <Sprout className="size-3.5 animate-bounce text-emerald-400" />
+            <Sprout className="size-3.5 animate-pulse text-emerald-400" />
             <span>Crecimiento: {growthMassPct}% masa</span>
           </div>
 
