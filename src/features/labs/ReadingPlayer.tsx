@@ -827,6 +827,11 @@ export interface Session1SubactivitiesProps {
   videoUrl?: string;
   videoEmbedUrl?: string;
   onEvidenceSubmitted?: ReadingPlayerProps['onEvidenceSubmitted'];
+  activeTab?: Session1TabKey;
+  onTabChange?: (tab: Session1TabKey) => void;
+  viewMode?: 'tabs' | 'all';
+  onViewModeChange?: (mode: 'tabs' | 'all') => void;
+  showTabBar?: boolean;
 }
 
 export type Session1TabKey = '1.1' | '1.2' | '1.3' | '1.4' | '1.5' | '1.6';
@@ -842,14 +847,29 @@ export function Session1Subactivities({
   docUrl,
   videoUrl,
   videoEmbedUrl,
-  onEvidenceSubmitted
+  onEvidenceSubmitted,
+  activeTab: controlledTab,
+  onTabChange,
+  viewMode: controlledViewMode,
+  onViewModeChange,
+  showTabBar = true
 }: Session1SubactivitiesProps) {
   const [initialAporte, setInitialAporte] = useState('');
   const [aporteShared, setAporteShared] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [activeTab, setActiveTab] = useState<Session1TabKey>('1.1');
-  const [viewMode, setViewMode] = useState<'tabs' | 'all'>('tabs');
+  const [internalActiveTab, setInternalActiveTab] = useState<Session1TabKey>('1.1');
+  const [internalViewMode, setInternalViewMode] = useState<'tabs' | 'all'>('tabs');
+  const activeTab = controlledTab ?? internalActiveTab;
+  const viewMode = controlledViewMode ?? internalViewMode;
+  const setActiveTab = (tab: Session1TabKey) => {
+    if (onTabChange) onTabChange(tab);
+    else setInternalActiveTab(tab);
+  };
+  const setViewMode = (mode: 'tabs' | 'all') => {
+    if (onViewModeChange) onViewModeChange(mode);
+    else setInternalViewMode(mode);
+  };
   const [historyCarouselLayout, setHistoryCarouselLayout] = useState<'circular' | 'accordion'>('circular');
   const toast = useToast();
 
@@ -1003,7 +1023,7 @@ export function Session1Subactivities({
 
   return (
     <div className="space-y-6">
-      {/* ── Barra de navegación de nivel superior por 6 pestañas ── */}
+      {showTabBar ? (
       <nav
         aria-label="Pestañas de la Sesión 1"
         className="sticky top-20 z-20 flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-white/10 bg-ink-950/95 p-2.5 backdrop-blur-md shadow-xl"
@@ -1056,6 +1076,7 @@ export function Session1Subactivities({
           </button>
         </div>
       </nav>
+      ) : null}
 
       {/* ══════════════════════════════════════════════════════════════
           1.1 APORTES Y SOCIALIZACIÓN
@@ -2422,6 +2443,11 @@ interface Session2SubactivitiesProps {
     missionCompleted: boolean;
     badgeAwarded: { code: string; name: string; description: string; icon: string } | null;
   }) => void;
+  activeTab?: Session2TabKey;
+  onTabChange?: (tab: Session2TabKey) => void;
+  viewMode?: 'tabs' | 'all';
+  onViewModeChange?: (mode: 'tabs' | 'all') => void;
+  showTabBar?: boolean;
 }
 
 export type Session2TabKey = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '2.6' | '2.7' | '2.8';
@@ -2437,10 +2463,25 @@ export function Session2Subactivities({
   animalTemplateDriveUrl,
   videoUrl,
   videoEmbedUrl,
-  onEvidenceSubmitted
+  onEvidenceSubmitted,
+  activeTab: controlledTab,
+  onTabChange,
+  viewMode: controlledViewMode,
+  onViewModeChange,
+  showTabBar = true
 }: Session2SubactivitiesProps) {
-  const [activeTab, setActiveTab] = useState<Session2TabKey>('2.1');
-  const [viewMode, setViewMode] = useState<'tabs' | 'all'>('tabs');
+  const [internalActiveTab, setInternalActiveTab] = useState<Session2TabKey>('2.1');
+  const [internalViewMode, setInternalViewMode] = useState<'tabs' | 'all'>('tabs');
+  const activeTab = controlledTab ?? internalActiveTab;
+  const viewMode = controlledViewMode ?? internalViewMode;
+  const setActiveTab = (tab: Session2TabKey) => {
+    if (onTabChange) onTabChange(tab);
+    else setInternalActiveTab(tab);
+  };
+  const setViewMode = (mode: 'tabs' | 'all') => {
+    if (onViewModeChange) onViewModeChange(mode);
+    else setInternalViewMode(mode);
+  };
   const [initialAporte, setInitialAporte] = useState('');
   const [aporteShared, setAporteShared] = useState(false);
   const [selectedOrganelleFilter, setSelectedOrganelleFilter] = useState<'all' | 'shared' | 'plant_only' | 'animal_only'>('all');
@@ -2515,7 +2556,7 @@ export function Session2Subactivities({
 
   return (
     <div className="space-y-6">
-      {/* ── Barra de navegación rápida por las 7 sub-actividades de la Sesión 2 ── */}
+      {showTabBar ? (
       <nav
         aria-label="Pestañas de la Sesión 2"
         className="sticky top-20 z-20 flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-white/10 bg-ink-950/95 p-2.5 backdrop-blur-md shadow-xl"
@@ -2572,6 +2613,7 @@ export function Session2Subactivities({
           </button>
         </div>
       </nav>
+      ) : null}
 
       {/* ══════════════════════════════════════════════════════════════
           2.1 INTRODUCCIÓN Y RECONOCIMIENTO DE SABERES PREVIOS
@@ -3911,6 +3953,11 @@ export interface Session3SubactivitiesProps {
     missionCompleted: boolean;
     badgeAwarded: { code: string; name: string; description: string; icon: string } | null;
   }) => void;
+  activeTab?: Session3TabKey;
+  onTabChange?: (tab: Session3TabKey) => void;
+  viewMode?: 'tabs' | 'all';
+  onViewModeChange?: (mode: 'tabs' | 'all') => void;
+  showTabBar?: boolean;
 }
 
 export type Session3TabKey = '3.1' | '3.2' | '3.3' | '3.4' | '3.5' | '3.6' | '3.7' | '3.8';
@@ -3923,10 +3970,25 @@ export function Session3Subactivities({
   glossary = [],
   mandatoryQuestion,
   docUrl = 'https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true',
-  onEvidenceSubmitted
+  onEvidenceSubmitted,
+  activeTab: controlledTab,
+  onTabChange,
+  viewMode: controlledViewMode,
+  onViewModeChange,
+  showTabBar = true
 }: Session3SubactivitiesProps) {
-  const [activeTab, setActiveTab] = useState<Session3TabKey>('3.1');
-  const [viewMode, setViewMode] = useState<'tabs' | 'all'>('tabs');
+  const [internalActiveTab, setInternalActiveTab] = useState<Session3TabKey>('3.1');
+  const [internalViewMode, setInternalViewMode] = useState<'tabs' | 'all'>('tabs');
+  const activeTab = controlledTab ?? internalActiveTab;
+  const viewMode = controlledViewMode ?? internalViewMode;
+  const setActiveTab = (tab: Session3TabKey) => {
+    if (onTabChange) onTabChange(tab);
+    else setInternalActiveTab(tab);
+  };
+  const setViewMode = (mode: 'tabs' | 'all') => {
+    if (onViewModeChange) onViewModeChange(mode);
+    else setInternalViewMode(mode);
+  };
   const [initialAporte, setInitialAporte] = useState('');
   const [aporteShared, setAporteShared] = useState(false);
   const [questionReflection, setQuestionReflection] = useState('');
@@ -4032,7 +4094,7 @@ export function Session3Subactivities({
 
   return (
     <div className="space-y-6">
-      {/* ── Barra de Navegación de Pestañas de la Sesión 3 ── */}
+      {showTabBar ? (
       <nav
         aria-label="Sub-actividades oficiales de la Sesión 3"
         className="sticky top-16 z-30 -mx-2 rounded-2xl border border-white/10 bg-ink-950/95 p-2 backdrop-blur-xl shadow-2xl sm:mx-0"
@@ -4116,6 +4178,7 @@ export function Session3Subactivities({
           })}
         </div>
       </nav>
+      ) : null}
 
       {/* ══════════════════════════════════════════════════════════════════
           3.1 ACTIVACIÓN DE SABERES PREVIOS

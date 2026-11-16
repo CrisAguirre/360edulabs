@@ -12,7 +12,7 @@ import {
   Target,
   Trophy
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Button,
@@ -38,11 +38,27 @@ import {
   type GlossaryItem,
   type Scientist,
   Session1Subactivities,
+  type Session1TabKey,
   Session2Subactivities,
+  type Session2TabKey,
   Session3Subactivities,
+  type Session3TabKey,
   type StructureItem,
   type TableRow
 } from '../labs/ReadingPlayer';
+import { MissionTabBar } from './MissionTabBar';
+import { MISSION_TABS, type MissionTabViewMode } from './missionTabs';
+
+// La cabecera de la Sesión 1 usa el texto motivador corto de la indagación.
+const M1_HEADER_QUESTION = '¿Sabías que?';
+const M1_HEADER_DESCRIPTION =
+  '¿Sabías que tu cuerpo, las plantas y los animales están formados por millones de pequeñas estructuras que no podemos ver a simple vista?';
+
+function firstTabFor(missionCode?: string) {
+  if (missionCode === 'm2') return '2.1';
+  if (missionCode === 'm3') return '3.1';
+  return '1.1';
+}
 
 export function MissionDetailPage() {
   const { user } = useAuth();
@@ -52,6 +68,21 @@ export function MissionDetailPage() {
   const toast = useToast();
   const missionQuery = useMission(codigo);
   const startMission = useStartMission(codigo ?? '');
+
+  // La barra de pestañas vive a nivel de página (arriba, antes de la cabecera).
+  // Se reinicia al cambiar de sesión ajustando el estado durante el render.
+  const [tabState, setTabState] = useState(() => ({
+    code: codigo,
+    tab: firstTabFor(codigo),
+    view: 'tabs' as MissionTabViewMode
+  }));
+  if (tabState.code !== codigo) {
+    setTabState({ code: codigo, tab: firstTabFor(codigo), view: 'tabs' });
+  }
+  const activeTab = tabState.tab;
+  const viewMode = tabState.view;
+  const setActiveTab = (tab: string) => setTabState((prev) => ({ ...prev, tab }));
+  const setViewMode = (view: MissionTabViewMode) => setTabState((prev) => ({ ...prev, view }));
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -96,6 +127,9 @@ export function MissionDetailPage() {
   const nextMissionName = nextMissionInfo
     ? `Sesión ${nextMissionInfo.session}: ${nextMissionInfo.theme}`
     : null;
+
+  const headerQuestion = isSession1 ? M1_HEADER_QUESTION : mission.bigQuestion;
+  const headerDescription = isSession1 ? M1_HEADER_DESCRIPTION : mission.description;
 
   if (isLocked) {
     const previousInfo = sessionInfo(`m${mission.order - 1}`);
@@ -156,8 +190,29 @@ export function MissionDetailPage() {
     }
   };
 
+  const handleTabSelect = (tab: string) => {
+    setActiveTab(tab);
+    requestAnimationFrame(() => {
+      const targetId =
+        viewMode === 'all' ? `sub-${tab.replace('.', '-')}` : `estaciones-sesion-${sessionNumber}`;
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
   return (
     <div className="space-y-7">
+      {readingActivity ? (
+        <MissionTabBar
+          missionCode={mission.code}
+          session={sessionNumber}
+          tabs={MISSION_TABS[mission.code] ?? []}
+          activeTab={activeTab}
+          viewMode={viewMode}
+          onSelect={handleTabSelect}
+          onViewModeChange={setViewMode}
+        />
+      ) : null}
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           to={roleHome(user?.role)}
@@ -229,104 +284,96 @@ export function MissionDetailPage() {
             </div>
 
             <p className="font-display text-lg font-bold sm:text-xl" style={{ color: mission.theme.accent }}>
-              {mission.bigQuestion}
+              {headerQuestion}
             </p>
 
-            <p className="max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">{mission.description}</p>
+            <p className="max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">{headerDescription}</p>
 
             <div className="flex flex-wrap items-center gap-3 pt-1">
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                <Clock3 className="size-3.5 text-slate-400" aria-hidden />
-                {mission.estimatedMinutes} min estimados
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
-                <Target className="size-3.5 text-amber-300" aria-hidden />
-                {isSession1
-                  ? 'Estaciones 1.1 a 1.6 (Reto final incluido)'
-                  : isSession2
-                    ? 'Estaciones 2.1 a 2.7 (Reto final incluido)'
-                    : `${required.length} pasos obligatorios`}
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                <Sparkles className="size-3.5 text-mint-300" aria-hidden />
-                {isSession1 || isSession2 || isSession3
-                  ? `${complementaryActivities.filter((a) => a.type !== 'quiz').length} complementarias opcionales`
-                  : `${support.length} actividades opcionales`}
-              </span>
+              {!isSession1 ? (
+                <>
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                    <Clock3 className="size-3.5 text-slate-400" aria-hidden />
+                    {mission.estimatedMinutes} min estimados
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
+                    <Target className="size-3.5 text-amber-300" aria-hidden />
+                    {isSession2
+                      ? 'Estaciones 2.1 a 2.7 (Reto final incluido)'
+                      : `${required.length} pasos obligatorios`}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                    <Sparkles className="size-3.5 text-mint-300" aria-hidden />
+                    {isSession2 || isSession3
+                      ? `${complementaryActivities.filter((a) => a.type !== 'quiz').length} complementarias opcionales`
+                      : `${support.length} actividades opcionales`}
+                  </span>
+                </>
+              ) : null}
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
                 <Star className="size-3.5 text-amber-300" aria-hidden />
-                {mission.progress.xpEarned} XP acumulados
+                {isSession1
+                  ? `${mission.progress.xpEarned} puntos de experiencia`
+                  : `${mission.progress.xpEarned} XP acumulados`}
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              {isSession1 ? (
-                <>
-                  <a
-                    href="#estaciones-sesion-1"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-mint-400 to-sky-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-mint-400/20 transition hover:brightness-110"
-                  >
+            {!isSession1 ? (
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                {isSession2 ? (
+                  <>
+                    <a
+                      href="#estaciones-sesion-2"
+                      className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-sky-400/20 transition hover:brightness-110"
+                    >
+                      <Play className="size-5" aria-hidden />
+                      Explorar las 8 estaciones (2.1 a 2.8)
+                    </a>
+                    <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
+                      <Trophy className="size-5" aria-hidden />
+                      Presentar Reto Final (2.7)
+                    </LinkButton>
+                  </>
+                ) : isSession3 ? (
+                  <>
+                    <a
+                      href="#estaciones-sesion-3"
+                      className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-amber-400/20 transition hover:brightness-110"
+                    >
+                      <Play className="size-5" aria-hidden />
+                      Explorar las 8 estaciones (3.1 a 3.8)
+                    </a>
+                    <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
+                      <Trophy className="size-5" aria-hidden />
+                      Presentar Reto Final (3.7)
+                    </LinkButton>
+                  </>
+                ) : nextStep ? (
+                  <Button size="lg" onClick={handleStart} loading={startMission.isPending}>
                     <Play className="size-5" aria-hidden />
-                    Explorar las 6 estaciones
-                  </a>
+                    {completed
+                      ? 'Repasar la ruta'
+                      : inProgress
+                        ? `Continuar: paso ${completedRequired + 1} de ${required.length}`
+                        : 'Comenzar la sesión'}
+                  </Button>
+                ) : (
                   <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
                     <Trophy className="size-5" aria-hidden />
-                    Presentar Reto Final (1.5)
+                    Presentar el reto final
                   </LinkButton>
-                </>
-              ) : isSession2 ? (
-                <>
+                )}
+                {!isSession2 && !isSession3 && support.length > 0 ? (
                   <a
-                    href="#estaciones-sesion-2"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-sky-400/20 transition hover:brightness-110"
+                    href="#apoyo"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
                   >
-                    <Play className="size-5" aria-hidden />
-                    Explorar las 8 estaciones (2.1 a 2.8)
+                    <Sparkles className="size-4 text-mint-300" aria-hidden />
+                    Exploración opcional
                   </a>
-                  <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
-                    <Trophy className="size-5" aria-hidden />
-                    Presentar Reto Final (2.7)
-                  </LinkButton>
-                </>
-              ) : isSession3 ? (
-                <>
-                  <a
-                    href="#estaciones-sesion-3"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-amber-400/20 transition hover:brightness-110"
-                  >
-                    <Play className="size-5" aria-hidden />
-                    Explorar las 8 estaciones (3.1 a 3.8)
-                  </a>
-                  <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
-                    <Trophy className="size-5" aria-hidden />
-                    Presentar Reto Final (3.7)
-                  </LinkButton>
-                </>
-              ) : nextStep ? (
-                <Button size="lg" onClick={handleStart} loading={startMission.isPending}>
-                  <Play className="size-5" aria-hidden />
-                  {completed
-                    ? 'Repasar la ruta'
-                    : inProgress
-                      ? `Continuar: paso ${completedRequired + 1} de ${required.length}`
-                      : 'Comenzar la sesión'}
-                </Button>
-              ) : (
-                <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
-                  <Trophy className="size-5" aria-hidden />
-                  Presentar el reto final
-                </LinkButton>
-              )}
-              {!isSession1 && !isSession2 && !isSession3 && support.length > 0 ? (
-                <a
-                  href="#apoyo"
-                  className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
-                >
-                  <Sparkles className="size-4 text-mint-300" aria-hidden />
-                  Exploración opcional
-                </a>
-              ) : null}
-            </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
           <div className="flex flex-col items-center justify-center gap-4 lg:items-end">
@@ -360,23 +407,25 @@ export function MissionDetailPage() {
         </div>
       </section>
 
-      {/* ── Propósitos ────────────────────────────────────────────── */}
-      <Card className="p-5">
-        <div className="flex items-center gap-2">
-          <Target className="size-5 text-mint-300" aria-hidden />
-          <h2 className="text-base font-extrabold text-white">Propósitos de la sesión</h2>
-        </div>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-          {mission.objectives.map((objective, index) => (
-            <li key={objective} className="flex items-start gap-2.5 text-xs leading-relaxed text-slate-300">
-              <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-lg bg-mint-400/12 text-[11px] font-extrabold text-mint-300">
-                {index + 1}
-              </span>
-              {objective}
-            </li>
-          ))}
-        </ul>
-      </Card>
+      {/* ── Propósitos (solo Sesiones 2 y 3) ─────────────────────── */}
+      {!isSession1 ? (
+        <Card className="p-5">
+          <div className="flex items-center gap-2">
+            <Target className="size-5 text-mint-300" aria-hidden />
+            <h2 className="text-base font-extrabold text-white">Propósitos de la sesión</h2>
+          </div>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {mission.objectives.map((objective, index) => (
+              <li key={objective} className="flex items-start gap-2.5 text-xs leading-relaxed text-slate-300">
+                <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-lg bg-mint-400/12 text-[11px] font-extrabold text-mint-300">
+                  {index + 1}
+                </span>
+                {objective}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      ) : null}
 
       {/* ── Si es Sesión 1: Contenido General en Nivel Superior con 6 Pestañas ── */}
       {isSession1 && readingActivity ? (
@@ -424,6 +473,11 @@ export function MissionDetailPage() {
               (readingActivity.content?.videoEmbedUrl as string) ??
               'https://www.youtube-nocookie.com/embed/OOXO3fGImoU'
             }
+            activeTab={activeTab as Session1TabKey}
+            onTabChange={(tab) => handleTabSelect(tab)}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            showTabBar={false}
           />
         </section>
       ) : isSession2 && readingActivity ? (
@@ -511,6 +565,11 @@ export function MissionDetailPage() {
               (readingActivity.content?.videoEmbedUrl as string) ??
               'https://www.youtube-nocookie.com/embed/h1gryskdtmk'
             }
+            activeTab={activeTab as Session2TabKey}
+            onTabChange={(tab) => handleTabSelect(tab)}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            showTabBar={false}
           />
         </section>
       ) : isSession3 && readingActivity ? (
@@ -549,6 +608,11 @@ export function MissionDetailPage() {
             videoEmbedUrl={
               (readingActivity.content?.videoEmbedUrl as string) ?? undefined
             }
+            activeTab={activeTab as Session3TabKey}
+            onTabChange={(tab) => handleTabSelect(tab)}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            showTabBar={false}
           />
         </section>
       ) : (
