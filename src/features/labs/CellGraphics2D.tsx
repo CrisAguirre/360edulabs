@@ -740,3 +740,15 @@ export function AnimalVacuolesGraphic2D({ className }: GraphicProps) {
     </svg>
   );
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RE-EXPORTACIÓN DE GRÁFICOS HISTÓRICOS 2D DE LA TEORÍA CELULAR
+   ══════════════════════════════════════════════════════════════════════════ */
+export {
+  JanssenMicroscopeGraphic2D,
+  HookeCorkGraphic2D,
+  LeeuwenhoekAnimalculesGraphic2D,
+  SchleidenSchwannGraphic2D,
+  VirchowDivisionGraphic2D
+} from './HistoryGraphics2D';
+

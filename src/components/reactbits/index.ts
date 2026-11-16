@@ -17,3 +17,9 @@ export {
   type CircularCarouselProps,
   type CircularCarouselItem
 } from './CircularCarousel';
+export {
+  AccordionCarousel,
+  type AccordionCarouselProps,
+  type AccordionCarouselItem
+} from './AccordionCarousel';
+

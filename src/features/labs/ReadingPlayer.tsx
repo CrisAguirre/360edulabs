@@ -48,6 +48,8 @@ import {
 import type { Activity, Evidence, MissionDetail } from '../../lib/types';
 import { cn, timeAgo } from '../../lib/utils';
 import {
+  AccordionCarousel,
+  type AccordionCarouselItem,
   AnimatedList,
   Aurora,
   BlurText,
@@ -70,7 +72,12 @@ import {
   CentriolesGraphic2D,
   GolgiGraphic2D,
   LysosomeGraphic2D,
-  AnimalVacuolesGraphic2D
+  AnimalVacuolesGraphic2D,
+  JanssenMicroscopeGraphic2D,
+  HookeCorkGraphic2D,
+  LeeuwenhoekAnimalculesGraphic2D,
+  SchleidenSchwannGraphic2D,
+  VirchowDivisionGraphic2D
 } from './CellGraphics2D';
 
 export interface Scientist {
@@ -845,6 +852,7 @@ export function Session1Subactivities({
   const [showGlossary, setShowGlossary] = useState(false);
   const [activeTab, setActiveTab] = useState<Session1TabKey>('1.1');
   const [viewMode, setViewMode] = useState<'tabs' | 'all'>('tabs');
+  const [historyCarouselLayout, setHistoryCarouselLayout] = useState<'circular' | 'accordion'>('circular');
   const toast = useToast();
 
   const handleSelectTab = (tab: Session1TabKey) => {
@@ -1406,49 +1414,55 @@ export function Session1Subactivities({
                   Durante miles de años, la humanidad vivió rodeada de un secreto maravilloso: no sabíamos que los árboles gigantes, los pájaros en el cielo, las flores del jardín y nuestro propio cuerpo estamos construidos exactamente con los mismos bloques diminutos. Las personas creían que las cosas vivas aparecían espontáneamente del lodo o de la fruta podrida, porque nadie tenía ojos capaces de ver lo microscópico.
                 </p>
 
-                <div className="rounded-2xl border border-sky-400/20 bg-sky-400/5 p-4 sm:p-5 space-y-2">
-                  <h5 className="text-sm font-bold text-sky-300 uppercase tracking-wider flex items-center gap-2">
-                    <span>1.</span> El invento que abrió una ventana a lo invisible (Principios del siglo XVII)
-                  </h5>
-                  <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
-                    En los Países Bajos, el fabricante de lentes <strong>Zacharias Janssen</strong>, junto con su padre, descubrió que al alinear dos lentes de aumento en un tubo, los objetos pequeños se veían enormes. Acababa de nacer el <strong>primer microscopio compuesto</strong>. Aunque al principio se usó como una curiosidad para examinar telas o insectos, muy pronto se convirtió en la llave mágica de la ciencia.
-                  </p>
-                </div>
+                {/* ── Carrusel Circular 3D con Gráficos 2D Animados (React Bits) ── */}
+                <div className="space-y-3 pt-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <span className="font-extrabold text-amber-300 flex items-center gap-1.5">
+                      <Sparkles className="size-4 text-amber-400" />
+                      Carrusel Circular 3D · Hitos Históricos de la Teoría Celular
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-slate-400 hidden sm:inline">
+                        Arrastra o gira en 3D para explorar cada hito histórico con su gráfico 2D animado
+                      </span>
+                      <div className="inline-flex rounded-xl border border-white/10 bg-white/5 p-0.5 text-[11px] font-bold">
+                        <button
+                          type="button"
+                          onClick={() => setHistoryCarouselLayout('circular')}
+                          className={cn(
+                            'rounded-lg px-2.5 py-1 transition',
+                            historyCarouselLayout === 'circular'
+                              ? 'bg-amber-400 text-ink-950 font-black shadow-sm'
+                              : 'text-slate-300 hover:text-white'
+                          )}
+                        >
+                          Carrusel 3D
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setHistoryCarouselLayout('accordion')}
+                          className={cn(
+                            'rounded-lg px-2.5 py-1 transition',
+                            historyCarouselLayout === 'accordion'
+                              ? 'bg-amber-400 text-ink-950 font-black shadow-sm'
+                              : 'text-slate-300 hover:text-white'
+                          )}
+                        >
+                          Acordeón
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-4 sm:p-5 space-y-2">
-                  <h5 className="text-sm font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-2">
-                    <span>2.</span> Robert Hooke y el bautizo de la «célula» (1665)
-                  </h5>
-                  <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
-                    En Inglaterra, el científico <strong>Robert Hooke</strong> puso bajo su microscopio una rebanada muy fina de corcho (la corteza de un árbol). Lo que vio lo dejó boquiabierto: cientos de pequeñas cavidades vacías organizadas en hileras, como un panal de abejas. Hooke pensó que se parecían a las pequeñas habitaciones o «celdas» donde dormían los monjes en los monasterios, y decidió llamarlas <strong>células</strong>. Aunque Hooke solo estaba observando las paredes vacías de células que ya no estaban vivas, acababa de acuñar la palabra más importante de la biología.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4 sm:p-5 space-y-2">
-                  <h5 className="text-sm font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
-                    <span>3.</span> Anton van Leeuwenhoek y sus diminutos «animálculos» (1674)
-                  </h5>
-                  <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
-                    Poco después, un comerciante holandés llamado <strong>Anton van Leeuwenhoek</strong> aprendió a pulir lentes diminutos pero de una claridad asombrosa. Empezó a observar todo lo que caía en sus manos: gotas de agua estancada, lluvia y hasta el sarro de sus propios dientes. Vio con emoción a millones de seres vivos nadando y moviéndose con energía. Los llamó <em>«animálculos»</em>. Sin saberlo, Leeuwenhoek fue el primer ser humano en ver bacterias vivas y protozoos unicelulares.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-violet-400/20 bg-violet-400/5 p-4 sm:p-5 space-y-2">
-                  <h5 className="text-sm font-bold text-violet-300 uppercase tracking-wider flex items-center gap-2">
-                    <span>4.</span> El gran acuerdo: Las plantas y los animales están hechos de células (1838 - 1839)
-                  </h5>
-                  <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
-                    Pasaron casi dos siglos hasta que dos amigos científicos juntaron las piezas. El botánico <strong>Matthias Schleiden</strong> concluyó tras años de estudio que todas las plantas están hechas de células. Al compartir su café con el zoólogo <strong>Theodor Schwann</strong>, este último se dio cuenta de que los tejidos de los animales también estaban formados por células. Juntos proclamaron que <em>todos los seres vivos del planeta están formados por células</em> y que la célula es la unidad básica de la estructura y función de la vida.
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-4 sm:p-5 space-y-2">
-                  <h5 className="text-sm font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
-                    <span>5.</span> Rudolf Virchow y el origen de la vida celular (1855)
-                  </h5>
-                  <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
-                    Había un problema: Schleiden creía que las células nacían por una especie de «cristalización espontánea». Fue el médico <strong>Rudolf Virchow</strong> quien demostró la verdad con su famosa frase en latín: <em>«Omnis cellula e cellula»</em> (Toda célula procede de otra célula preexistente). Las células copian su información genética y se dividen en dos células hijas. La vida no surge por arte de magia: se hereda de célula en célula.
-                  </p>
+                  {historyCarouselLayout === 'circular' ? (
+                    <CircularCarousel items={historyCarouselItems} accentColor="#f59e0b" />
+                  ) : (
+                    <AccordionCarousel
+                      items={historyTheoryAccordionItems}
+                      accentColor="#f59e0b"
+                      className="w-full my-2"
+                    />
+                  )}
                 </div>
 
                 <p className="rounded-2xl border border-mint-400/30 bg-mint-400/10 p-4 text-xs font-semibold text-mint-200 sm:text-sm leading-relaxed">
@@ -1902,6 +1916,234 @@ export function Session1Subactivities({
     </div>
   );
 }
+/* ── Hitos Históricos en Carrusel Acordeón con Gráficos 2D Animados (Sesión 1 - 1.4) ── */
+const historyTheoryAccordionItems: AccordionCarouselItem[] = [
+  {
+    id: 'janssen',
+    year: 'Principios S. XVII (~1590-1608)',
+    scientist: 'Zacharias Janssen',
+    title: 'El primer microscopio compuesto',
+    subtitle: 'Alineación de dos lentes convexas en un tubo corredizo de latón',
+    tag: 'Hito 1 · Óptica y Ampliación',
+    tagTone: 'sky',
+    color: '#38bdf8',
+    glowColor: 'rgba(56, 189, 248, 0.35)',
+    icon: '🔬',
+    description:
+      'En Middelburg (Países Bajos), el fabricante de lentes Zacharias Janssen, junto con su padre Hans, descubrió que al alinear dos lentes de aumento en un tubo corredizo, los objetos pequeños se veían enormemente ampliados. Acababa de nacer el primer microscopio compuesto.',
+    detailedText: [
+      'Al combinar una lente ocular y una lente objetivo en un eje óptico, la imagen experimentaba una doble amplificación geométrica que superaba a cualquier lupa simple de la época.',
+      'Aunque en sus inicios se usó como una curiosidad para examinar telas e insectos, muy pronto se transformó en el instrumento insignia de la revolución científica moderna.'
+    ],
+    keyContribution:
+      'Invención del microscopio óptico compuesto: abrió la primera ventana visual hacia el universo invisible para los ojos humanos.',
+    quote: 'Alinear dos lentes convexas en un tubo duplica la capacidad del ojo y revela lo invisible.',
+    graphic2D: <JanssenMicroscopeGraphic2D />,
+    metadata: [
+      { label: 'Instrumento', value: 'Microscopio de tubo corredizo' },
+      { label: 'Ubicación', value: 'Middelburg, Países Bajos' },
+      { label: 'Innovación', value: 'Doble lente biconvexa' },
+      { label: 'Impacto', value: 'Nacimiento de la microscopía' }
+    ]
+  },
+  {
+    id: 'hooke',
+    year: '1665',
+    scientist: 'Robert Hooke',
+    title: 'El bautizo de la «célula»',
+    subtitle: 'Observación de cavidades en finas láminas de corcho vegetal',
+    tag: 'Hito 2 · Origen del Término',
+    tagTone: 'mint',
+    color: '#10b981',
+    glowColor: 'rgba(16, 185, 129, 0.35)',
+    icon: '🪵',
+    description:
+      'En Inglaterra, el científico y dibujante Robert Hooke colocó bajo su microscopio una rebanada muy fina de corcho (corteza del alcornoque). Lo que vio lo dejó boquiabierto: cientos de pequeñas cavidades vacías organizadas en hileras regulares, semejantes al panal de una colmena.',
+    detailedText: [
+      'Hooke pensó que se parecían a las pequeñas habitaciones o «celdas» (en latín cellae) donde descansaban los monjes en los monasterios, y decidió llamarlas células.',
+      'Publicó sus observaciones en su célebre libro Micrographia. Aunque Hooke observaba las paredes celulares muertas de suberina y no el interior vivo, acuñó la palabra central de la biología.'
+    ],
+    keyContribution:
+      'Acuñó el término «célula» y publicó los primeros diagramas microscópicos de tejidos vegetales en su obra Micrographia.',
+    quote: 'Eran todas porosas y perforadas, como un panal de abejas... llamé a estas partes celdas o células.',
+    graphic2D: <HookeCorkGraphic2D />,
+    metadata: [
+      { label: 'Obra cumbre', value: 'Micrographia (Londres, 1665)' },
+      { label: 'Muestra', value: 'Lámina de corcho (Quercus suber)' },
+      { label: 'Estructura', value: 'Paredes vegetales de suberina' },
+      { label: 'Término', value: '«Cell» (Célula / Celdilla)' }
+    ]
+  },
+  {
+    id: 'leeuwenhoek',
+    year: '1674',
+    scientist: 'Anton van Leeuwenhoek',
+    title: 'Los diminutos «animálculos»',
+    subtitle: 'Primeras observaciones de microorganismos vivos en movimiento',
+    tag: 'Hito 3 · Vida Unicelular',
+    tagTone: 'cyan',
+    color: '#06b6d4',
+    glowColor: 'rgba(6, 182, 212, 0.35)',
+    icon: '💧',
+    description:
+      'El comerciante holandés Anton van Leeuwenhoek aprendió a pulir diminutas perlas de vidrio con una precisión insólita, creando lentes simples con más de 200 aumentos. Comenzó a examinar gotas de agua estancada, lluvia, sarro dental y fluidos biológicos.',
+    detailedText: [
+      'Vio con emoción y asombro a millones de seres vivos microscópicos nadando con vigor. Los bautizó como «animálculos».',
+      'Sin saberlo, Leeuwenhoek fue el primer ser humano en descubrir bacterias vivas, protozoarios ciliados, espermatozoides y glóbulos rojos, abriendo la microbiología mundial.'
+    ],
+    keyContribution:
+      'Descubrió los primeros seres vivos unicelulares móviles (bacterias y protozoarios), probando que la vida existe a escala microscópica.',
+    quote: 'Vi con gran asombro en el agua una cantidad prodigiosa de animálculos que se movían con increíble agilidad.',
+    graphic2D: <LeeuwenhoekAnimalculesGraphic2D />,
+    metadata: [
+      { label: 'Lente', value: 'Microesferas de vidrio pulido (>200x)' },
+      { label: 'Muestras', value: 'Agua estancada, lluvia y sarro' },
+      { label: 'Descubrimiento', value: 'Bacterias y protozoos vivientes' },
+      { label: 'Impacto', value: 'Pionero de la microbiología' }
+    ]
+  },
+  {
+    id: 'schleiden-schwann',
+    year: '1838 - 1839',
+    scientist: 'Schleiden & Schwann',
+    title: 'Universalidad celular: Plantas y Animales',
+    subtitle: 'Unión de botánica y zoología bajo la misma arquitectura viva',
+    tag: 'Hito 4 · Teoría Celular Formal',
+    tagTone: 'purple',
+    color: '#8b5cf6',
+    glowColor: 'rgba(139, 92, 246, 0.35)',
+    icon: '🌱🐾',
+    description:
+      'Pasaron casi dos siglos hasta que dos amigos científicos unieron las piezas. El botánico Matthias Schleiden concluyó que todas las plantas están formadas por células. Al compartir sus hallazgos en un café con el zoólogo Theodor Schwann, este reconoció la misma arquitectura en animales.',
+    detailedText: [
+      'Juntos proclamaron los dos primeros postulados: Todos los seres vivos del planeta están formados por células, y la célula es la unidad básica estructural y funcional de la vida.',
+      'Esta gran síntesis demostró que una brizna de hierba y un elefante gigante comparten exactamente la misma unidad biológica fundamental.'
+    ],
+    keyContribution:
+      'Formulación formal de los postulados 1 y 2 de la Teoría Celular: la célula como unidad estructural y funcional universal de todos los seres vivos.',
+    quote: 'Hay un principio general de construcción para todas las producciones orgánicas: la formación de células.',
+    graphic2D: <SchleidenSchwannGraphic2D />,
+    metadata: [
+      { label: 'Schleiden', value: 'Botánica: todas las plantas son celulares' },
+      { label: 'Schwann', value: 'Zoología: todos los animales son celulares' },
+      { label: 'Unificación', value: 'Reinos vegetal y animal hermanados' },
+      { label: 'Postulados', value: '1.er y 2.º postulado universal' }
+    ]
+  },
+  {
+    id: 'virchow',
+    year: '1855',
+    scientist: 'Rudolf Virchow',
+    title: '«Omnis cellula e cellula»',
+    subtitle: 'Origen celular por división biológica y continuidad genética',
+    tag: 'Hito 5 · Continuidad de la Vida',
+    tagTone: 'gold',
+    color: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.35)',
+    icon: '🧬',
+    description:
+      'Existía un dilema científico: Schleiden creía erróneamente que las células se formaban por una especie de «cristalización espontánea». El patólogo alemán Rudolf Virchow resolvió definitivamente el enigma con su célebre aforismo latino: «Omnis cellula e cellula».',
+    detailedText: [
+      'Virchow demostró que toda célula procede siempre de otra célula preexistente por bipartición biológica. Las células copian su ADN y se dividen en dos células hijas.',
+      'Con este postulado se descartó para siempre la generación espontánea y se estableció la cadena ininterrumpida de la herencia biológica.'
+    ],
+    keyContribution:
+      'Tercer postulado de la Teoría Celular: Toda célula procede de otra preexistente por mitosis y división biológica.',
+    quote: 'Donde existe una célula debe haber existido una célula previa, así como un animal solo nace de un animal y una planta de una planta.',
+    graphic2D: <VirchowDivisionGraphic2D />,
+    metadata: [
+      { label: 'Aforismo', value: '«Omnis cellula e cellula»' },
+      { label: 'Fenómeno', value: 'División celular y mitosis' },
+      { label: 'Revolución', value: 'Fin del dogma de generación espontánea' },
+      { label: 'Postulado', value: '3.er postulado: origen celular' }
+    ]
+  }
+];
+
+/* ── Hitos Históricos en Carrusel Circular 3D con Gráficos 2D Animados (Sesión 1 - 1.4) ── */
+const historyCarouselItems: CircularCarouselItem[] = [
+  {
+    id: 'janssen',
+    title: '1. Zacharias Janssen',
+    subtitle: 'El primer microscopio compuesto (~1590 - 1608)',
+    tag: 'Óptica y Aumento',
+    tagTone: 'sky',
+    description:
+      'En Middelburg (Países Bajos), el fabricante de lentes Zacharias Janssen descubrió que al alinear dos lentes de aumento en un tubo corredizo de latón, los objetos se veían enormes. Acababa de nacer el primer microscopio compuesto.',
+    color: '#38bdf8',
+    icon: '🔬',
+    graphic2D: <JanssenMicroscopeGraphic2D />,
+    details: [
+      { label: 'Aporte', value: 'Microscopio de doble lente convexa' },
+      { label: 'Impacto', value: 'Apertura de la era microscópica' }
+    ]
+  },
+  {
+    id: 'hooke',
+    title: '2. Robert Hooke',
+    subtitle: 'El bautizo de la «célula» (1665)',
+    tag: 'Origen del Término',
+    tagTone: 'mint',
+    description:
+      'En Inglaterra, Robert Hooke observó finas rebanadas de corcho vegetal y descubrió cientos de pequeñas cavidades poliédricas en hilera parecidas a un panal de abejas. Las llamó «células» (celdillas), acuñando la palabra más célebre de la biología.',
+    color: '#10b981',
+    icon: '🪵',
+    graphic2D: <HookeCorkGraphic2D />,
+    details: [
+      { label: 'Obra', value: 'Micrographia (Londres, 1665)' },
+      { label: 'Hallazgo', value: 'Celdillas en corteza de corcho' }
+    ]
+  },
+  {
+    id: 'leeuwenhoek',
+    title: '3. Anton van Leeuwenhoek',
+    subtitle: 'Los diminutos «animálculos» (1674)',
+    tag: 'Vida Unicelular',
+    tagTone: 'cyan',
+    description:
+      'Con lentes artesanales pulidas de más de 200 aumentos, Leeuwenhoek observó gotas de agua estancada y sarro dental, descubriendo por primera vez en la historia bacterias vivas y protozoarios nadando vigorosamente.',
+    color: '#06b6d4',
+    icon: '💧',
+    graphic2D: <LeeuwenhoekAnimalculesGraphic2D />,
+    details: [
+      { label: 'Lente', value: 'Microesferas de vidrio pulido (>200x)' },
+      { label: 'Descubrimiento', value: 'Bacterias y protozoarios vivos' }
+    ]
+  },
+  {
+    id: 'schleiden-schwann',
+    title: '4. Schleiden & Schwann',
+    subtitle: 'Universalidad: Plantas y Animales (1838 - 1839)',
+    tag: 'Teoría Celular Formal',
+    tagTone: 'purple',
+    description:
+      'El botánico Schleiden y el zoólogo Schwann unieron la botánica y la zoología: proclamaron que todos los seres vivos (plantas y animales) están formados por células, constituyendo la unidad anatómica y funcional de la vida.',
+    color: '#8b5cf6',
+    icon: '🌱',
+    graphic2D: <SchleidenSchwannGraphic2D />,
+    details: [
+      { label: 'Postulado 1', value: 'Unidad estructural de la vida' },
+      { label: 'Postulado 2', value: 'Unidad funcional de los seres vivos' }
+    ]
+  },
+  {
+    id: 'virchow',
+    title: '5. Rudolf Virchow',
+    subtitle: '«Omnis cellula e cellula» (1855)',
+    tag: 'Continuidad Biológica',
+    tagTone: 'gold',
+    description:
+      'Virchow demostró que toda célula procede siempre de otra célula preexistente por mitosis y división biológica, desterrando el mito de la generación espontánea y probando la continuidad genética ininterrumpida de la vida.',
+    color: '#f59e0b',
+    icon: '🧬',
+    graphic2D: <VirchowDivisionGraphic2D />,
+    details: [
+      { label: 'Aforismo', value: '«Omnis cellula e cellula»' },
+      { label: 'Postulado 3', value: 'Toda célula procede de otra previa' }
+    ]
+  }
+];
+
 /* ── Elementos del Carrusel Circular 3D con Gráficos 2D (Sesión 2) ── */
 const plantCarouselItems: CircularCarouselItem[] = [
   {

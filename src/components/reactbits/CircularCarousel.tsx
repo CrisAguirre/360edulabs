@@ -7,7 +7,7 @@ export interface CircularCarouselItem {
   title: string;
   subtitle?: string;
   tag?: string;
-  tagTone?: 'mint' | 'gold' | 'rose' | 'sky' | 'purple' | 'neutral';
+  tagTone?: 'mint' | 'gold' | 'rose' | 'sky' | 'purple' | 'cyan' | 'neutral';
   description: string;
   color: string;
   icon: string;
