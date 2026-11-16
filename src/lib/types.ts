@@ -8,6 +8,22 @@ export interface User {
   displayName: string;
   role: Role;
   avatarKey: string;
+  createdAt?: string;
+  classroom?: {
+    name: string;
+    code: string;
+    grade: string;
+    school: string;
+    academicYear?: string;
+  } | null;
+  classrooms?: Array<{
+    id: string;
+    name: string;
+    code: string;
+    grade: string;
+    school: string;
+    academicYear?: string;
+  }>;
 }
 
 export interface ApiEnvelope<T> {

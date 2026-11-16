@@ -157,6 +157,9 @@ export const authApi = {
   me() {
     return api.get<User>('/auth/me');
   },
+  updateProfile(data: { displayName: string }) {
+    return api.patch<User>('/auth/me', data);
+  },
   refresh: refreshSession
 };
 

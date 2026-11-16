@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 import {
   activitiesApi,
+  authApi,
   classroomsApi,
   evidenceApi,
   missionsApi,
@@ -14,6 +15,7 @@ import {
 import type { Evidence, EvidenceLevel } from './types';
 
 export const queryKeys = {
+  profile: ['profile', 'me'] as const,
   missions: ['missions'] as const,
   mission: (code: string) => ['mission', code] as const,
   progress: ['progress', 'me'] as const,
@@ -185,4 +187,21 @@ export function useReviewEvidence(classroomId: string | undefined) {
 export function evidenceForActivity(evidence: Evidence[] | undefined, activityId: string | undefined) {
   if (!evidence || !activityId) return undefined;
   return evidence.find((item) => String(item.activityId) === activityId);
+}
+
+export function useUserProfile() {
+  return useQuery({
+    queryKey: queryKeys.profile,
+    queryFn: authApi.me
+  });
+}
+
+export function useUpdateProfile() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { displayName: string }) => authApi.updateProfile(data),
+    onSuccess: (updated) => {
+      client.setQueryData(queryKeys.profile, updated);
+    }
+  });
 }

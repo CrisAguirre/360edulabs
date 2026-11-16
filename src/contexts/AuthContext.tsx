@@ -19,6 +19,7 @@ interface AuthContextValue {
   login: (username: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  updateUser: (updatedUser: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -77,17 +78,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus('anonymous');
   }, []);
 
+  const updateUser = useCallback((updated: Partial<User>) => {
+    setUser((prev) => (prev ? { ...prev, ...updated } : null));
+  }, []);
+
   const refreshUser = useCallback(async () => {
-    const session = await bootstrap();
-    if (session) {
-      setUser(session.user);
-      setStatus('authenticated');
+    try {
+      const freshUser = await authApi.me();
+      if (freshUser) {
+        setUser(freshUser);
+        setStatus('authenticated');
+      }
+    } catch {
+      const session = await refreshSession();
+      if (session) {
+        setUser(session.user);
+        setStatus('authenticated');
+      }
     }
   }, []);
 
   const value = useMemo(
-    () => ({ user, status, login, logout, refreshUser }),
-    [user, status, login, logout, refreshUser]
+    () => ({ user, status, login, logout, refreshUser, updateUser }),
+    [user, status, login, logout, refreshUser, updateUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
