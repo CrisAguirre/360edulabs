@@ -832,6 +832,8 @@ export interface Session1SubactivitiesProps {
   viewMode?: 'tabs' | 'all';
   onViewModeChange?: (mode: 'tabs' | 'all') => void;
   showTabBar?: boolean;
+  /** XP acumulado de la misión, mostrado junto al título de la estación 1.1. */
+  missionXp?: number;
 }
 
 export type Session1TabKey = '1.1' | '1.2' | '1.3' | '1.4' | '1.5' | '1.6';
@@ -852,7 +854,8 @@ export function Session1Subactivities({
   onTabChange,
   viewMode: controlledViewMode,
   onViewModeChange,
-  showTabBar = true
+  showTabBar = true,
+  missionXp
 }: Session1SubactivitiesProps) {
   const [initialAporte, setInitialAporte] = useState('');
   const [aporteShared, setAporteShared] = useState(false);
@@ -1102,7 +1105,15 @@ export function Session1Subactivities({
                   </h3>
                 </div>
               </div>
-              <span className="text-xs text-slate-400 font-semibold">Participación oral y escrita</span>
+              <div className="flex flex-col items-end gap-1.5">
+                {typeof missionXp === 'number' ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                    <Star className="size-3.5 text-amber-300" aria-hidden />
+                    {missionXp} puntos de experiencia
+                  </span>
+                ) : null}
+                <span className="text-xs text-slate-400 font-semibold">Participación oral y escrita</span>
+              </div>
             </div>
 
             {/* Texto literal de la docente */}

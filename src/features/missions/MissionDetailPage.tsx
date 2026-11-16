@@ -200,7 +200,7 @@ export function MissionDetailPage() {
   };
 
   return (
-    <div className="space-y-7">
+    <div className={isSession1 ? 'space-y-4' : 'space-y-7'}>
       {readingActivity ? (
         <MissionTabBar
           missionCode={mission.code}
@@ -289,34 +289,30 @@ export function MissionDetailPage() {
 
             <p className="max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">{headerDescription}</p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              {!isSession1 ? (
-                <>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                    <Clock3 className="size-3.5 text-slate-400" aria-hidden />
-                    {mission.estimatedMinutes} min estimados
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
-                    <Target className="size-3.5 text-amber-300" aria-hidden />
-                    {isSession2
-                      ? 'Estaciones 2.1 a 2.7 (Reto final incluido)'
-                      : `${required.length} pasos obligatorios`}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                    <Sparkles className="size-3.5 text-mint-300" aria-hidden />
-                    {isSession2 || isSession3
-                      ? `${complementaryActivities.filter((a) => a.type !== 'quiz').length} complementarias opcionales`
-                      : `${support.length} actividades opcionales`}
-                  </span>
-                </>
-              ) : null}
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                <Star className="size-3.5 text-amber-300" aria-hidden />
-                {isSession1
-                  ? `${mission.progress.xpEarned} puntos de experiencia`
-                  : `${mission.progress.xpEarned} XP acumulados`}
-              </span>
-            </div>
+            {!isSession1 ? (
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                  <Clock3 className="size-3.5 text-slate-400" aria-hidden />
+                  {mission.estimatedMinutes} min estimados
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
+                  <Target className="size-3.5 text-amber-300" aria-hidden />
+                  {isSession2
+                    ? 'Estaciones 2.1 a 2.7 (Reto final incluido)'
+                    : `${required.length} pasos obligatorios`}
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                  <Sparkles className="size-3.5 text-mint-300" aria-hidden />
+                  {isSession2 || isSession3
+                    ? `${complementaryActivities.filter((a) => a.type !== 'quiz').length} complementarias opcionales`
+                    : `${support.length} actividades opcionales`}
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                  <Star className="size-3.5 text-amber-300" aria-hidden />
+                  {mission.progress.xpEarned} XP acumulados
+                </span>
+              </div>
+            ) : null}
 
             {!isSession1 ? (
               <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -427,21 +423,9 @@ export function MissionDetailPage() {
         </Card>
       ) : null}
 
-      {/* ── Si es Sesión 1: Contenido General en Nivel Superior con 6 Pestañas ── */}
+      {/* ── Sesión 1: estaciones oficiales 1.1 a 1.6 (sin cabecera duplicada) ── */}
       {isSession1 && readingActivity ? (
         <section id="estaciones-sesion-1" className="scroll-mt-24 space-y-4">
-          <SectionHeading
-            eyebrow="Contenido General · Nivel Superior"
-            title="La extraña historia de la teoría celular"
-            description="Eje central de indagación de la Sesión 1: recorre las 6 estaciones oficiales de forma dinámica (1.1 Aportes, 1.2 Aporte conceptual, 1.3 Video documental, 1.4 Lectura y participación, 1.5 Reto Final evaluativo y 1.6 Contenidos extras de apoyo)."
-            action={
-              <Chip tone="mint">
-                <Trophy className="size-3.5 text-mint-300" aria-hidden />
-                Ruta oficial 1.1 a 1.6
-              </Chip>
-            }
-          />
-
           <Session1Subactivities
             activity={readingActivity}
             mission={mission}
@@ -478,6 +462,7 @@ export function MissionDetailPage() {
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             showTabBar={false}
+            missionXp={mission.progress.xpEarned}
           />
         </section>
       ) : isSession2 && readingActivity ? (
