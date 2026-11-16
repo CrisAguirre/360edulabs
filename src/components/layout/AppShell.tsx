@@ -31,7 +31,6 @@ const navByRole = {
     { to: '/docente/misiones', label: 'Sesiones', icon: BookOpenCheck }
   ],
   admin: [
-    { to: '/admin', label: 'Administración', icon: ShieldCheck },
     { to: '/estudiante', label: 'Sesiones', icon: Compass },
     { to: '/logros', label: 'Logros', icon: Trophy },
     { to: '/docente', label: 'Aulas', icon: LayoutDashboard },
@@ -94,7 +93,7 @@ export function AppShell() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  end={item.to === '/docente' || item.to === '/admin' || item.to === '/estudiante'}
+                  end={item.to === '/docente' || item.to === '/estudiante'}
                   className={({ isActive }) =>
                     cn(
                       'flex min-h-11 items-center gap-2 rounded-xl px-3.5 text-sm font-bold transition',
@@ -126,17 +125,48 @@ export function AppShell() {
 
             {user ? (
               <>
-                <div className="hidden items-center gap-2.5 rounded-2xl border border-white/8 bg-white/4 px-3 py-1.5 sm:flex">
-                  <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-mint-300 to-sky-400 text-xs font-extrabold text-ink-950">
-                    {initials(user.displayName)}
+                <NavLink
+                  to={user.role === 'admin' ? '/admin' : '/perfil'}
+                  className={({ isActive }) =>
+                    cn(
+                      'group hidden items-center gap-2.5 rounded-2xl border px-3 py-1.5 transition sm:flex',
+                      isActive
+                        ? 'border-mint-400/50 bg-mint-400/15 shadow-sm shadow-mint-400/10'
+                        : 'border-white/8 bg-white/4 hover:border-mint-400/40 hover:bg-white/8'
+                    )
+                  }
+                  title={
+                    user.role === 'admin'
+                      ? 'Panel de Administración (Clic para abrir)'
+                      : 'Mi Perfil (Clic para ver y editar tus datos)'
+                  }
+                  aria-label={
+                    user.role === 'admin'
+                      ? 'Ir al panel de administración'
+                      : 'Ir a mi perfil y editar datos'
+                  }
+                >
+                  <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-mint-300 to-sky-400 text-xs font-extrabold text-ink-950 shadow-sm transition group-hover:scale-105">
+                    {user.role === 'admin' ? (
+                      <ShieldCheck className="size-4.5 text-ink-950" aria-hidden />
+                    ) : (
+                      initials(user.displayName)
+                    )}
                   </span>
-                  <span className="leading-tight">
-                    <span className="block max-w-36 truncate text-xs font-extrabold text-white">{user.displayName}</span>
-                    <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  <span className="leading-tight text-left">
+                    <span className="block max-w-36 truncate text-xs font-extrabold text-white transition-colors group-hover:text-mint-300">
+                      {user.displayName}
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 transition-colors group-hover:text-mint-400/80">
                       {roleLabel[user.role]}
+                      {user.role === 'admin' && (
+                        <span className="rounded bg-mint-400/20 px-1 py-0.2 text-[9px] font-extrabold text-mint-300">
+                          Panel
+                        </span>
+                      )}
                     </span>
                   </span>
-                </div>
+                </NavLink>
                 <button
                   type="button"
                   onClick={handleLogout}
@@ -184,7 +214,7 @@ export function AppShell() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/docente' || item.to === '/admin' || item.to === '/estudiante'}
+                end={item.to === '/docente' || item.to === '/estudiante'}
                 className={({ isActive }) =>
                   cn(
                     'flex min-h-13 flex-1 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-extrabold uppercase tracking-wide transition',
@@ -199,11 +229,20 @@ export function AppShell() {
           })}
           <button
             type="button"
-            onClick={() => navigate(user.role === 'student' ? '/logros' : user.role === 'admin' ? '/admin' : '/docente')}
-            className="flex min-h-13 flex-1 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-extrabold uppercase tracking-wide text-slate-400"
+            onClick={() => navigate(user.role === 'admin' ? '/admin' : '/perfil')}
+            className={cn(
+              'flex min-h-13 flex-1 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-extrabold uppercase tracking-wide transition',
+              (user.role === 'admin' ? location.pathname === '/admin' : location.pathname === '/perfil')
+                ? 'bg-mint-400/14 text-mint-300'
+                : 'text-slate-400'
+            )}
           >
-            <UserRound className="size-5" aria-hidden />
-            Perfil
+            {user.role === 'admin' ? (
+              <ShieldCheck className="size-5" aria-hidden />
+            ) : (
+              <UserRound className="size-5" aria-hidden />
+            )}
+            {user.role === 'admin' ? 'Admin' : 'Perfil'}
           </button>
         </nav>
       ) : null}

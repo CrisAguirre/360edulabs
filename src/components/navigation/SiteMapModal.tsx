@@ -10,6 +10,7 @@ import {
   Microscope,
   ShieldCheck,
   Trophy,
+  UserCheck,
   X
 } from 'lucide-react';
 import { useEffect } from 'react';
@@ -130,7 +131,7 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                 <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                   Zona central de aprendizaje
                 </span>
-                <div className="mt-2.5 grid gap-3 sm:grid-cols-2">
+                <div className="mt-2.5 grid gap-3 sm:grid-cols-3">
                   <Link
                     to="/estudiante"
                     onClick={onClose}
@@ -147,14 +148,14 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                       </span>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-bold text-white">Mapa de sesiones</h3>
+                          <h3 className="text-sm font-bold text-white">Sesiones</h3>
                           {isActive('/estudiante', true) && (
                             <span className="rounded-full bg-mint-400/20 px-2 py-0.5 text-[10px] font-extrabold text-mint-300">
-                              📍 Estás aquí
+                              📍 Aquí
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-400">Ruta principal con las 3 sesiones de indagación</p>
+                        <p className="text-xs text-slate-400">Las 3 sesiones de indagación</p>
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-white" />
@@ -176,14 +177,51 @@ export function SiteMapModal({ isOpen, onClose }: SiteMapModalProps) {
                       </span>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-bold text-white">Vitrina de Logros e Insignias</h3>
+                          <h3 className="text-sm font-bold text-white">Mis Logros</h3>
                           {isActive('/logros', true) && (
                             <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-extrabold text-amber-300">
-                              📍 Estás aquí
+                              📍 Aquí
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-400">Colección de medallas y nivel científico</p>
+                        <p className="text-xs text-slate-400">Insignias y nivel científico</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="size-4 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-white" />
+                  </Link>
+
+                  <Link
+                    to={user?.role === 'admin' ? '/admin' : '/perfil'}
+                    onClick={onClose}
+                    className={cn(
+                      'group flex items-center justify-between rounded-2xl border p-4 transition',
+                      isActive(user?.role === 'admin' ? '/admin' : '/perfil', true)
+                        ? 'border-sky-400/40 bg-sky-400/14 shadow-lg'
+                        : 'border-white/8 bg-white/4 hover:border-white/20 hover:bg-white/8'
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="grid size-10 place-items-center rounded-xl bg-sky-400/15 text-sky-300">
+                        {user?.role === 'admin' ? (
+                          <ShieldCheck className="size-5" aria-hidden />
+                        ) : (
+                          <UserCheck className="size-5" aria-hidden />
+                        )}
+                      </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-bold text-white">
+                            {user?.role === 'admin' ? 'Administración' : 'Mi Perfil'}
+                          </h3>
+                          {isActive(user?.role === 'admin' ? '/admin' : '/perfil', true) && (
+                            <span className="rounded-full bg-sky-400/20 px-2 py-0.5 text-[10px] font-extrabold text-sky-300">
+                              📍 Aquí
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-400">
+                          {user?.role === 'admin' ? 'Consola de gestión' : 'Datos y edición de nombre'}
+                        </p>
                       </div>
                     </div>
                     <ChevronRight className="size-4 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-white" />

@@ -9,6 +9,7 @@ import { LoginPage } from './features/auth/LoginPage';
 import { LandingPage } from './features/landing/LandingPage';
 import { ActivityPage } from './features/missions/ActivityPage';
 import { MissionDetailPage } from './features/missions/MissionDetailPage';
+import { ProfilePage } from './features/profile/ProfilePage';
 import { QuizPage } from './features/quiz/QuizPage';
 import { LogrosPage } from './features/student/LogrosPage';
 import { StudentHome } from './features/student/StudentHome';
@@ -37,6 +38,9 @@ export function App() {
               {/* Authenticated routes inside AppShell */}
               <Route element={<ProtectedRoute />}>
                 <Route element={<AppShell />}>
+                  {/* Profile route */}
+                  <Route path="/perfil" element={<ProfilePage />} />
+
                   {/* Student routes */}
                   <Route path="/estudiante" element={<StudentHome />} />
                   <Route path="/logros" element={<LogrosPage />} />
