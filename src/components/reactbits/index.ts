@@ -26,5 +26,10 @@ export {
   ReflectiveCard,
   type ReflectiveCardProps
 } from './ReflectiveCard';
+export {
+  OrbitCards,
+  type OrbitCardsProps,
+  type OrbitItem
+} from './OrbitCards';
 
 

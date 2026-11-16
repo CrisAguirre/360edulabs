@@ -59,6 +59,8 @@ import {
   type CircularCarouselItem,
   ClickSpark,
   DecryptedText,
+  OrbitCards,
+  type OrbitItem,
   ShinyText,
   SpotlightCard
 } from '../../components/reactbits';
@@ -257,105 +259,150 @@ function GlossaryTerm({ item }: { item: GlossaryItem }) {
   );
 }
 
-/* ── Candidate ideas for Mission 1 ──────────────────────────── */
-const DEFAULT_IDEAS = [
+/* ── Candidate ideas for Mission 1 (Orbit Cards) ──────────────── */
+const DEFAULT_IDEAS: OrbitItem[] = [
   {
     id: 'unidad-estructural',
     title: 'La célula como unidad estructural',
     description:
-      'Todos los seres vivos que habitan el planeta se componen de una o más células (unicelulares o pluricelulares).'
+      'Todos los seres vivos que habitan el planeta se componen de una o más células (unicelulares o pluricelulares).',
+    icon: '🔬',
+    color: '#38bdf8',
+    tag: 'Postulado 1'
   },
   {
     id: 'unidad-origen',
     title: 'La célula como unidad de origen',
     description:
-      'Toda célula procede de otra célula preexistente, tras copiar su material genético antes de dividirse.'
+      'Toda célula procede de otra célula preexistente, tras copiar su material genético antes de dividirse.',
+    icon: '🧬',
+    color: '#10b981',
+    tag: 'Postulado 2'
   },
   {
     id: 'biomoleculas',
     title: 'Composición química universal',
     description:
-      'Toda célula se compone básicamente de las mismas biomoléculas: agua, minerales, carbohidratos, lípidos, proteínas y ácidos nucleicos.'
+      'Toda célula se compone básicamente de las mismas biomoléculas: agua, minerales, carbohidratos, lípidos, proteínas y ácidos nucleicos.',
+    icon: '🧪',
+    color: '#f59e0b',
+    tag: 'Postulado 3'
   },
   {
     id: 'unidad-funcional',
     title: 'La célula como unidad funcional',
     description:
-      'En la célula ocurren las reacciones químicas indispensables para vivir, independientemente del tipo de organismo.'
+      'En la célula ocurren las reacciones químicas indispensables para vivir, independientemente del tipo de organismo.',
+    icon: '⚡',
+    color: '#a855f7',
+    tag: 'Postulado 4'
   },
   {
     id: 'microscopia-historica',
     title: 'Aporte de la microscopía científica',
     description:
-      'Los aportes de Hooke y Leeuwenhoek permitieron descubrir el mundo celular invisible a simple vista.'
+      'Los aportes de Hooke y Leeuwenhoek permitieron descubrir el mundo celular invisible a simple vista.',
+    icon: '📜',
+    color: '#ec4899',
+    tag: 'Historia'
   }
 ];
 
-/* ── Candidate ideas for Mission 2 ──────────────────────────── */
-const M2_IDEAS = [
+/* ── Candidate ideas for Mission 2 (Orbit Cards) ──────────────── */
+const M2_IDEAS: OrbitItem[] = [
   {
     id: 'm2-diferencias-nutricion',
     title: 'Diferencias por nutrición y modo de vida',
     description:
-      'Nuestras células y las de una planta no son iguales: las plantas son autótrofas y requieren soporte rígido, mientras que los animales somos heterótrofos con células móviles y flexibles.'
+      'Nuestras células y las de una planta no son iguales: las plantas son autótrofas y requieren soporte rígido, mientras que los animales somos heterótrofos con células móviles y flexibles.',
+    icon: '🌱',
+    color: '#f59e0b',
+    tag: 'Nutrición'
   },
   {
     id: 'm2-pared-celulosa',
     title: 'Pared celular y soporte mecánico',
     description:
-      'La célula vegetal posee una pared rígida de celulosa que da forma fija y sostén mecánico para que los árboles y plantas crezcan erguidos sin esqueleto óseo.'
+      'La célula vegetal posee una pared rígida de celulosa que da forma fija y sostén mecánico para que los árboles y plantas crezcan erguidos sin esqueleto óseo.',
+    icon: '🧱',
+    color: '#b45309',
+    tag: 'Soporte'
   },
   {
     id: 'm2-cloroplastos-fotosintesis',
     title: 'Cloroplastos y fotosíntesis',
     description:
-      'Las células vegetales tienen cloroplastos con clorofila para captar luz solar y fabricar glucosa, estructuras que no existen en nuestras células animales.'
+      'Las células vegetales tienen cloroplastos con clorofila para captar luz solar y fabricar glucosa, estructuras que no existen en nuestras células animales.',
+    icon: '🌿',
+    color: '#22c55e',
+    tag: 'Energía'
   },
   {
     id: 'm2-vacuola-turgencia',
     title: 'Gran vacuola central y turgencia',
     description:
-      'La célula vegetal tiene una enorme vacuola de agua que genera presión de turgencia para no marchitarse, mientras que las células animales tienen vacuolas pequeñas y transitorias.'
+      'La célula vegetal tiene una enorme vacuola de agua que genera presión de turgencia para no marchitarse, mientras que las células animales tienen vacuolas pequeñas y transitorias.',
+    icon: '💧',
+    color: '#06b6d4',
+    tag: 'Turgencia'
   },
   {
     id: 'm2-estructuras-comunes',
     title: 'Estructuras comunes indispensables',
     description:
-      'Ambas células necesitan obligatoriamente membrana plasmática (intercambio), núcleo con ADN (dirección), citoplasma (reacciones) y mitocondrias (energía ATP) para vivir y funcionar.'
+      'Ambas células necesitan obligatoriamente membrana plasmática (intercambio), núcleo con ADN (dirección), citoplasma (reacciones) y mitocondrias (energía ATP) para vivir y funcionar.',
+    icon: '🧬',
+    color: '#8b5cf6',
+    tag: 'Esenciales'
   }
 ];
 
-/* ── Candidate ideas for Mission 3 ──────────────────────────── */
-const M3_IDEAS = [
+/* ── Candidate ideas for Mission 3 (Orbit Cards) ──────────────── */
+const M3_IDEAS: OrbitItem[] = [
   {
     id: 'm3-fabrica-celular',
     title: 'La célula como fábrica metabólica activa',
     description:
-      'La célula funciona como una fábrica: recibe nutrientes como materias primas, los transforma mediante reacciones químicas continuas y usa energía (ATP) para elaborar sustancias vitales.'
+      'La célula funciona como una fábrica: recibe nutrientes como materias primas, los transforma mediante reacciones químicas continuas y usa energía (ATP) para elaborar sustancias vitales.',
+    icon: '🏭',
+    color: '#f59e0b',
+    tag: 'Fábrica'
   },
   {
     id: 'm3-respiracion-atp',
     title: 'Respiración celular y generación de ATP',
     description:
-      'En las mitocondrias de células animales y vegetales se oxidan los nutrientes con ayuda del oxígeno para generar ATP, la batería energética universal que impulsa las maquinarias celulares.'
+      'En las mitocondrias de células animales y vegetales se oxidan los nutrientes con ayuda del oxígeno para generar ATP, la batería energética universal que impulsa las maquinarias celulares.',
+    icon: '⚡',
+    color: '#e11d48',
+    tag: 'Respiración'
   },
   {
     id: 'm3-fotosintesis-glucosa',
     title: 'Fotosíntesis y producción de glucosa',
     description:
-      'Las células vegetales captan luz solar, agua y CO2 en los cloroplastos para fabricar glucosa y liberar oxígeno, actuando como paneles solares generadores de alimento.'
+      'Las células vegetales captan luz solar, agua y CO2 en los cloroplastos para fabricar glucosa y liberar oxígeno, actuando como paneles solares generadores de alimento.',
+    icon: '🌿',
+    color: '#16a34a',
+    tag: 'Fotosíntesis'
   },
   {
     id: 'm3-osmosis-turgencia',
     title: 'Ósmosis, vacuola central y turgencia',
     description:
-      'El agua entra y sale por ósmosis. En la célula vegetal, la gran vacuola central almacena agua y genera presión de turgencia que mantiene erguida a la planta, evitando la plasmólisis.'
+      'El agua entra y sale por ósmosis. En la célula vegetal, la gran vacuola central almacena agua y genera presión de turgencia que mantiene erguida a la planta, evitando la plasmólisis.',
+    icon: '💧',
+    color: '#0284c7',
+    tag: 'Ósmosis'
   },
   {
     id: 'm3-eliminacion-desechos',
     title: 'Catabolismo y eliminación de desechos',
     description:
-      'El catabolismo degrada nutrientes para liberar energía, produciendo desechos como CO2 y agua que son transportados hacia el exterior a través de la membrana celular.'
+      'El catabolismo degrada nutrientes para liberar energía, produciendo desechos como CO2 y agua que son transportados hacia el exterior a través de la membrana celular.',
+    icon: '🔄',
+    color: '#8b5cf6',
+    tag: 'Catabolismo'
   }
 ];
 
@@ -595,54 +642,27 @@ function VercelResponseSection({
         </p>
       </div>
 
-      {/* ── Selector interactivo de ideas (para Misión 1 y Misión 2) ── */}
+      {/* ── Paneles elegibles estilo Orbit Images (React Bits) para Misión 1 y Misión 2 ── */}
       {showIdeaSelector ? (
         <div className="space-y-2">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label className="text-xs font-extrabold uppercase tracking-wider text-sky-300">
-              Paso 1: Selecciona tus ideas clave ({selectedIdeas.size}/2 seleccionadas)
-            </label>
-            {selectedIdeas.size > 0 && !isSubmitted ? (
-              <button
-                type="button"
-                onClick={handleApplyIdeasToText}
-                className="text-xs font-bold text-mint-300 hover:text-mint-200 hover:underline"
-              >
-                + Insertar ideas seleccionadas en el texto
-              </button>
-            ) : null}
-          </div>
-
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {currentIdeas.map((idea) => {
-              const isSelected = selectedIdeas.has(idea.id);
-              return (
-                <ClickSpark key={idea.id} sparkColor="#fbbf24" sparkCount={6}>
-                  <button
-                    type="button"
-                    disabled={isSubmitted && !isChangesRequested}
-                    onClick={() => toggleIdea(idea.id)}
-                    className={cn(
-                      'w-full rounded-2xl border p-3.5 text-left transition-all duration-300',
-                      isSelected
-                        ? 'border-amber-400/50 bg-amber-400/15 text-amber-100 shadow-md shadow-amber-400/10 ring-1 ring-amber-400/40'
-                        : 'border-white/10 bg-white/4 text-slate-300 hover:border-sky-400/30 hover:bg-white/8'
-                    )}
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs font-extrabold text-amber-300">{idea.title}</span>
-                      {isSelected ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-400/25 px-2 py-0.5 text-[10px] font-bold text-amber-200">
-                          <Star className="size-3 fill-current" aria-hidden /> Elegida
-                        </span>
-                      ) : null}
-                    </div>
-                    <p className="mt-1 text-xs leading-relaxed text-slate-300">{idea.description}</p>
-                  </button>
-                </ClickSpark>
-              );
-            })}
-          </div>
+          <label className="text-xs font-extrabold uppercase tracking-wider text-sky-300">
+            Paso 1: Selecciona tus ideas clave ({selectedIdeas.size}/2 seleccionadas)
+          </label>
+          <OrbitCards
+            items={currentIdeas}
+            selectedIds={selectedIdeas}
+            onToggle={toggleIdea}
+            maxSelectable={2}
+            title={
+              missionCode === 'm2'
+                ? 'Ideas clave sobre semejanzas, diferencias y necesidades celulares'
+                : 'Ideas clave de la teoría celular para tu argumentación'
+            }
+            instruction="Da clic en alguna para seleccionarlas e integrarlas a tu respuesta"
+            accentColor={missionCode === 'm2' ? '#38bdf8' : '#f59e0b'}
+            onApplySelected={handleApplyIdeasToText}
+            isReadOnly={isSubmitted && !isChangesRequested}
+          />
         </div>
       ) : null}
 
