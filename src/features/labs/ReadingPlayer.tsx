@@ -63,9 +63,11 @@ import {
   type DriftWallItem,
   OrbitCards,
   type OrbitItem,
+  ReflectiveCard,
   ShinyText,
   SpotlightCard
 } from '../../components/reactbits';
+import { BodyLifeGraphic2D, CellActivityGraphic2D } from './InquiryGraphics2D';
 import {
   CellWallGraphic2D,
   ChloroplastGraphic2D,
@@ -1116,16 +1118,65 @@ export function Session1Subactivities({
               </div>
             </div>
 
-            {/* Texto literal de la docente */}
-            <div className="rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 sm:p-5 space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl shrink-0">👩‍🏫</span>
-                <p className="text-sm leading-relaxed text-slate-100 sm:text-base font-medium">
-                  La docente inicia la sesión motivando a los estudiantes a dar respuesta a la pregunta{' '}
-                  <strong className="text-sky-200 font-bold">
-                    ¿Sabías que tu cuerpo, las plantas y los animales están formados por millones de pequeñas estructuras que no podemos ver a simple vista? ¿se imaginan cómo son y qué hacen para mantenernos vivos?
-                  </strong>
-                </p>
+            {/* Preguntas motivadoras con tarjetas reflectivas y gráficos 2D */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-sky-400/15 text-sky-300">
+                  <Lightbulb className="size-4" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-sky-300">
+                    Preguntas para indagar
+                  </p>
+                  <p className="text-xs leading-relaxed text-slate-400">
+                    Observa cada imagen, imagina una respuesta y compártela con el grupo.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <ReflectiveCard
+                  className="h-full"
+                  reflectionColor="#38bdf8"
+                  borderColor="rgba(56, 189, 248, 0.32)"
+                >
+                  <div className="flex h-full flex-col p-4 sm:p-5">
+                    <BodyLifeGraphic2D />
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                      <span className="rounded-lg bg-sky-400/15 px-2 py-0.5 text-[11px] font-extrabold text-sky-300">
+                        Pregunta 1
+                      </span>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Unidad en la diversidad
+                      </span>
+                    </div>
+                    <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                      ¿Sabías que tu cuerpo, las plantas y los animales están formados por millones de
+                      pequeñas estructuras que no podemos ver a simple vista?
+                    </p>
+                  </div>
+                </ReflectiveCard>
+
+                <ReflectiveCard
+                  className="h-full"
+                  reflectionColor="#58e6c5"
+                  borderColor="rgba(88, 230, 197, 0.32)"
+                >
+                  <div className="flex h-full flex-col p-4 sm:p-5">
+                    <CellActivityGraphic2D />
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                      <span className="rounded-lg bg-mint-400/15 px-2 py-0.5 text-[11px] font-extrabold text-mint-300">
+                        Pregunta 2
+                      </span>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Vida en acción
+                      </span>
+                    </div>
+                    <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                      ¿Se imaginan cómo son y qué hacen para mantenerse vivos?
+                    </p>
+                  </div>
+                </ReflectiveCard>
               </div>
             </div>
 
