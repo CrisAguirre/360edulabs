@@ -2,13 +2,11 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
-  Clock3,
   Layers,
   LockKeyhole,
   Play,
   ShieldCheck,
   Sparkles,
-  Star,
   Target,
   Trophy
 } from 'lucide-react';
@@ -16,7 +14,6 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   Button,
-  Card,
   Chip,
   ErrorBlock,
   LinkButton,
@@ -53,6 +50,31 @@ import { MISSION_TABS, type MissionTabViewMode } from './missionTabs';
 const M1_HEADER_QUESTION = '¿Sabías que?';
 const M1_HEADER_DESCRIPTION =
   '¿Sabías que tu cuerpo, las plantas y los animales están formados por millones de pequeñas estructuras que no podemos ver a simple vista?';
+
+type MissionBanner = { alt: string; caption: string; chips: string[] };
+
+// Banner fotográfico por sesión (carpeta public/images).
+const MISSION_BANNERS: Record<string, MissionBanner> = {
+  m1: {
+    alt: 'Estudiantes de quinto grado observando una célula en realidad aumentada con su núcleo, mitocondrias y membrana celular',
+    caption:
+      'Las estructuras que no podemos ver a simple vista: una célula con su núcleo, sus mitocondrias y su membrana.',
+    chips: ['Núcleo', 'Mitocondria', 'Membrana']
+  },
+  m2: {
+    alt: 'Células vegetal y animal comparadas con sus estructuras: pared celular, cloroplastos, núcleo y vacuola',
+    caption:
+      'Dos formas de ser célula: la vegetal con su pared y sus cloroplastos, la animal flexible y con muchas mitocondrias.',
+    chips: ['Pared de celulosa', 'Cloroplastos', 'Vacuola central']
+  },
+  m3: {
+    alt: 'Célula como fábrica de energía: mitocondrias produciendo ATP y cloroplastos captando la luz del sol',
+    caption:
+      'La fábrica de la vida: dentro de la célula la energía se transforma sin descanso para mantenerte vivo.',
+    chips: ['Metabolismo', 'Mitocondria', 'ATP']
+  }
+};
+
 
 function firstTabFor(missionCode?: string) {
   if (missionCode === 'm2') return '2.1';
@@ -130,6 +152,12 @@ export function MissionDetailPage() {
 
   const headerQuestion = isSession1 ? M1_HEADER_QUESTION : mission.bigQuestion;
   const headerDescription = isSession1 ? M1_HEADER_DESCRIPTION : mission.description;
+
+  const banner = MISSION_BANNERS[mission.code] ?? {
+    alt: mission.title,
+    caption: mission.subtitle,
+    chips: [] as string[]
+  };
 
   if (isLocked) {
     const previousInfo = sessionInfo(`m${mission.order - 1}`);
@@ -289,62 +317,9 @@ export function MissionDetailPage() {
 
             <p className="max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">{headerDescription}</p>
 
-            {!isSession1 ? (
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                  <Clock3 className="size-3.5 text-slate-400" aria-hidden />
-                  {mission.estimatedMinutes} min estimados
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
-                  <Target className="size-3.5 text-amber-300" aria-hidden />
-                  {isSession2
-                    ? 'Estaciones 2.1 a 2.7 (Reto final incluido)'
-                    : `${required.length} pasos obligatorios`}
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                  <Sparkles className="size-3.5 text-mint-300" aria-hidden />
-                  {isSession2 || isSession3
-                    ? `${complementaryActivities.filter((a) => a.type !== 'quiz').length} complementarias opcionales`
-                    : `${support.length} actividades opcionales`}
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
-                  <Star className="size-3.5 text-amber-300" aria-hidden />
-                  {mission.progress.xpEarned} XP acumulados
-                </span>
-              </div>
-            ) : null}
-
-            {!isSession1 ? (
+            {!isSession1 && !isSession2 && !isSession3 ? (
               <div className="flex flex-wrap items-center gap-3 pt-2">
-                {isSession2 ? (
-                  <>
-                    <a
-                      href="#estaciones-sesion-2"
-                      className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-sky-400/20 transition hover:brightness-110"
-                    >
-                      <Play className="size-5" aria-hidden />
-                      Explorar las 8 estaciones (2.1 a 2.8)
-                    </a>
-                    <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
-                      <Trophy className="size-5" aria-hidden />
-                      Presentar Reto Final (2.7)
-                    </LinkButton>
-                  </>
-                ) : isSession3 ? (
-                  <>
-                    <a
-                      href="#estaciones-sesion-3"
-                      className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-amber-400/20 transition hover:brightness-110"
-                    >
-                      <Play className="size-5" aria-hidden />
-                      Explorar las 8 estaciones (3.1 a 3.8)
-                    </a>
-                    <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
-                      <Trophy className="size-5" aria-hidden />
-                      Presentar Reto Final (3.7)
-                    </LinkButton>
-                  </>
-                ) : nextStep ? (
+                {nextStep ? (
                   <Button size="lg" onClick={handleStart} loading={startMission.isPending}>
                     <Play className="size-5" aria-hidden />
                     {completed
@@ -359,7 +334,7 @@ export function MissionDetailPage() {
                     Presentar el reto final
                   </LinkButton>
                 )}
-                {!isSession2 && !isSession3 && support.length > 0 ? (
+                {support.length > 0 ? (
                   <a
                     href="#apoyo"
                     className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
@@ -372,8 +347,8 @@ export function MissionDetailPage() {
             ) : null}
           </div>
 
-          <div className="flex flex-col items-center justify-center gap-4 lg:items-end">
-            <div className="glass-soft relative flex w-full max-w-sm items-center gap-4 rounded-3xl border border-white/10 p-5">
+          <div className="flex w-full max-w-sm flex-col gap-3 justify-self-center lg:justify-self-end">
+            <div className="glass-soft relative flex w-full items-center gap-4 rounded-3xl border border-white/10 p-5">
               <span
                 className="grid size-16 shrink-0 place-items-center rounded-2xl text-4xl"
                 style={{ background: `${badge?.accent ?? mission.theme.accent}22` }}
@@ -388,7 +363,7 @@ export function MissionDetailPage() {
               </div>
             </div>
 
-            <div className="w-full max-w-sm rounded-2xl border border-white/8 bg-ink-950/40 p-4">
+            <div className="w-full rounded-2xl border border-white/8 bg-ink-950/40 p-4">
               <p className="mb-2 text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                 Avance de la ruta obligatoria
               </p>
@@ -402,59 +377,36 @@ export function MissionDetailPage() {
           </div>
         </div>
 
-        {/* ── Imagen del banner de la Sesión 1 (bajo el texto motivador) ── */}
-        {isSession1 ? (
-          <figure className="relative mt-6 overflow-hidden rounded-[1.75rem] border border-white/10 bg-ink-950/60">
-            <img
-              src="/images/m1.jpg"
-              alt="Estudiantes de quinto grado observando una célula en realidad aumentada con su núcleo, mitocondrias y membrana celular"
-              className="h-52 w-full object-cover object-center sm:h-64 lg:h-72"
-              loading="lazy"
-              decoding="async"
-            />
-            <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/30 to-transparent"
-              aria-hidden
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-3 p-4 sm:p-5">
-              <p className="max-w-md text-xs font-bold leading-relaxed text-slate-100 sm:text-sm">
-                Las estructuras que no podemos ver a simple vista: una célula con su núcleo, sus
-                mitocondrias y su membrana.
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {['Núcleo', 'Mitocondria', 'Membrana'].map((label) => (
-                  <span
-                    key={label}
-                    className="rounded-lg border border-white/15 bg-ink-950/70 px-2 py-0.5 text-[11px] font-extrabold text-slate-200 backdrop-blur"
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
-            </figcaption>
-          </figure>
-        ) : null}
-      </section>
-
-      {/* ── Propósitos (solo Sesiones 2 y 3) ─────────────────────── */}
-      {!isSession1 ? (
-        <Card className="p-5">
-          <div className="flex items-center gap-2">
-            <Target className="size-5 text-mint-300" aria-hidden />
-            <h2 className="text-base font-extrabold text-white">Propósitos de la sesión</h2>
-          </div>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {mission.objectives.map((objective, index) => (
-              <li key={objective} className="flex items-start gap-2.5 text-xs leading-relaxed text-slate-300">
-                <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-lg bg-mint-400/12 text-[11px] font-extrabold text-mint-300">
-                  {index + 1}
+        {/* ── Banner fotográfico de la sesión (bajo el texto motivador) ── */}
+        <figure className="relative mt-6 overflow-hidden rounded-[1.75rem] border border-white/10 bg-ink-950/60">
+          <img
+            src={`/images/${mission.code}.jpg`}
+            alt={banner.alt}
+            className="h-52 w-full object-cover object-center sm:h-64 lg:h-72"
+            loading="lazy"
+            decoding="async"
+          />
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/30 to-transparent"
+            aria-hidden
+          />
+          <figcaption className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-3 p-4 sm:p-5">
+            <p className="max-w-md text-xs font-bold leading-relaxed text-slate-100 sm:text-sm">
+              {banner.caption}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {banner.chips.map((label) => (
+                <span
+                  key={label}
+                  className="rounded-lg border border-white/15 bg-ink-950/70 px-2 py-0.5 text-[11px] font-extrabold text-slate-200 backdrop-blur"
+                >
+                  {label}
                 </span>
-                {objective}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      ) : null}
+              ))}
+            </div>
+          </figcaption>
+        </figure>
+      </section>
 
       {/* ── Sesión 1: estaciones oficiales 1.1 a 1.6 (sin cabecera duplicada) ── */}
       {isSession1 && readingActivity ? (
@@ -500,18 +452,6 @@ export function MissionDetailPage() {
         </section>
       ) : isSession2 && readingActivity ? (
         <section id="estaciones-sesion-2" className="scroll-mt-24 space-y-4">
-          <SectionHeading
-            eyebrow="Contenido General · Nivel Superior"
-            title="Construyendo el concepto de célula"
-            description="Eje central de indagación de la Sesión 2: recorre las 8 estaciones oficiales de forma dinámica (2.1 Saberes previos, 2.2 Célula vegetal, 2.3 Célula animal, 2.4 Modelo 360 y video, 2.5 Participación, 2.6 Quiver y comparación, 2.7 Reto Final evaluativo, 2.8 Actividades complementarias)."
-            action={
-              <Chip tone="sky">
-                <Trophy className="size-3.5 text-sky-300" aria-hidden />
-                Ruta oficial 2.1 a 2.8
-              </Chip>
-            }
-          />
-
           <Session2Subactivities
             activity={readingActivity}
             mission={mission}
@@ -588,22 +528,11 @@ export function MissionDetailPage() {
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             showTabBar={false}
+            missionXp={mission.progress.xpEarned}
           />
         </section>
       ) : isSession3 && readingActivity ? (
         <section id="estaciones-sesion-3" className="scroll-mt-24 space-y-4">
-          <SectionHeading
-            eyebrow="Contenido General · Nivel Superior"
-            title="Procesos metabólicos de la célula"
-            description="Eje central de indagación de la Sesión 3: recorre las 8 estaciones oficiales de forma dinámica (3.1 Saberes previos, 3.2 Fábrica y video 360, 3.3 Preguntas motivadoras, 3.4 Video 360, lectura y Canva, 3.5 Cubo Merge, 3.6 Cuadro de estructuras, 3.7 Reto Final evaluativo, 3.8 Actividades complementarias)."
-            action={
-              <Chip tone="gold">
-                <Trophy className="size-3.5 text-amber-300" aria-hidden />
-                Ruta oficial 3.1 a 3.8
-              </Chip>
-            }
-          />
-
           <Session3Subactivities
             activity={readingActivity}
             mission={mission}
@@ -631,6 +560,7 @@ export function MissionDetailPage() {
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             showTabBar={false}
+            missionXp={mission.progress.xpEarned}
           />
         </section>
       ) : (

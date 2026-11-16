@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CheckCircle2, Grid, Pause, Play, RotateCcw, Sparkles, Star } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ClickSpark } from './ClickSpark';
@@ -44,6 +44,14 @@ export function OrbitCards({
   const [isHovered, setIsHovered] = useState(false);
   const [containerWidth, setContainerWidth] = useState(700);
   const containerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const orbitAngleRef = useRef(0);
+  const pausedRef = useRef(false);
+  const selectedRef = useRef(selectedIds);
+
+  useEffect(() => {
+    selectedRef.current = selectedIds;
+  }, [selectedIds]);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -55,6 +63,10 @@ export function OrbitCards({
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
+
+  useEffect(() => {
+    pausedRef.current = isPaused || isHovered;
+  }, [isPaused, isHovered]);
 
   // Responsive orbit radius
   const radius =
@@ -70,7 +82,50 @@ export function OrbitCards({
   const total = items.length;
   const angleStep = 360 / Math.max(total, 1);
   const selectedCount = selectedIds.size;
-  const effectivelyPaused = isPaused || isHovered;
+
+  /* ── Órbita calculada por JS: las tarjetas se trasladan alrededor del centro
+     pero NUNCA se rotan, por lo que su texto siempre queda horizontal. ── */
+  useEffect(() => {
+    if (viewMode !== 'orbit') return;
+
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const paint = () => {
+      items.forEach((item, idx) => {
+        const el = cardRefs.current[idx];
+        if (!el) return;
+        const a = ((idx * angleStep + orbitAngleRef.current) * Math.PI) / 180;
+        const x = Math.sin(a) * radius;
+        const y = -Math.cos(a) * radius;
+        // depth: 0 = fondo (arriba), 1 = frente (abajo)
+        const depth = (y + radius) / (2 * radius);
+        el.style.transform = `translate(-50%, -50%) translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
+        el.style.opacity = String((0.84 + 0.16 * depth).toFixed(3));
+        el.style.zIndex = String(selectedRef.current.has(item.id) ? 40 : 10 + Math.round(depth * 10));
+      });
+    };
+
+    paint();
+    if (prefersReduced) return;
+
+    let raf = 0;
+    let last = performance.now();
+    const step = (now: number) => {
+      const delta = Math.min(now - last, 80);
+      last = now;
+      if (!pausedRef.current) {
+        orbitAngleRef.current =
+          (orbitAngleRef.current + (360 / Math.max(speed, 1)) * (delta / 1000)) % 360;
+      }
+      paint();
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [viewMode, radius, angleStep, items, speed, selectedIds]);
 
   return (
     <div
@@ -80,25 +135,6 @@ export function OrbitCards({
         className
       )}
     >
-      <style>
-        {`
-          @keyframes orbit-ring-rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-          @keyframes orbit-card-counter {
-            0% { transform: rotate(calc(-1 * var(--orbit-angle, 0deg))); }
-            100% { transform: rotate(calc(-1 * var(--orbit-angle, 0deg) - 360deg)); }
-          }
-          .orbit-anim-ring {
-            animation: orbit-ring-rotation ${speed}s linear infinite;
-          }
-          .orbit-anim-card {
-            animation: orbit-card-counter ${speed}s linear infinite;
-          }
-        `}
-      </style>
-
       {/* ── Barra de cabecera con instrucciones y controles ── */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
         <div className="space-y-0.5">
@@ -233,109 +269,90 @@ export function OrbitCards({
             <span className="text-[9px] text-slate-400">Pasa el cursor para pausar</span>
           </div>
 
-          {/* Anillo orbital giratorio con los paneles */}
-          <div
-            className="absolute left-1/2 top-1/2 size-0 -translate-x-1/2 -translate-y-1/2 orbit-anim-ring"
-            style={{
-              animationPlayState: effectivelyPaused ? 'paused' : 'running'
-            }}
-          >
+          {/* Anillo orbital: las tarjetas se posicionan por JS y nunca se rotan */}
+          <div className="absolute left-1/2 top-1/2 size-0 -translate-x-1/2 -translate-y-1/2">
             {items.map((item, idx) => {
-              const angle = idx * angleStep;
               const isSelected = selectedIds.has(item.id);
               const cardColor = item.color ?? accentColor;
 
               return (
                 <div
                   key={item.id}
-                  className="absolute"
-                  style={{
-                    transform: `rotate(${angle}deg) translateY(-${radius}px)`,
-                    transformOrigin: '0 0'
+                  ref={(el) => {
+                    cardRefs.current[idx] = el;
                   }}
+                  className="absolute left-0 top-0 will-change-transform"
+                  style={{ transform: 'translate(-50%, -50%)' }}
                 >
-                  {/* Contenedor que aplica la contra-rotación para mantener la card siempre horizontal */}
-                  <div
-                    className="orbit-anim-card"
-                    style={
-                      {
-                        '--orbit-angle': `${angle}deg`,
-                        animationPlayState: effectivelyPaused ? 'paused' : 'running'
-                      } as CSSProperties
-                    }
-                  >
-                    <div className="-translate-x-1/2 -translate-y-1/2">
-                      <ClickSpark sparkColor={cardColor} sparkCount={6}>
-                        <button
-                          type="button"
-                          disabled={isReadOnly}
-                          onClick={() => onToggle(item.id)}
-                          className={cn(
-                            'group relative flex flex-col justify-between rounded-2xl border text-left p-2.5 sm:p-3 backdrop-blur-xl transition-all duration-300 cursor-pointer shadow-lg active:scale-95',
-                            containerWidth < 640 ? 'w-44 sm:w-52 min-h-24' : 'w-56 lg:w-60 min-h-28',
-                            isSelected
-                              ? 'border-amber-400 bg-ink-900/95 ring-2 ring-amber-400/80 shadow-amber-400/25 scale-105 z-30'
-                              : 'border-white/12 bg-ink-950/85 hover:border-white/35 hover:bg-ink-900/90 z-20 hover:scale-102'
-                          )}
-                          style={{
-                            boxShadow: isSelected
-                              ? `0 0 0 2px ${cardColor}, 0 12px 30px -8px ${cardColor}55`
-                              : undefined
-                          }}
-                        >
-                          {/* Cabecera de la tarjeta orbital */}
-                          <div className="flex items-center justify-between gap-1.5">
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <span
-                                className="grid size-6 shrink-0 place-items-center rounded-lg text-xs font-bold"
-                                style={{ background: `${cardColor}25`, color: cardColor }}
-                              >
-                                {item.icon ?? '🔬'}
-                              </span>
-                              {item.tag && (
-                                <span
-                                  className="truncate rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider"
-                                  style={{
-                                    background: `${cardColor}20`,
-                                    color: cardColor,
-                                    border: `1px solid ${cardColor}40`
-                                  }}
-                                >
-                                  {item.tag}
-                                </span>
-                              )}
-                            </div>
-
-                            {isSelected ? (
-                              <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[9px] font-black text-ink-950 shadow-sm animate-in zoom-in-50 duration-200">
-                                <Star className="size-2.5 fill-current" />
-                                Elegida
-                              </span>
-                            ) : (
-                              <span className="text-[9px] font-extrabold text-slate-400 opacity-60 group-hover:opacity-100 transition">
-                                Clic para elegir
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Título de la idea */}
-                          <h5
-                            className={cn(
-                              'mt-1.5 font-display text-xs font-extrabold leading-tight line-clamp-2 transition-colors',
-                              isSelected ? 'text-amber-200' : 'text-white group-hover:text-amber-100'
-                            )}
+                  <ClickSpark sparkColor={cardColor} sparkCount={6}>
+                    <button
+                      type="button"
+                      disabled={isReadOnly}
+                      onClick={() => onToggle(item.id)}
+                      className={cn(
+                        'group relative flex flex-col justify-between rounded-2xl border text-left p-2.5 sm:p-3 backdrop-blur-xl transition-[box-shadow,border-color,background-color] duration-300 cursor-pointer shadow-lg active:scale-95',
+                        containerWidth < 640 ? 'w-44 sm:w-52 min-h-24' : 'w-56 lg:w-60 min-h-28',
+                        isSelected
+                          ? 'border-amber-400 bg-ink-900/95 ring-2 ring-amber-400/80 shadow-amber-400/25'
+                          : 'border-white/12 bg-ink-950/85 hover:border-white/35 hover:bg-ink-900/90'
+                      )}
+                      style={{
+                        boxShadow: isSelected
+                          ? `0 0 0 2px ${cardColor}, 0 12px 30px -8px ${cardColor}55`
+                          : undefined
+                      }}
+                    >
+                      {/* Cabecera de la tarjeta orbital */}
+                      <div className="flex items-center justify-between gap-1.5">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span
+                            className="grid size-6 shrink-0 place-items-center rounded-lg text-xs font-bold"
+                            style={{ background: `${cardColor}25`, color: cardColor }}
                           >
-                            {item.title}
-                          </h5>
+                            {item.icon ?? '🔬'}
+                          </span>
+                          {item.tag && (
+                            <span
+                              className="truncate rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider"
+                              style={{
+                                background: `${cardColor}20`,
+                                color: cardColor,
+                                border: `1px solid ${cardColor}40`
+                              }}
+                            >
+                              {item.tag}
+                            </span>
+                          )}
+                        </div>
 
-                          {/* Descripción condensada */}
-                          <p className="mt-1 line-clamp-2 text-[10px] leading-snug text-slate-300">
-                            {item.description}
-                          </p>
-                        </button>
-                      </ClickSpark>
-                    </div>
-                  </div>
+                        {isSelected ? (
+                          <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[9px] font-black text-ink-950 shadow-sm animate-in zoom-in-50 duration-200">
+                            <Star className="size-2.5 fill-current" />
+                            Elegida
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-extrabold text-slate-400 opacity-60 group-hover:opacity-100 transition">
+                            Clic para elegir
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Título de la idea */}
+                      <h5
+                        className={cn(
+                          'mt-1.5 font-display text-xs font-extrabold leading-tight line-clamp-2 transition-colors',
+                          isSelected ? 'text-amber-200' : 'text-white group-hover:text-amber-100'
+                        )}
+                      >
+                        {item.title}
+                      </h5>
+
+                      {/* Descripción condensada */}
+                      <p className="mt-1 line-clamp-2 text-[10px] leading-snug text-slate-300">
+                        {item.description}
+                        </p>
+                      </button>
+                    </ClickSpark>
                 </div>
               );
             })}

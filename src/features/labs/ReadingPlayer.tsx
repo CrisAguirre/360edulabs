@@ -2641,6 +2641,7 @@ interface Session2SubactivitiesProps {
   viewMode?: 'tabs' | 'all';
   onViewModeChange?: (mode: 'tabs' | 'all') => void;
   showTabBar?: boolean;
+  missionXp?: number;
 }
 
 export type Session2TabKey = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '2.6' | '2.7' | '2.8';
@@ -2661,7 +2662,8 @@ export function Session2Subactivities({
   onTabChange,
   viewMode: controlledViewMode,
   onViewModeChange,
-  showTabBar = true
+  showTabBar = true,
+  missionXp
 }: Session2SubactivitiesProps) {
   const [internalActiveTab, setInternalActiveTab] = useState<Session2TabKey>('2.1');
   const [internalViewMode, setInternalViewMode] = useState<'tabs' | 'all'>('tabs');
@@ -2832,7 +2834,15 @@ export function Session2Subactivities({
                   </h3>
                 </div>
               </div>
-              <span className="text-xs text-slate-400 font-semibold">Participación y construcción colectiva</span>
+              <div className="flex flex-col items-end gap-1.5">
+                {typeof missionXp === 'number' ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                    <Star className="size-3.5 text-amber-300" aria-hidden />
+                    {missionXp} puntos de experiencia
+                  </span>
+                ) : null}
+                <span className="text-xs text-slate-400 font-semibold">Participación y construcción colectiva</span>
+              </div>
             </div>
 
             {/* Texto literal oficial de la docente */}
@@ -4151,6 +4161,7 @@ export interface Session3SubactivitiesProps {
   viewMode?: 'tabs' | 'all';
   onViewModeChange?: (mode: 'tabs' | 'all') => void;
   showTabBar?: boolean;
+  missionXp?: number;
 }
 
 export type Session3TabKey = '3.1' | '3.2' | '3.3' | '3.4' | '3.5' | '3.6' | '3.7' | '3.8';
@@ -4168,7 +4179,8 @@ export function Session3Subactivities({
   onTabChange,
   viewMode: controlledViewMode,
   onViewModeChange,
-  showTabBar = true
+  showTabBar = true,
+  missionXp
 }: Session3SubactivitiesProps) {
   const [internalActiveTab, setInternalActiveTab] = useState<Session3TabKey>('3.1');
   const [internalViewMode, setInternalViewMode] = useState<'tabs' | 'all'>('tabs');
@@ -4399,10 +4411,18 @@ export function Session3Subactivities({
                   </h3>
                 </div>
               </div>
-              <Chip tone="neutral">
-                <GraduationCap className="size-3.5 text-amber-300" aria-hidden />
-                Orientación docente
-              </Chip>
+              <div className="flex flex-col items-end gap-1.5">
+                {typeof missionXp === 'number' ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
+                    <Star className="size-3.5 text-amber-300" aria-hidden />
+                    {missionXp} puntos de experiencia
+                  </span>
+                ) : null}
+                <Chip tone="neutral">
+                  <GraduationCap className="size-3.5 text-amber-300" aria-hidden />
+                  Orientación docente
+                </Chip>
+              </div>
             </div>
 
             {/* Texto literal oficial */}
