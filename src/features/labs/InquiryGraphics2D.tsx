@@ -227,3 +227,125 @@ export function CellActivityGraphic2D() {
     </svg>
   );
 }
+
+/** Invitación a participar: voces, ideas y aportes compartidos en clase. */
+export function ParticipationGraphic2D() {
+  return (
+    <svg
+      viewBox="0 0 320 180"
+      className="h-auto w-full"
+      role="img"
+      aria-label="Tres estudiantes conversando con globos de diálogo, una tableta y chispas de ideas"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="il-share-bg" x1="0" y1="0" x2="320" y2="180">
+          <stop stopColor="#0b2a2a" />
+          <stop offset="1" stopColor="#020617" />
+        </linearGradient>
+        <linearGradient id="il-share-bubble" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#5eead4" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#38bdf8" stopOpacity="0.18" />
+        </linearGradient>
+        <style>
+          {`
+            @keyframes ilShareBob {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-5px); }
+            }
+            @keyframes ilSharePop {
+              0%, 100% { transform: scale(1); opacity: 0.9; }
+              50% { transform: scale(1.07); opacity: 1; }
+            }
+            @keyframes ilShareWave {
+              0%, 100% { transform: scaleY(0.55); opacity: 0.45; }
+              50% { transform: scaleY(1); opacity: 1; }
+            }
+            @keyframes ilShareSpark {
+              0% { transform: scale(0.6) rotate(0deg); opacity: 0.2; }
+              50% { transform: scale(1.1) rotate(90deg); opacity: 1; }
+              100% { transform: scale(0.6) rotate(180deg); opacity: 0.2; }
+            }
+            .il-share-b1 { animation: ilShareBob 4s ease-in-out infinite; transform-origin: 92px 62px; }
+            .il-share-b2 { animation: ilShareBob 4.6s ease-in-out infinite; animation-delay: 0.5s; transform-origin: 232px 52px; }
+            .il-share-idea { animation: ilSharePop 3s ease-in-out infinite; transform-origin: 160px 44px; }
+            .il-share-wave { animation: ilShareWave 1.6s ease-in-out infinite; transform-origin: 268px 132px; }
+            .il-share-wave-2 { animation-delay: 0.25s; }
+            .il-share-wave-3 { animation-delay: 0.5s; }
+            .il-share-spark { animation: ilShareSpark 3.4s ease-in-out infinite; transform-origin: 62px 34px; }
+            .il-share-spark-2 { animation-delay: 1.2s; transform-origin: 286px 96px; }
+          `}
+        </style>
+      </defs>
+
+      <rect x="4" y="4" width="312" height="172" rx="18" fill="url(#il-share-bg)" stroke="#2dd4bf" strokeOpacity="0.4" />
+
+      {/* Globo de diálogo izquierdo */}
+      <g className="il-share-b1">
+        <path
+          d="M44 46h96a12 12 0 0 1 12 12v22a12 12 0 0 1-12 12H76l-14 13v-13h-18a12 12 0 0 1-12-12V58a12 12 0 0 1 12-12Z"
+          fill="url(#il-share-bubble)"
+          stroke="#5eead4"
+          strokeWidth="2"
+        />
+        <circle cx="72" cy="69" r="3" fill="#ccfbf1" />
+        <circle cx="88" cy="69" r="3" fill="#ccfbf1" />
+        <circle cx="104" cy="69" r="3" fill="#ccfbf1" />
+      </g>
+
+      {/* Globo de diálogo derecho */}
+      <g className="il-share-b2">
+        <path
+          d="M186 36h82a12 12 0 0 1 12 12v18a12 12 0 0 1-12 12h-8v12l-13-12h-61a12 12 0 0 1-12-12V48a12 12 0 0 1 12-12Z"
+          fill="url(#il-share-bubble)"
+          stroke="#7dd3fc"
+          strokeWidth="2"
+        />
+        <rect x="192" y="50" width="46" height="3.6" rx="1.8" fill="#bae6fd" opacity="0.85" />
+        <rect x="192" y="59" width="62" height="3.6" rx="1.8" fill="#bae6fd" opacity="0.55" />
+      </g>
+
+      {/* Idea central: bombilla */}
+      <g className="il-share-idea">
+        <circle cx="160" cy="42" r="14" fill="#fde047" opacity="0.18" />
+        <path d="M160 30a10 10 0 0 1 6 18v4h-12v-4a10 10 0 0 1 6-18Z" fill="#fde047" opacity="0.95" />
+        <rect x="155" y="50" width="10" height="3.4" rx="1.7" fill="#facc15" />
+        <rect x="156" y="55" width="8" height="2.6" rx="1.3" fill="#fbbf24" opacity="0.8" />
+      </g>
+
+      {/* Estudiantes sentados en la mesa */}
+      <g>
+        {/* Estudiante 1 */}
+        <circle cx="92" cy="118" r="12" fill="#7dd3fc" />
+        <path d="M92 132c-13 0-21 8-21 20v10h42v-10c0-12-8-20-21-20Z" fill="#38bdf8" opacity="0.75" />
+        {/* Estudiante 2 */}
+        <circle cx="160" cy="112" r="13" fill="#fbbf24" />
+        <path d="M160 127c-14 0-23 9-23 22v13h46v-13c0-13-9-22-23-22Z" fill="#f59e0b" opacity="0.75" />
+        {/* Estudiante 3 */}
+        <circle cx="232" cy="120" r="12" fill="#a7f3d0" />
+        <path d="M232 134c-13 0-21 8-21 20v8h42v-8c0-12-8-20-21-20Z" fill="#34d399" opacity="0.75" />
+      </g>
+
+      {/* Mesa con tableta y cuaderno */}
+      <rect x="52" y="158" width="216" height="7" rx="3.5" fill="#0f766e" opacity="0.85" />
+      <rect x="132" y="142" width="52" height="16" rx="3" fill="#0f172a" stroke="#5eead4" strokeWidth="1.4" />
+      <rect x="138" y="146" width="40" height="8" rx="1.5" fill="#5eead4" opacity="0.5" />
+      <rect x="196" y="146" width="34" height="12" rx="2" fill="#e2e8f0" opacity="0.85" />
+      <line x1="201" y1="150" x2="225" y2="150" stroke="#94a3b8" strokeWidth="1.1" />
+      <line x1="201" y1="154" x2="219" y2="154" stroke="#94a3b8" strokeWidth="1.1" />
+
+      {/* Ondas de voz */}
+      <g stroke="#5eead4" strokeWidth="2.2" strokeLinecap="round" fill="none">
+        <path className="il-share-wave" d="M266 124c4 3 4 9 0 12" />
+        <path className="il-share-wave il-share-wave-2" d="M272 120c7 5 7 15 0 20" />
+        <path className="il-share-wave il-share-wave-3" d="M278 116c10 7 10 21 0 28" />
+      </g>
+
+      {/* Chispas */}
+      <g fill="#fde047">
+        <path className="il-share-spark" d="M62 30l1.6 5 5 1.6-5 1.6-1.6 5-1.6-5-5-1.6 5-1.6Z" />
+        <path className="il-share-spark il-share-spark-2" d="M286 92l1.4 4.4 4.4 1.4-4.4 1.4-1.4 4.4-1.4-4.4-4.4-1.4 4.4-1.4Z" />
+      </g>
+    </svg>
+  );
+}

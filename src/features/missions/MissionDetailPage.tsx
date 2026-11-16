@@ -401,6 +401,39 @@ export function MissionDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* ── Imagen del banner de la Sesión 1 (bajo el texto motivador) ── */}
+        {isSession1 ? (
+          <figure className="relative mt-6 overflow-hidden rounded-[1.75rem] border border-white/10 bg-ink-950/60">
+            <img
+              src="/images/m1.jpg"
+              alt="Estudiantes de quinto grado observando una célula en realidad aumentada con su núcleo, mitocondrias y membrana celular"
+              className="h-52 w-full object-cover object-center sm:h-64 lg:h-72"
+              loading="lazy"
+              decoding="async"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/95 via-ink-950/30 to-transparent"
+              aria-hidden
+            />
+            <figcaption className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-3 p-4 sm:p-5">
+              <p className="max-w-md text-xs font-bold leading-relaxed text-slate-100 sm:text-sm">
+                Las estructuras que no podemos ver a simple vista: una célula con su núcleo, sus
+                mitocondrias y su membrana.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {['Núcleo', 'Mitocondria', 'Membrana'].map((label) => (
+                  <span
+                    key={label}
+                    className="rounded-lg border border-white/15 bg-ink-950/70 px-2 py-0.5 text-[11px] font-extrabold text-slate-200 backdrop-blur"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </figcaption>
+          </figure>
+        ) : null}
       </section>
 
       {/* ── Propósitos (solo Sesiones 2 y 3) ─────────────────────── */}
