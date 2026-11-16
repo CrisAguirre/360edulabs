@@ -322,7 +322,7 @@ export function CircularCarousel({
                       </div>
 
                       {/* Gráfico 2D interactivo / ilustrativo de la estructura */}
-                      <div className="my-2 flex h-36 sm:h-40 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-2 shadow-inner">
+                      <div className="my-2 flex h-40 sm:h-48 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-inner">
                         {item.graphic2D}
                       </div>
 

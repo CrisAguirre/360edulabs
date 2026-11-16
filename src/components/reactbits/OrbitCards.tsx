@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { CheckCircle2, Grid, Pause, Play, RotateCcw, Sparkles, Star } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ClickSpark } from './ClickSpark';
@@ -87,8 +87,8 @@ export function OrbitCards({
             100% { transform: rotate(360deg); }
           }
           @keyframes orbit-card-counter {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(-360deg); }
+            0% { transform: rotate(calc(-1 * var(--orbit-angle, 0deg))); }
+            100% { transform: rotate(calc(-1 * var(--orbit-angle, 0deg) - 360deg)); }
           }
           .orbit-anim-ring {
             animation: orbit-ring-rotation ${speed}s linear infinite;
@@ -257,10 +257,12 @@ export function OrbitCards({
                   {/* Contenedor que aplica la contra-rotación para mantener la card siempre horizontal */}
                   <div
                     className="orbit-anim-card"
-                    style={{
-                      transform: `rotate(-${angle}deg)`,
-                      animationPlayState: effectivelyPaused ? 'paused' : 'running'
-                    }}
+                    style={
+                      {
+                        '--orbit-angle': `${angle}deg`,
+                        animationPlayState: effectivelyPaused ? 'paused' : 'running'
+                      } as CSSProperties
+                    }
                   >
                     <div className="-translate-x-1/2 -translate-y-1/2">
                       <ClickSpark sparkColor={cardColor} sparkCount={6}>

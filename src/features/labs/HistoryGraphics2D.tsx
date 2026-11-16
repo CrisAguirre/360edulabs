@@ -2,6 +2,13 @@ interface GraphicProps {
   className?: string;
 }
 
+const SVG_PROPS = {
+  viewBox: '0 0 320 200',
+  preserveAspectRatio: 'xMidYMid meet',
+  fill: 'none',
+  xmlns: 'http://www.w3.org/2000/svg'
+} as const;
+
 /* ══════════════════════════════════════════════════════════════════════════
    1. ZACHARIAS JANSSEN (Principios siglo XVII)
    El primer microscopio compuesto: alineación de 2 lentes en un tubo
@@ -9,173 +16,165 @@ interface GraphicProps {
 export function JanssenMicroscopeGraphic2D({ className }: GraphicProps) {
   return (
     <svg
-      viewBox="0 0 320 200"
-      className={className ?? 'w-full h-auto max-h-56'}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      {...SVG_PROPS}
+      className={className ?? 'h-full w-full'}
       role="img"
       aria-label="Esquema óptico del primer microscopio compuesto de Zacharias Janssen"
     >
       <defs>
-        {/* Gradiente de latón dorado para el tubo */}
-        <linearGradient id="brassGrad" x1="0" y1="0" x2="320" y2="0" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#78350f" />
-          <stop offset="0.3" stopColor="#d97706" />
-          <stop offset="0.6" stopColor="#fbbf24" />
-          <stop offset="0.9" stopColor="#b45309" />
-          <stop offset="1" stopColor="#78350f" />
+        <linearGradient id="js-bg" x1="0" y1="0" x2="320" y2="200">
+          <stop stopColor="#082f49" />
+          <stop offset="0.55" stopColor="#061c30" />
+          <stop offset="1" stopColor="#020617" />
         </linearGradient>
-
-        {/* Gradiente de lente ocular de vidrio */}
-        <linearGradient id="lensGlass" x1="0" y1="0" x2="0" y2="1">
-          <stop stopColor="#38bdf8" stopOpacity="0.85" />
-          <stop offset="0.5" stopColor="#e0f2fe" stopOpacity="0.95" />
-          <stop offset="1" stopColor="#0284c7" stopOpacity="0.85" />
+        <linearGradient id="js-brass" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#fcd34d" />
+          <stop offset="0.35" stopColor="#d97706" />
+          <stop offset="0.72" stopColor="#92400e" />
+          <stop offset="1" stopColor="#fbbf24" />
         </linearGradient>
-
-        {/* Gradiente del haz de luz */}
-        <linearGradient id="lightRayGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop stopColor="#38bdf8" stopOpacity="0.2" />
-          <stop offset="0.5" stopColor="#fef08a" stopOpacity="0.8" />
-          <stop offset="1" stopColor="#38bdf8" stopOpacity="0.95" />
+        <linearGradient id="js-glass" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#e0f2fe" stopOpacity="0.9" />
+          <stop offset="0.5" stopColor="#7dd3fc" stopOpacity="0.75" />
+          <stop offset="1" stopColor="#0369a1" stopOpacity="0.9" />
         </linearGradient>
-
-        {/* Filtro de resplandor */}
-        <filter id="janssenGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        <linearGradient id="js-ray" x1="0" y1="0" x2="1" y2="0">
+          <stop stopColor="#fef08a" stopOpacity="0.1" />
+          <stop offset="0.45" stopColor="#fef08a" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#38bdf8" stopOpacity="0.15" />
+        </linearGradient>
+        <radialGradient id="js-focus" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#fff7ed" />
+          <stop offset="0.45" stopColor="#fde047" stopOpacity="0.7" />
+          <stop offset="1" stopColor="#f59e0b" stopOpacity="0" />
+        </radialGradient>
+        <pattern id="js-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0H0v20" stroke="#38bdf8" strokeOpacity="0.09" strokeWidth="1" />
+        </pattern>
+        <filter id="js-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.6" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
-
         <style>
           {`
-            @keyframes lightPulse {
-              0%, 100% { opacity: 0.55; stroke-width: 1.5; }
-              50% { opacity: 0.95; stroke-width: 2.5; }
+            @keyframes jsBeam {
+              0%, 100% { opacity: 0.45; }
+              50% { opacity: 0.95; }
             }
-            @keyframes sparkFloat {
-              0% { transform: translateY(0) scale(1); opacity: 0.4; }
-              50% { transform: translateY(-4px) scale(1.3); opacity: 0.9; }
-              100% { transform: translateY(0) scale(1); opacity: 0.4; }
+            @keyframes jsDash {
+              to { stroke-dashoffset: -80; }
             }
-            @keyframes tubeSlide {
-              0%, 100% { transform: translateX(0); }
-              50% { transform: translateX(4px); }
+            @keyframes jsTube {
+              0%, 100% { transform: translateX(0px); }
+              50% { transform: translateX(3px); }
             }
-            .animate-light-pulse {
-              animation: lightPulse 2.4s ease-in-out infinite;
+            @keyframes jsDust {
+              0% { transform: translate(0, 0); opacity: 0; }
+              30% { opacity: 0.9; }
+              100% { transform: translate(18px, -22px); opacity: 0; }
             }
-            .animate-spark {
-              animation: sparkFloat 2s ease-in-out infinite;
+            @keyframes jsFocus {
+              0%, 100% { transform: scale(1); opacity: 0.85; }
+              50% { transform: scale(1.25); opacity: 1; }
             }
-            .animate-slide {
-              animation: tubeSlide 4s ease-in-out infinite;
+            @keyframes jsShine {
+              0%, 100% { opacity: 0.35; }
+              50% { opacity: 0.9; }
             }
+            .js-beam { animation: jsBeam 3.4s ease-in-out infinite; }
+            .js-dash { stroke-dasharray: 5 6; animation: jsDash 3s linear infinite; }
+            .js-tube { animation: jsTube 5s ease-in-out infinite; }
+            .js-dust { animation: jsDust 5s linear infinite; }
+            .js-dust-2 { animation-delay: 1.4s; }
+            .js-dust-3 { animation-delay: 2.8s; }
+            .js-focus { animation: jsFocus 2.6s ease-in-out infinite; transform-origin: 168px 100px; }
+            .js-shine { animation: jsShine 4s ease-in-out infinite; }
           `}
         </style>
       </defs>
 
-      {/* Fondo de tarjeta científica */}
-      <rect x="6" y="6" width="308" height="188" rx="16" fill="#09131d" stroke="#0284c7" strokeWidth="1.2" />
+      <rect width="320" height="200" fill="url(#js-bg)" />
+      <rect width="320" height="200" fill="url(#js-grid)" />
 
-      {/* Rejilla óptica de fondo */}
-      <g opacity="0.12" stroke="#38bdf8" strokeWidth="0.75">
-        <line x1="20" y1="100" x2="300" y2="100" strokeDasharray="4 4" />
-        <line x1="60" y1="20" x2="60" y2="180" strokeDasharray="3 3" />
-        <line x1="160" y1="20" x2="160" y2="180" strokeDasharray="3 3" />
-        <line x1="255" y1="20" x2="255" y2="180" strokeDasharray="3 3" />
+      {/* Mesa óptica */}
+      <rect x="16" y="164" width="288" height="2" fill="#0ea5e9" opacity="0.35" />
+      <g stroke="#38bdf8" strokeOpacity="0.5" strokeWidth="1">
+        <line x1="40" y1="164" x2="40" y2="171" />
+        <line x1="100" y1="164" x2="100" y2="169" />
+        <line x1="160" y1="164" x2="160" y2="171" />
+        <line x1="220" y1="164" x2="220" y2="169" />
+        <line x1="280" y1="164" x2="280" y2="171" />
       </g>
 
-      {/* Haz óptico de luz refractada en forma de cono doble */}
-      <g className="animate-light-pulse" filter="url(#janssenGlow)">
-        {/* Rayo superior desde el ocular cruzando al foco medio y abriéndose al objetivo */}
-        <polygon
-          points="60,65 160,100 255,55 255,145 160,100 60,135"
-          fill="url(#lightRayGrad)"
-          opacity="0.35"
-        />
-        {/* Líneas guía centrales de los rayos */}
-        <line x1="30" y1="100" x2="295" y2="100" stroke="#fef08a" strokeWidth="1.5" strokeDasharray="6 3" />
-        <path d="M60 65 L160 100 L255 145" stroke="#38bdf8" strokeWidth="1.5" />
-        <path d="M60 135 L160 100 L255 55" stroke="#38bdf8" strokeWidth="1.5" />
+      {/* Haz óptico */}
+      <g className="js-beam">
+        <path d="M58 74 L168 100 L278 66 L278 134 L168 100 L58 126 Z" fill="url(#js-ray)" />
+        <path className="js-dash" d="M30 100H290" stroke="#fef08a" strokeOpacity="0.55" strokeWidth="1.2" />
       </g>
 
-      {/* Tubo corredizo exterior de latón */}
+      {/* Tubo de latón */}
       <g>
-        {/* Cilindro soporte base */}
-        <rect x="40" y="48" width="80" height="104" rx="8" fill="url(#brassGrad)" stroke="#f59e0b" strokeWidth="1.2" />
-        <rect x="44" y="52" width="72" height="96" rx="6" fill="#1c1917" opacity="0.6" />
-        
-        {/* Cilindro interior deslizante */}
-        <g className="animate-slide">
-          <rect x="110" y="56" width="105" height="88" rx="6" fill="url(#brassGrad)" stroke="#fbbf24" strokeWidth="1" />
-          <rect x="114" y="60" width="97" height="80" rx="4" fill="#292524" opacity="0.6" />
-          {/* Marcas de medición en el tubo corredizo */}
-          <line x1="130" y1="62" x2="130" y2="72" stroke="#fef08a" strokeWidth="1.2" />
-          <line x1="150" y1="62" x2="150" y2="72" stroke="#fef08a" strokeWidth="1.2" />
-          <line x1="170" y1="62" x2="170" y2="72" stroke="#fef08a" strokeWidth="1.2" />
-          <line x1="190" y1="62" x2="190" y2="72" stroke="#fef08a" strokeWidth="1.2" />
+        <rect x="34" y="60" width="58" height="80" rx="9" fill="url(#js-brass)" />
+        <rect x="39" y="65" width="48" height="70" rx="7" fill="#111827" opacity="0.55" />
+        <rect className="js-shine" x="45" y="69" width="7" height="62" rx="3.5" fill="#fef3c7" opacity="0.5" />
+        <g className="js-tube">
+          <rect x="90" y="66" width="96" height="68" rx="7" fill="url(#js-brass)" />
+          <rect x="95" y="71" width="86" height="58" rx="5" fill="#111827" opacity="0.6" />
+          <g stroke="#fde68a" strokeWidth="1.2" strokeOpacity="0.85">
+            <line x1="112" y1="74" x2="112" y2="83" />
+            <line x1="132" y1="74" x2="132" y2="83" />
+            <line x1="152" y1="74" x2="152" y2="83" />
+            <line x1="170" y1="74" x2="170" y2="83" />
+          </g>
         </g>
-
-        {/* Cilindro de objetivo delantero */}
-        <rect x="235" y="44" width="40" height="112" rx="6" fill="url(#brassGrad)" stroke="#f59e0b" strokeWidth="1.2" />
+        <rect x="184" y="62" width="34" height="76" rx="7" fill="url(#js-brass)" />
+        <rect x="189" y="67" width="24" height="66" rx="5" fill="#111827" opacity="0.55" />
       </g>
 
-      {/* Lente 1: Ocular biconvexa (izquierda) */}
+      {/* Lente ocular */}
       <g>
-        <path
-          d="M60 55 C68 75 68 125 60 145 C52 125 52 75 60 55 Z"
-          fill="url(#lensGlass)"
-          stroke="#e0f2fe"
-          strokeWidth="1.5"
-          filter="url(#janssenGlow)"
-        />
-        <text x="60" y="40" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontWeight="bold">
-          Lente Ocular
-        </text>
-        <text x="60" y="165" textAnchor="middle" fill="#94a3b8" fontSize="7.5">
-          (Aumento 1)
-        </text>
+        <path d="M56 66c9 14 9 54 0 68-9-14-9-54 0-68Z" fill="url(#js-glass)" stroke="#e0f2fe" strokeWidth="1.6" />
+        <path className="js-shine" d="M53 78c3 10 3 34 0 44" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" opacity="0.6" />
+        <text x="52" y="52" textAnchor="middle" fill="#7dd3fc" fontSize="9.4" fontWeight="800">OCULAR</text>
+        <text x="52" y="150" textAnchor="middle" fill="#94a3b8" fontSize="7.6">1.ª lente</text>
       </g>
 
-      {/* Foco óptico intermedio con chispas */}
-      <g className="animate-spark" filter="url(#janssenGlow)">
-        <circle cx="160" cy="100" r="4.5" fill="#fef08a" stroke="#ffffff" strokeWidth="1.5" />
-        <circle cx="160" cy="100" r="9" fill="#facc15" opacity="0.3" />
-        <text x="160" y="125" textAnchor="middle" fill="#fef08a" fontSize="8" fontWeight="bold">
-          Foco conjugado
-        </text>
-      </g>
-
-      {/* Lente 2: Objetivo biconvexa (derecha) */}
+      {/* Lente objetivo */}
       <g>
-        <path
-          d="M255 48 C266 70 266 130 255 152 C244 130 244 70 255 48 Z"
-          fill="url(#lensGlass)"
-          stroke="#e0f2fe"
-          strokeWidth="1.5"
-          filter="url(#janssenGlow)"
-        />
-        <text x="255" y="36" textAnchor="middle" fill="#7dd3fc" fontSize="9" fontWeight="bold">
-          Lente Objetivo
-        </text>
-        <text x="255" y="170" textAnchor="middle" fill="#94a3b8" fontSize="7.5">
-          (Ampliación final)
-        </text>
+        <path d="M272 60c10 16 10 64 0 80-10-16-10-64 0-80Z" fill="url(#js-glass)" stroke="#e0f2fe" strokeWidth="1.6" />
+        <path className="js-shine" d="M269 74c3 12 3 40 0 52" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" opacity="0.55" />
+        <text x="276" y="48" textAnchor="middle" fill="#7dd3fc" fontSize="9.4" fontWeight="800">OBJETIVO</text>
+        <text x="276" y="156" textAnchor="middle" fill="#94a3b8" fontSize="7.6">2.ª lente</text>
       </g>
 
-      {/* Muestra iluminada en el extremo derecho */}
+      {/* Foco conjugado */}
+      <g className="js-focus" filter="url(#js-glow)">
+        <circle cx="168" cy="100" r="17" fill="url(#js-focus)" />
+        <circle cx="168" cy="100" r="3.6" fill="#fff7ed" />
+      </g>
+      <text x="168" y="124" textAnchor="middle" fill="#fde68a" fontSize="7.8" fontWeight="700">FOCO</text>
+
+      {/* Muestra */}
       <g>
-        <rect x="290" y="80" width="4" height="40" rx="2" fill="#22c55e" stroke="#86efac" strokeWidth="1" />
-        <circle cx="292" cy="100" r="7" fill="#38bdf8" opacity="0.4" />
-        <text x="292" y="74" textAnchor="middle" fill="#86efac" fontSize="7" fontWeight="bold">
-          Muestra
-        </text>
+        <rect x="296" y="82" width="5" height="36" rx="2.5" fill="#4ade80" />
+        <circle cx="297" cy="100" r="10" fill="#38bdf8" opacity="0.4" />
+        <circle cx="297" cy="100" r="3" fill="#bae6fd" />
+        <text x="300" y="140" textAnchor="middle" fill="#86efac" fontSize="6.8" fontWeight="800">MUESTRA</text>
       </g>
 
-      {/* Insignia conmemorativa inferior */}
-      <rect x="18" y="174" width="284" height="15" rx="5" fill="#0369a1" fillOpacity="0.25" />
-      <text x="160" y="185" textAnchor="middle" fill="#bae6fd" fontSize="8" fontWeight="600">
-        Zacharias Janssen · Primer microscopio compuesto de doble lente (aprox. 1590 - 1608)
+      {/* Polvo luminoso */}
+      <g fill="#fef3c7" filter="url(#js-glow)">
+        <circle className="js-dust" cx="120" cy="132" r="1.5" />
+        <circle className="js-dust js-dust-2" cx="205" cy="128" r="1.3" />
+        <circle className="js-dust js-dust-3" cx="158" cy="140" r="1.7" />
+      </g>
+
+      <text x="160" y="188" textAnchor="middle" fill="#bae6fd" fontSize="8.2" fontWeight="700" letterSpacing="0.3">
+        Zacharias Janssen · Microscopio compuesto de doble lente (1590–1608)
       </text>
     </svg>
   );
@@ -186,150 +185,156 @@ export function JanssenMicroscopeGraphic2D({ className }: GraphicProps) {
    Observación de corteza de corcho: celdas poliédricas ("células")
    ══════════════════════════════════════════════════════════════════════════ */
 export function HookeCorkGraphic2D({ className }: GraphicProps) {
+  const hex = (cx: number, cy: number, r = 11) => {
+    const points: string[] = [];
+    for (let i = 0; i < 6; i += 1) {
+      const angle = (Math.PI / 180) * (60 * i - 30);
+      points.push(`${(cx + r * Math.cos(angle)).toFixed(1)},${(cy + r * Math.sin(angle)).toFixed(1)}`);
+    }
+    return points.join(' ');
+  };
+  const cells: Array<[number, number, boolean]> = [
+    [118, 52, false], [141, 52, false], [164, 52, false], [187, 52, false], [210, 52, false],
+    [107, 72, false], [130, 72, false], [153, 72, true], [176, 72, false], [199, 72, false], [222, 72, false],
+    [118, 92, false], [141, 92, false], [164, 92, false], [187, 92, false], [210, 92, false],
+    [107, 112, false], [130, 112, false], [153, 112, false], [176, 112, false], [199, 112, false], [222, 112, false],
+    [118, 132, false], [141, 132, false], [164, 132, false], [187, 132, false], [210, 132, false],
+    [130, 151, false], [153, 151, false], [176, 151, false], [199, 151, false]
+  ];
+
   return (
     <svg
-      viewBox="0 0 320 200"
-      className={className ?? 'w-full h-auto max-h-56'}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      {...SVG_PROPS}
+      className={className ?? 'h-full w-full'}
       role="img"
       aria-label="Celdas de corcho observadas por Robert Hooke en Micrographia 1665"
     >
       <defs>
-        <radialGradient id="hookeLensGrad" cx="50%" cy="50%" r="50%">
-          <stop stopColor="#064e3b" stopOpacity="0.4" />
-          <stop offset="0.75" stopColor="#022c22" stopOpacity="0.95" />
-          <stop offset="1" stopColor="#011812" />
+        <linearGradient id="hk-bg" x1="0" y1="0" x2="320" y2="200">
+          <stop stopColor="#04231a" />
+          <stop offset="0.6" stopColor="#03150f" />
+          <stop offset="1" stopColor="#020617" />
+        </linearGradient>
+        <radialGradient id="hk-field" cx="50%" cy="48%" r="52%">
+          <stop stopColor="#065f46" stopOpacity="0.55" />
+          <stop offset="0.7" stopColor="#022c22" stopOpacity="0.85" />
+          <stop offset="1" stopColor="#01120d" />
         </radialGradient>
-
-        <linearGradient id="cellGlowGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#10b981" />
+        <linearGradient id="hk-cell" x1="0" y1="0" x2="0.4" y2="1">
+          <stop stopColor="#34d399" stopOpacity="0.85" />
+          <stop offset="0.55" stopColor="#10b981" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#065f46" stopOpacity="0.35" />
+        </linearGradient>
+        <linearGradient id="hk-hero" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#a7f3d0" />
           <stop offset="0.5" stopColor="#34d399" />
           <stop offset="1" stopColor="#059669" />
         </linearGradient>
-
-        <filter id="hookeGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        <radialGradient id="hk-vignette" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#000000" stopOpacity="0" />
+          <stop offset="0.72" stopColor="#000000" stopOpacity="0.15" />
+          <stop offset="1" stopColor="#000000" stopOpacity="0.75" />
+        </radialGradient>
+        <filter id="hk-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.8" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
-
+        <clipPath id="hk-fieldClip">
+          <circle cx="160" cy="98" r="82" />
+        </clipPath>
         <style>
           {`
-            @keyframes scanLine {
+            @keyframes hkScan {
               0% { transform: translateY(0); opacity: 0; }
-              20% { opacity: 0.8; }
-              80% { opacity: 0.8; }
-              100% { transform: translateY(140px); opacity: 0; }
+              12% { opacity: 0.85; }
+              88% { opacity: 0.85; }
+              100% { transform: translateY(160px); opacity: 0; }
             }
-            @keyframes pulseCell {
-              0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px #34d399); }
-              50% { transform: scale(1.04); filter: drop-shadow(0 0 10px #10b981); }
+            @keyframes hkPulse {
+              0%, 100% { transform: scale(1); opacity: 0.85; }
+              50% { transform: scale(1.07); opacity: 1; }
             }
-            .animate-scan {
-              animation: scanLine 3.6s ease-in-out infinite;
+            @keyframes hkRing {
+              to { transform: rotate(360deg); }
             }
-            .animate-cell-pulse {
-              transform-origin: 160px 100px;
-              animation: pulseCell 2.8s ease-in-out infinite;
+            @keyframes hkTwinkle {
+              0%, 100% { opacity: 0.15; }
+              50% { opacity: 0.9; }
             }
+            .hk-scan { animation: hkScan 5.5s ease-in-out infinite; }
+            .hk-hero { animation: hkPulse 3.2s ease-in-out infinite; transform-origin: 153px 72px; }
+            .hk-ring { animation: hkRing 24s linear infinite; transform-origin: 160px 98px; }
+            .hk-tw { animation: hkTwinkle 3s ease-in-out infinite; }
+            .hk-tw-2 { animation-delay: 1.1s; }
+            .hk-tw-3 { animation-delay: 2.2s; }
           `}
         </style>
       </defs>
 
-      {/* Marco de visor microscópico */}
-      <rect x="6" y="6" width="308" height="188" rx="16" fill="#051b14" stroke="#059669" strokeWidth="1.2" />
+      <rect width="320" height="200" fill="url(#hk-bg)" />
 
-      {/* Retículo circular de microscopio de época de Hooke */}
-      <circle cx="160" cy="100" r="82" fill="url(#hookeLensGrad)" stroke="#10b981" strokeWidth="2.5" />
-      <circle cx="160" cy="100" r="86" stroke="#34d399" strokeWidth="0.8" strokeDasharray="3 4" opacity="0.6" />
+      {/* Campo circular del microscopio */}
+      <circle cx="160" cy="98" r="84" fill="url(#hk-field)" />
+      <g clipPath="url(#hk-fieldClip)">
+        {/* Panal de corcho */}
+        <g stroke="#065f46" strokeWidth="1.4">
+          {cells.map(([cx, cy, hero], i) =>
+            hero ? null : (
+              <polygon key={i} points={hex(cx, cy)} fill="url(#hk-cell)" opacity={0.55 + ((i % 4) * 0.1)} />
+            )
+          )}
+        </g>
 
-      {/* Graduaciones de aumento del ocular circular */}
-      <g stroke="#34d399" strokeWidth="1" opacity="0.7">
-        <line x1="160" y1="14" x2="160" y2="24" />
-        <line x1="160" y1="176" x2="160" y2="186" />
-        <line x1="74" y1="100" x2="84" y2="100" />
-        <line x1="236" y1="100" x2="246" y2="100" />
+        {/* Célula protagonista */}
+        <g className="hk-hero" filter="url(#hk-glow)">
+          <polygon points={hex(153, 72, 14)} fill="url(#hk-hero)" stroke="#d1fae5" strokeWidth="2.2" />
+          <text x="153" y="70" textAnchor="middle" fill="#022c22" fontSize="7" fontWeight="900">CELL</text>
+          <text x="153" y="77.5" textAnchor="middle" fill="#064e3b" fontSize="5.4" fontWeight="800">celdilla</text>
+        </g>
+
+        {/* Línea de barrido */}
+        <g className="hk-scan">
+          <rect x="70" y="14" width="180" height="18" fill="#34d399" opacity="0.14" />
+          <line x1="72" y1="14" x2="248" y2="14" stroke="#a7f3d0" strokeWidth="1.4" opacity="0.9" />
+        </g>
+
+        <circle cx="160" cy="98" r="84" fill="url(#hk-vignette)" />
       </g>
 
-      {/* Panal de celdas de corcho (sección vegetal suberosa poliédrica) */}
-      <g stroke="#15803d" strokeWidth="1.6" fill="#064e3b" fillOpacity="0.45">
-        {/* Fila 1 */}
-        <polygon points="110,40 130,40 140,54 130,68 110,68 100,54" />
-        <polygon points="145,40 165,40 175,54 165,68 145,68 135,54" />
-        <polygon points="180,40 200,40 210,54 200,68 180,68 170,54" />
-
-        {/* Fila 2 */}
-        <polygon points="92,57 112,57 122,71 112,85 92,85 82,71" />
-        <polygon points="127,57 147,57 157,71 147,85 127,85 117,71" />
-        <polygon points="163,57 183,57 193,71 183,85 163,85 153,71" />
-        <polygon points="198,57 218,57 228,71 218,85 198,85 188,71" />
-
-        {/* Fila 3 - Celda central protagonista */}
-        <polygon points="110,74 130,74 140,88 130,102 110,102 100,88" />
-        <polygon points="180,74 200,74 210,88 200,102 180,102 170,88" />
-
-        {/* Fila 4 */}
-        <polygon points="92,91 112,91 122,105 112,119 92,119 82,105" />
-        <polygon points="127,91 147,91 157,105 147,119 127,119 117,105" />
-        <polygon points="163,91 163,91 193,105 183,119 163,119 153,105" />
-        <polygon points="198,91 218,91 228,105 218,119 198,119 188,105" />
-
-        {/* Fila 5 */}
-        <polygon points="110,108 130,108 140,122 130,136 110,136 100,122" />
-        <polygon points="145,108 165,108 175,122 165,136 145,136 135,122" />
-        <polygon points="180,108 200,108 210,122 200,136 180,136 170,122" />
-
-        {/* Fila 6 */}
-        <polygon points="127,125 147,125 157,139 147,153 127,153 117,139" />
-        <polygon points="163,125 183,125 193,139 183,153 163,153 153,139" />
+      {/* Aro del ocular */}
+      <circle cx="160" cy="98" r="82" fill="none" stroke="#10b981" strokeWidth="2.6" />
+      <circle cx="160" cy="98" r="87" fill="none" stroke="#34d399" strokeOpacity="0.5" strokeWidth="1" />
+      <g className="hk-ring">
+        <circle cx="160" cy="98" r="93" fill="none" stroke="#6ee7b7" strokeWidth="1.6" strokeDasharray="2 14" strokeLinecap="round" opacity="0.8" />
+        <circle cx="160" cy="6" r="2" fill="#a7f3d0" />
+        <circle cx="252" cy="98" r="1.6" fill="#a7f3d0" />
       </g>
 
-      {/* Celda central bautizada «Célula» (Hooke) con animación de pulso */}
-      <g className="animate-cell-pulse">
-        <polygon
-          points="145,74 165,74 175,88 165,102 145,102 135,88"
-          fill="url(#cellGlowGrad)"
-          stroke="#6ee7b7"
-          strokeWidth="2.4"
-          filter="url(#hookeGlow)"
-        />
-        <text x="155" y="91" textAnchor="middle" fill="#022c22" fontSize="7.5" fontWeight="900">
-          CELL
-        </text>
-        <text x="155" y="99" textAnchor="middle" fill="#042f2e" fontSize="6.5" fontWeight="bold">
-          (Celdilla)
-        </text>
-      </g>
-
-      {/* Línea animada de barrido de microscopía */}
-      <g className="animate-scan">
-        <line x1="90" y1="30" x2="230" y2="30" stroke="#a7f3d0" strokeWidth="1.5" opacity="0.8" />
-        <polygon points="90,30 230,30 220,38 100,38" fill="#34d399" opacity="0.15" />
-      </g>
-
-      {/* Callouts y etiquetas históricas */}
+      {/* Etiquetas flotantes */}
       <g>
-        {/* Puntero a la celda */}
-        <line x1="175" y1="88" x2="270" y2="60" stroke="#34d399" strokeWidth="1.2" strokeDasharray="3 2" />
-        <circle cx="270" cy="60" r="3" fill="#10b981" />
-        <rect x="235" y="44" width="75" height="15" rx="4" fill="#065f46" stroke="#34d399" strokeWidth="0.8" />
-        <text x="272" y="54" textAnchor="middle" fill="#d1fae5" fontSize="7" fontWeight="bold">
-          «Células de corcho»
-        </text>
+        <line x1="163" y1="64" x2="238" y2="44" stroke="#34d399" strokeWidth="1.1" strokeDasharray="3 3" />
+        <circle cx="163" cy="64" r="2" fill="#a7f3d0" />
+        <rect x="216" y="30" width="94" height="14" rx="4" fill="#022c22" stroke="#10b981" strokeOpacity="0.8" />
+        <text x="263" y="39.5" textAnchor="middle" fill="#d1fae5" fontSize="7.2" fontWeight="800">«CÉLULAS DE CORCHO»</text>
 
-        {/* Puntero a pared muerta */}
-        <line x1="110" y1="136" x2="45" y2="150" stroke="#f59e0b" strokeWidth="1" strokeDasharray="3 2" />
-        <circle cx="45" cy="150" r="2.5" fill="#f59e0b" />
-        <rect x="14" y="142" width="75" height="15" rx="4" fill="#78350f" stroke="#fbbf24" strokeWidth="0.8" />
-        <text x="51" y="152" textAnchor="middle" fill="#fef3c7" fontSize="7" fontWeight="bold">
-          Pared vegetal suberina
-        </text>
+        <line x1="107" y1="122" x2="62" y2="152" stroke="#fbbf24" strokeWidth="1.1" strokeDasharray="3 3" />
+        <circle cx="107" cy="122" r="2" fill="#fde68a" />
+        <rect x="10" y="146" width="82" height="14" rx="4" fill="#3f2a08" stroke="#fbbf24" strokeOpacity="0.8" />
+        <text x="51" y="155.5" textAnchor="middle" fill="#fef3c7" fontSize="7" fontWeight="800">PARED MUERTA</text>
       </g>
 
-      {/* Insignia inferior */}
-      <rect x="18" y="174" width="284" height="15" rx="5" fill="#047857" fillOpacity="0.25" />
-      <text x="160" y="185" textAnchor="middle" fill="#a7f3d0" fontSize="8" fontWeight="600">
-        Robert Hooke · Micrographia (1665) · Acuñó el término «célula» al ver panales en corcho
+      <g fill="#a7f3d0" filter="url(#hk-glow)">
+        <circle className="hk-tw" cx="18" cy="52" r="1.5" />
+        <circle className="hk-tw hk-tw-2" cx="300" cy="66" r="1.3" />
+        <circle className="hk-tw hk-tw-3" cx="288" cy="168" r="1.4" />
+      </g>
+
+      <text x="160" y="194" textAnchor="middle" fill="#a7f3d0" fontSize="8.2" fontWeight="700" letterSpacing="0.3">
+        Robert Hooke · Micrographia (1665) · Acuñó el término «célula»
       </text>
     </svg>
   );
@@ -342,171 +347,184 @@ export function HookeCorkGraphic2D({ className }: GraphicProps) {
 export function LeeuwenhoekAnimalculesGraphic2D({ className }: GraphicProps) {
   return (
     <svg
-      viewBox="0 0 320 200"
-      className={className ?? 'w-full h-auto max-h-56'}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      {...SVG_PROPS}
+      className={className ?? 'h-full w-full'}
       role="img"
       aria-label="Animálculos microscópicos observados por Anton van Leeuwenhoek en 1674"
     >
       <defs>
-        {/* Gradiente acuático profundo */}
-        <radialGradient id="waterDropGrad" cx="50%" cy="45%" r="55%">
-          <stop stopColor="#0891b2" stopOpacity="0.85" />
-          <stop offset="0.6" stopColor="#0e7490" stopOpacity="0.95" />
-          <stop offset="0.9" stopColor="#155e75" />
+        <linearGradient id="lw-bg" x1="0" y1="0" x2="320" y2="200">
+          <stop stopColor="#042a33" />
+          <stop offset="0.6" stopColor="#03181f" />
+          <stop offset="1" stopColor="#020617" />
+        </linearGradient>
+        <radialGradient id="lw-drop" cx="42%" cy="36%" r="62%">
+          <stop stopColor="#67e8f9" stopOpacity="0.55" />
+          <stop offset="0.45" stopColor="#0891b2" stopOpacity="0.7" />
+          <stop offset="0.85" stopColor="#0e7490" stopOpacity="0.9" />
           <stop offset="1" stopColor="#083344" />
         </radialGradient>
-
-        {/* Gradiente de microorganismo */}
-        <linearGradient id="microbeGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#67e8f9" />
-          <stop offset="0.5" stopColor="#22d3ee" />
-          <stop offset="1" stopColor="#06b6d4" />
+        <linearGradient id="lw-paramecium" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#a5f3fc" />
+          <stop offset="0.55" stopColor="#22d3ee" />
+          <stop offset="1" stopColor="#0891b2" />
         </linearGradient>
-
-        <filter id="leeuwenGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        <linearGradient id="lw-brass" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#fde68a" />
+          <stop offset="0.5" stopColor="#d97706" />
+          <stop offset="1" stopColor="#78350f" />
+        </linearGradient>
+        <filter id="lw-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.4" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
-
+        <clipPath id="lw-dropClip">
+          <circle cx="170" cy="98" r="76" />
+        </clipPath>
         <style>
           {`
-            @keyframes swimParamecium {
-              0% { transform: translate(0, 0) rotate(0deg); }
-              25% { transform: translate(14px, -8px) rotate(6deg); }
-              50% { transform: translate(26px, 4px) rotate(-4deg); }
-              75% { transform: translate(12px, 12px) rotate(8deg); }
-              100% { transform: translate(0, 0) rotate(0deg); }
+            @keyframes lwSwimA {
+              0% { transform: translate(0px, 0px) rotate(0deg); }
+              25% { transform: translate(16px, -9px) rotate(5deg); }
+              50% { transform: translate(30px, 5px) rotate(-4deg); }
+              75% { transform: translate(12px, 13px) rotate(6deg); }
+              100% { transform: translate(0px, 0px) rotate(0deg); }
             }
-            @keyframes wiggleSpirillum {
-              0% { transform: translate(0, 0) rotate(0deg); }
-              50% { transform: translate(-15px, 8px) rotate(-12deg); }
-              100% { transform: translate(0, 0) rotate(0deg); }
+            @keyframes lwSwimB {
+              0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+              50% { transform: translate(-22px, 11px) rotate(-10deg); }
             }
-            @keyframes whipFlagellum {
-              0%, 100% { d: path("M150 135 Q140 148 132 152 T120 162"); }
-              50% { d: path("M150 135 Q158 145 146 155 T138 165"); }
+            @keyframes lwSwimC {
+              0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+              33% { transform: translate(10px, -12px) rotate(8deg); }
+              66% { transform: translate(-8px, -4px) rotate(-6deg); }
             }
-            @keyframes bubbleRise {
-              0% { transform: translateY(0) scale(0.9); opacity: 0.3; }
-              50% { opacity: 0.7; }
-              100% { transform: translateY(-28px) scale(1.1); opacity: 0.1; }
+            @keyframes lwCilia {
+              0%, 100% { opacity: 0.35; transform: scale(1); }
+              50% { opacity: 0.95; transform: scale(1.08); }
             }
-            .animate-swim-param {
-              animation: swimParamecium 6s ease-in-out infinite;
+            @keyframes lwRipple {
+              0% { transform: scale(0.7); opacity: 0.5; }
+              100% { transform: scale(1.25); opacity: 0; }
             }
-            .animate-wiggle-spirillum {
-              animation: wiggleSpirillum 4s ease-in-out infinite;
+            @keyframes lwBubble {
+              0% { transform: translateY(6px); opacity: 0; }
+              25% { opacity: 0.8; }
+              100% { transform: translateY(-40px); opacity: 0; }
             }
-            .animate-bubble-1 {
-              animation: bubbleRise 3.5s ease-in-out infinite;
+            @keyframes lwBeam {
+              0%, 100% { opacity: 0.3; }
+              50% { opacity: 0.75; }
             }
-            .animate-bubble-2 {
-              animation: bubbleRise 4.2s ease-in-out infinite 1.2s;
-            }
+            .lw-swim-a { animation: lwSwimA 7s ease-in-out infinite; }
+            .lw-swim-b { animation: lwSwimB 5.4s ease-in-out infinite; }
+            .lw-swim-c { animation: lwSwimC 6.4s ease-in-out infinite; }
+            .lw-cilia { animation: lwCilia 1.4s ease-in-out infinite; transform-origin: 130px 68px; }
+            .lw-ripple { animation: lwRipple 4s ease-out infinite; transform-origin: 170px 98px; }
+            .lw-ripple-2 { animation-delay: 2s; }
+            .lw-bubble { animation: lwBubble 4.6s linear infinite; }
+            .lw-bubble-2 { animation-delay: 1.5s; }
+            .lw-bubble-3 { animation-delay: 3s; }
+            .lw-beam { animation: lwBeam 3.6s ease-in-out infinite; }
           `}
         </style>
       </defs>
 
-      {/* Marco contenedor */}
-      <rect x="6" y="6" width="308" height="188" rx="16" fill="#041d24" stroke="#0891b2" strokeWidth="1.2" />
+      <rect width="320" height="200" fill="url(#lw-bg)" />
 
-      {/* Gota de agua estancada bajo la lente de Leeuwenhoek */}
-      <circle cx="160" cy="100" r="82" fill="url(#waterDropGrad)" stroke="#22d3ee" strokeWidth="2.5" />
-      <circle cx="160" cy="100" r="80" stroke="#a5f3fc" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-
-      {/* Reflejos de tensión superficial de la gota de agua */}
-      <path
-        d="M100 45 C125 32 180 32 215 48 C185 40 135 40 100 45 Z"
-        fill="#ffffff"
-        opacity="0.35"
-      />
-
-      {/* Burbujitas microscópicas flotando */}
-      <g>
-        <circle cx="120" cy="120" r="3.5" fill="#cffafe" opacity="0.5" className="animate-bubble-1" />
-        <circle cx="205" cy="135" r="4" fill="#cffafe" opacity="0.4" className="animate-bubble-2" />
-        <circle cx="180" cy="70" r="2.5" fill="#cffafe" opacity="0.6" className="animate-bubble-1" />
+      {/* Haz de luz de la lente */}
+      <g className="lw-beam">
+        <path d="M44 86 L120 96 L120 106 L44 120 Z" fill="#22d3ee" opacity="0.16" />
       </g>
 
-      {/* ── Microorganismo 1: Paramecio / Ciliado en movimiento ── */}
-      <g className="animate-swim-param" filter="url(#leeuwenGlow)">
-        {/* Cuerpo del animálculo ciliado */}
-        <ellipse cx="140" cy="85" rx="26" ry="13" fill="url(#microbeGrad)" stroke="#a5f3fc" strokeWidth="1.2" transform="rotate(-15 140 85)" />
-        {/* Cilios periféricos batiéndose */}
-        <g stroke="#67e8f9" strokeWidth="1" strokeDasharray="1.5 2">
-          <ellipse cx="140" cy="85" rx="29" ry="16" fill="none" transform="rotate(-15 140 85)" />
+      {/* Gota de agua */}
+      <circle cx="170" cy="98" r="78" fill="#0e7490" opacity="0.25" />
+      <circle cx="170" cy="98" r="76" fill="url(#lw-drop)" stroke="#22d3ee" strokeWidth="2.2" />
+      <g clipPath="url(#lw-dropClip)">
+        <g fill="none" stroke="#a5f3fc" strokeWidth="1" opacity="0.35">
+          <circle className="lw-ripple" cx="170" cy="98" r="40" />
+          <circle className="lw-ripple lw-ripple-2" cx="170" cy="98" r="40" />
         </g>
-        {/* Vacuola contráctil y núcleo */}
-        <circle cx="132" cy="83" r="4.5" fill="#ffffff" opacity="0.9" />
-        <circle cx="148" cy="87" r="3.5" fill="#083344" opacity="0.8" />
-        <text x="140" y="80" textAnchor="middle" fill="#083344" fontSize="6.5" fontWeight="900">
-          Animálculo
-        </text>
+
+        {/* Paramecio */}
+        <g className="lw-swim-a" filter="url(#lw-glow)">
+          <ellipse cx="130" cy="68" rx="25" ry="12.5" fill="url(#lw-paramecium)" transform="rotate(-14 126 66)" />
+          <ellipse className="lw-cilia" cx="130" cy="68" rx="28" ry="15.5" fill="none" stroke="#cffafe" strokeWidth="1" strokeDasharray="1.4 2.4" transform="rotate(-14 126 66)" />
+          <circle cx="122" cy="66" r="4.4" fill="#f0fdff" opacity="0.9" />
+          <circle cx="137" cy="70" r="3.2" fill="#083344" opacity="0.8" />
+          
+        </g>
+
+        {/* Espirilo */}
+        <g className="lw-swim-b" filter="url(#lw-glow)">
+          <path d="M198 122q7-6 14 0t14 0t14 0" stroke="#fde68a" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+          <circle cx="198" cy="122" r="2.4" fill="#facc15" />
+          <circle cx="240" cy="122" r="2.4" fill="#facc15" />
+          
+        </g>
+
+        {/* Flagelado */}
+        <g className="lw-swim-c" filter="url(#lw-glow)">
+          <path d="M150 128c9 0 14 8 5 14-7 5-13-5-5-14Z" fill="#34d399" stroke="#a7f3d0" strokeWidth="1.2" />
+          <circle cx="152" cy="135" r="1.8" fill="#064e3b" />
+          <path d="M155 142q-8 10-18 12t-14 10" stroke="#86efac" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.9" />
+          
+        </g>
+
+        {/* Bacilos */}
+        <g opacity="0.85">
+          <ellipse cx="214" cy="64" rx="9" ry="6" fill="#c4b5fd" stroke="#e9d5ff" strokeWidth="1" />
+          <circle cx="211" cy="62" r="1.4" fill="#4c1d95" />
+          <circle cx="217" cy="66" r="1.2" fill="#4c1d95" />
+        </g>
+        <g fill="#fb7185" opacity="0.85">
+          <rect x="176" y="56" width="7" height="3" rx="1.5" transform="rotate(32 176 56)" />
+          <rect x="204" y="78" width="7.5" height="3" rx="1.5" transform="rotate(-38 204 78)" />
+          <rect x="140" y="152" width="6" height="2.6" rx="1.3" transform="rotate(14 140 152)" />
+        </g>
+
+        {/* Burbujas */}
+        <g fill="#cffafe">
+          <circle className="lw-bubble" cx="136" cy="112" r="3" opacity="0.5" />
+          <circle className="lw-bubble lw-bubble-2" cx="210" cy="128" r="3.6" opacity="0.45" />
+          <circle className="lw-bubble lw-bubble-3" cx="192" cy="94" r="2.4" opacity="0.55" />
+        </g>
+
+        {/* Reflejo superior */}
+        <path d="M112 46c22-12 72-14 104 2-26-9-74-9-104-2Z" fill="#ffffff" opacity="0.3" />
+      </g>
+      <circle cx="170" cy="98" r="76" fill="none" stroke="#a5f3fc" strokeOpacity="0.35" strokeWidth="1" strokeDasharray="4 5" />
+
+      {/* Microscopio de Leeuwenhoek */}
+      <g transform="translate(14 44) scale(0.8)">
+        <rect x="0" y="0" width="24" height="60" rx="5" fill="url(#lw-brass)" stroke="#fbbf24" strokeWidth="1.2" />
+        <rect x="4" y="4" width="6" height="52" rx="3" fill="#fef3c7" opacity="0.35" />
+        <circle cx="12" cy="20" r="4" fill="#7dd3fc" stroke="#ffffff" strokeWidth="1" filter="url(#lw-glow)" />
+        <line x1="12" y1="34" x2="32" y2="28" stroke="#fbbf24" strokeWidth="1.6" />
+        <circle cx="32" cy="28" r="2.2" fill="#f59e0b" />
+        <text x="12" y="74" textAnchor="middle" fill="#fde68a" fontSize="8" fontWeight="800">LENTE</text>
       </g>
 
-      {/* ── Microorganismo 2: Espirilo / Bacteria espiral ── */}
-      <g className="animate-wiggle-spirillum" filter="url(#leeuwenGlow)">
-        <path
-          d="M185 115 Q192 110 200 115 T215 115 T230 115"
-          stroke="#fef08a"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <circle cx="185" cy="115" r="2.5" fill="#facc15" />
-        <circle cx="230" cy="115" r="2.5" fill="#facc15" />
-        <text x="208" y="106" textAnchor="middle" fill="#fef08a" fontSize="6.5" fontWeight="bold">
-          Espirilo
-        </text>
+      {/* Etiquetas de los animálculos */}
+      <g>
+        <path d="M84 42 L126 64" stroke="#67e8f9" strokeWidth="0.9" strokeDasharray="3 3" opacity="0.8" />
+        <rect x="6" y="33" width="78" height="13" rx="4" fill="#083344" stroke="#22d3ee" strokeOpacity="0.7" />
+        <text x="45" y="42.4" textAnchor="middle" fill="#cffafe" fontSize="6.4" fontWeight="800">ANIMÁLCULO</text>
+
+        <path d="M240 103 L224 118" stroke="#facc15" strokeWidth="0.9" strokeDasharray="3 3" opacity="0.8" />
+        <rect x="238" y="94" width="62" height="13" rx="4" fill="#3f2a08" stroke="#facc15" strokeOpacity="0.7" />
+        <text x="269" y="103.4" textAnchor="middle" fill="#fef08a" fontSize="6.4" fontWeight="800">ESPIRILO</text>
+
+        <path d="M80 148 L148 140" stroke="#86efac" strokeWidth="0.9" strokeDasharray="3 3" opacity="0.8" />
+        <rect x="6" y="141" width="68" height="13" rx="4" fill="#052e16" stroke="#4ade80" strokeOpacity="0.7" />
+        <text x="40" y="150.4" textAnchor="middle" fill="#bbf7d0" fontSize="6.4" fontWeight="800">FLAGELADO</text>
       </g>
 
-      {/* ── Microorganismo 3: Flagelado con látigo móvil ── */}
-      <g filter="url(#leeuwenGlow)">
-        {/* Cuerpo elíptico */}
-        <path
-          d="M145 125 C155 125 160 135 150 142 C142 148 135 135 145 125 Z"
-          fill="#34d399"
-          stroke="#a7f3d0"
-          strokeWidth="1.2"
-        />
-        <circle cx="147" cy="133" r="2" fill="#064e3b" />
-        {/* Flagelo ondulante animado */}
-        <path
-          d="M150 142 Q140 155 130 158 T118 168"
-          stroke="#86efac"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <text x="175" y="140" textAnchor="start" fill="#86efac" fontSize="6.5" fontWeight="bold">
-          Flagelado
-        </text>
-      </g>
-
-      {/* Micro-bacilos flotando en el agua */}
-      <g fill="#f43f5e" opacity="0.8">
-        <rect x="110" y="60" width="7" height="3" rx="1.5" transform="rotate(30 110 60)" />
-        <rect x="195" y="65" width="8" height="3" rx="1.5" transform="rotate(-40 195 65)" />
-        <rect x="125" y="145" width="6" height="2.5" rx="1.2" transform="rotate(15 125 145)" />
-      </g>
-
-      {/* Mini microscopio de Leeuwenhoek (lente en paleta de latón) a la izquierda */}
-      <g transform="translate(18, 40) scale(0.75)">
-        <rect x="0" y="0" width="22" height="55" rx="4" fill="#b45309" stroke="#fbbf24" strokeWidth="1.2" />
-        <circle cx="11" cy="18" r="3.5" fill="#38bdf8" stroke="#ffffff" strokeWidth="1" filter="url(#leeuwenGlow)" />
-        <line x1="11" y1="30" x2="28" y2="24" stroke="#fbbf24" strokeWidth="1.5" />
-        <circle cx="28" cy="24" r="2" fill="#f59e0b" />
-        <text x="11" y="70" textAnchor="middle" fill="#fde68a" fontSize="7.5" fontWeight="bold">
-          Lente
-        </text>
-      </g>
-
-      {/* Insignia inferior */}
-      <rect x="18" y="174" width="284" height="15" rx="5" fill="#0e7490" fillOpacity="0.25" />
-      <text x="160" y="185" textAnchor="middle" fill="#a5f3fc" fontSize="8" fontWeight="600">
-        Anton van Leeuwenhoek (1674) · Primer ser humano en observar bacterias y protozoos vivos
+      <text x="170" y="194" textAnchor="middle" fill="#a5f3fc" fontSize="8.2" fontWeight="700" letterSpacing="0.3">
+        Anton van Leeuwenhoek (1674) · Primero en ver bacterias y protozoos vivos
       </text>
     </svg>
   );
@@ -519,160 +537,148 @@ export function LeeuwenhoekAnimalculesGraphic2D({ className }: GraphicProps) {
 export function SchleidenSchwannGraphic2D({ className }: GraphicProps) {
   return (
     <svg
-      viewBox="0 0 320 200"
-      className={className ?? 'w-full h-auto max-h-56'}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      {...SVG_PROPS}
+      className={className ?? 'h-full w-full'}
       role="img"
       aria-label="Célula vegetal y animal unificadas en la teoría celular por Schleiden y Schwann"
     >
       <defs>
-        <linearGradient id="plantCellGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#14532d" />
-          <stop offset="0.6" stopColor="#15803d" />
-          <stop offset="1" stopColor="#052e16" />
+        <linearGradient id="ss-bg" x1="0" y1="0" x2="320" y2="200">
+          <stop stopColor="#1b1032" />
+          <stop offset="0.55" stopColor="#120c22" />
+          <stop offset="1" stopColor="#020617" />
         </linearGradient>
-
-        <radialGradient id="animalCellGrad" cx="50%" cy="50%" r="50%">
-          <stop stopColor="#831843" />
-          <stop offset="0.7" stopColor="#9d174d" />
-          <stop offset="1" stopColor="#500724" />
+        <linearGradient id="ss-plant" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#166534" />
+          <stop offset="0.6" stopColor="#065f46" />
+          <stop offset="1" stopColor="#022c22" />
+        </linearGradient>
+        <radialGradient id="ss-animal" cx="42%" cy="36%" r="68%">
+          <stop stopColor="#be185d" />
+          <stop offset="0.7" stopColor="#831843" />
+          <stop offset="1" stopColor="#4c0519" />
         </radialGradient>
-
-        <linearGradient id="bridgeEnergy" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id="ss-bridge" x1="0" y1="0" x2="1" y2="0">
           <stop stopColor="#22c55e" />
           <stop offset="0.5" stopColor="#facc15" />
           <stop offset="1" stopColor="#ec4899" />
         </linearGradient>
-
-        <filter id="unisonGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3.5" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        <linearGradient id="ss-vacuole" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#7dd3fc" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#0369a1" stopOpacity="0.85" />
+        </linearGradient>
+        <filter id="ss-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.6" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
-
         <style>
           {`
-            @keyframes bridgePulse {
-              0%, 100% { stroke-dashoffset: 0; opacity: 0.6; }
-              50% { stroke-dashoffset: -20; opacity: 1; }
+            @keyframes ssFlow {
+              to { stroke-dashoffset: -60; }
             }
-            @keyframes chloroSway {
-              0%, 100% { transform: translateY(0); }
-              50% { transform: translateY(-3px); }
+            @keyframes ssSway {
+              0%, 100% { transform: translateY(0) rotate(0deg); }
+              50% { transform: translateY(-3px) rotate(3deg); }
             }
-            .animate-bridge {
-              stroke-dasharray: 6 4;
-              animation: bridgePulse 3s linear infinite;
+            @keyframes ssMedallion {
+              0%, 100% { transform: scale(1); opacity: 0.92; }
+              50% { transform: scale(1.08); opacity: 1; }
             }
-            .animate-sway {
-              animation: chloroSway 2.5s ease-in-out infinite;
+            @keyframes ssPulseCell {
+              0%, 100% { transform: scale(1); }
+              50% { transform: scale(1.03); }
             }
+            .ss-flow { stroke-dasharray: 5 6; animation: ssFlow 3s linear infinite; }
+            .ss-sway { animation: ssSway 3.4s ease-in-out infinite; transform-origin: 76px 66px; }
+            .ss-medallion { animation: ssMedallion 3.2s ease-in-out infinite; transform-origin: 160px 100px; }
+            .ss-plant { animation: ssPulseCell 5s ease-in-out infinite; transform-origin: 78px 100px; }
+            .ss-animal { animation: ssPulseCell 4.4s ease-in-out infinite; transform-origin: 242px 100px; }
           `}
         </style>
       </defs>
 
-      {/* Marco contenedor */}
-      <rect x="6" y="6" width="308" height="188" rx="16" fill="#150d1e" stroke="#8b5cf6" strokeWidth="1.2" />
+      <rect width="320" height="200" fill="url(#ss-bg)" />
 
-      {/* ── LADO IZQUIERDO: CÉLULA VEGETAL (SCHLEIDEN - BOTÁNICA) ── */}
-      <g>
-        {/* Pared celular rígida poligonal */}
+      {/* Célula vegetal */}
+      <g className="ss-plant">
         <polygon
-          points="40,50 115,44 135,100 115,152 40,146 22,100"
-          fill="url(#plantCellGrad)"
+          points="42,52 112,44 132,100 112,154 42,148 22,100"
+          fill="url(#ss-plant)"
           stroke="#22c55e"
-          strokeWidth="2.5"
+          strokeWidth="3"
         />
-        {/* Gran vacuola central vegetal */}
-        <ellipse cx="78" cy="98" rx="28" ry="24" fill="#0284c7" fillOpacity="0.75" stroke="#38bdf8" strokeWidth="1.2" />
-        <text x="78" y="101" textAnchor="middle" fill="#e0f2fe" fontSize="7" fontWeight="bold">
-          Vacuola
-        </text>
+        <polygon
+          points="47,57 108,50 126,100 108,148 47,143 28,100"
+          fill="none"
+          stroke="#86efac"
+          strokeOpacity="0.35"
+          strokeWidth="1.2"
+          strokeDasharray="4 4"
+        />
+        <ellipse cx="76" cy="98" rx="27" ry="23" fill="url(#ss-vacuole)" stroke="#38bdf8" strokeWidth="1.2" />
+        <text x="76" y="101" textAnchor="middle" fill="#e0f2fe" fontSize="6.8" fontWeight="800">VACUOLA</text>
 
-        {/* Cloroplastos con clorofila */}
-        <g className="animate-sway">
-          <ellipse cx="50" cy="70" rx="8" ry="5" fill="#4ade80" stroke="#16a34a" strokeWidth="1" transform="rotate(25 50 70)" />
-          <ellipse cx="105" cy="72" rx="8" ry="5" fill="#4ade80" stroke="#16a34a" strokeWidth="1" transform="rotate(-20 105 72)" />
-          <ellipse cx="60" cy="130" rx="8" ry="5" fill="#4ade80" stroke="#16a34a" strokeWidth="1" transform="rotate(10 60 130)" />
+        <g className="ss-sway">
+          <ellipse cx="48" cy="70" rx="8" ry="4.6" fill="#4ade80" stroke="#16a34a" strokeWidth="1" transform="rotate(24 48 70)" />
+          <ellipse cx="103" cy="70" rx="7.5" ry="4.4" fill="#4ade80" stroke="#16a34a" strokeWidth="1" transform="rotate(-20 103 70)" />
+          <ellipse cx="56" cy="130" rx="7.5" ry="4.4" fill="#4ade80" stroke="#16a34a" strokeWidth="1" transform="rotate(12 56 130)" />
         </g>
 
-        {/* Núcleo vegetal lateral */}
-        <circle cx="106" cy="124" r="9" fill="#7c3aed" stroke="#c084fc" strokeWidth="1" />
-        <circle cx="106" cy="124" r="3.5" fill="#fbcfe8" />
+        <circle cx="104" cy="124" r="9.5" fill="#7c3aed" stroke="#c084fc" strokeWidth="1.2" />
+        <circle cx="104" cy="124" r="3.4" fill="#fbcfe8" />
 
-        {/* Etiqueta botánica */}
-        <rect x="30" y="24" width="95" height="15" rx="4" fill="#052e16" stroke="#22c55e" strokeWidth="1" />
-        <text x="77" y="34" textAnchor="middle" fill="#86efac" fontSize="7.5" fontWeight="bold">
-          🌿 Schleiden · Plantas
-        </text>
+        <rect x="26" y="22" width="104" height="15" rx="5" fill="#052e16" stroke="#22c55e" strokeOpacity="0.85" />
+        <text x="78" y="32" textAnchor="middle" fill="#86efac" fontSize="7.6" fontWeight="800">SCHLEIDEN · PLANTAS</text>
       </g>
 
-      {/* ── PUENTE DE UNIFICACIÓN TEÓRICA CENTRAL ── */}
-      <g filter="url(#unisonGlow)">
-        {/* Rayos de conexión universal */}
-        <path
-          d="M135 100 C150 75 170 75 185 100"
-          stroke="url(#bridgeEnergy)"
-          strokeWidth="3"
-          fill="none"
-          className="animate-bridge"
-        />
-        <path
-          d="M135 100 C150 125 170 125 185 100"
-          stroke="url(#bridgeEnergy)"
-          strokeWidth="3"
-          fill="none"
-          className="animate-bridge"
-        />
-        {/* Esfera central del postulado */}
-        <circle cx="160" cy="100" r="14" fill="#1e1b4b" stroke="#facc15" strokeWidth="2" />
-        <text x="160" y="98" textAnchor="middle" fill="#fde047" fontSize="8" fontWeight="900">
-          1.er
-        </text>
-        <text x="160" y="107" textAnchor="middle" fill="#ffffff" fontSize="6.5" fontWeight="bold">
-          Postulado
-        </text>
-      </g>
-
-      {/* ── LADO DERECHO: CÉLULA ANIMAL (SCHWANN - ZOOLOGÍA) ── */}
-      <g>
-        {/* Membrana celular flexible esférica */}
-        <circle
-          cx="242" cy="100" r="54"
-          fill="url(#animalCellGrad)"
-          stroke="#f43f5e"
-          strokeWidth="2.5"
-        />
-
-        {/* Núcleo animal central prominente */}
-        <circle cx="242" cy="100" r="17" fill="#581c87" stroke="#c084fc" strokeWidth="1.5" />
+      {/* Célula animal */}
+      <g className="ss-animal">
+        <circle cx="242" cy="100" r="55" fill="url(#ss-animal)" stroke="#f43f5e" strokeWidth="2.8" />
+        <circle cx="242" cy="100" r="48" fill="none" stroke="#fda4af" strokeOpacity="0.3" strokeWidth="1" strokeDasharray="5 5" />
+        <circle cx="242" cy="100" r="17" fill="#581c87" stroke="#c084fc" strokeWidth="1.6" />
         <circle cx="242" cy="100" r="6" fill="#f472b6" />
-        <text x="242" y="124" textAnchor="middle" fill="#fbcfe8" fontSize="6.5" fontWeight="bold">
-          Núcleo
-        </text>
+        <text x="242" y="126" textAnchor="middle" fill="#fbcfe8" fontSize="6.8" fontWeight="800">NÚCLEO</text>
 
-        {/* Mitocondrias productoras de energía */}
         <g>
-          <ellipse cx="212" cy="74" rx="9" ry="5.5" fill="#f97316" stroke="#fbbf24" strokeWidth="1" transform="rotate(30 212 74)" />
-          <ellipse cx="270" cy="78" rx="8" ry="5" fill="#f97316" stroke="#fbbf24" strokeWidth="1" transform="rotate(-35 270 78)" />
-          <ellipse cx="220" cy="128" rx="9" ry="5.5" fill="#f97316" stroke="#fbbf24" strokeWidth="1" transform="rotate(-20 220 128)" />
+          <ellipse cx="212" cy="74" rx="8.5" ry="5" fill="#f97316" stroke="#fbbf24" strokeWidth="1" transform="rotate(30 212 74)" />
+          <ellipse cx="270" cy="78" rx="7.5" ry="4.6" fill="#f97316" stroke="#fbbf24" strokeWidth="1" transform="rotate(-34 270 78)" />
+          <ellipse cx="220" cy="128" rx="8.5" ry="5" fill="#f97316" stroke="#fbbf24" strokeWidth="1" transform="rotate(-18 220 128)" />
         </g>
 
-        {/* Centríolos animales */}
-        <rect x="256" y="122" width="5" height="10" rx="1.5" fill="#facc15" />
-        <rect x="263" y="125" width="10" height="5" rx="1.5" fill="#facc15" />
+        <g fill="#facc15">
+          <rect x="258" y="124" width="4.5" height="9" rx="1.4" />
+          <rect x="265" y="126.5" width="9" height="4.5" rx="1.4" />
+        </g>
 
-        {/* Etiqueta zoológica */}
-        <rect x="195" y="24" width="95" height="15" rx="4" fill="#4c0519" stroke="#f43f5e" strokeWidth="1" />
-        <text x="242" y="34" textAnchor="middle" fill="#fbcfe8" fontSize="7.5" fontWeight="bold">
-          🐾 Schwann · Animales
-        </text>
+        <rect x="192" y="22" width="104" height="15" rx="5" fill="#4c0519" stroke="#f43f5e" strokeOpacity="0.85" />
+        <text x="244" y="32" textAnchor="middle" fill="#fbcfe8" fontSize="7.6" fontWeight="800">SCHWANN · ANIMALES</text>
       </g>
 
-      {/* Insignia inferior */}
-      <rect x="18" y="174" width="284" height="15" rx="5" fill="#6d28d9" fillOpacity="0.25" />
-      <text x="160" y="185" textAnchor="middle" fill="#ddd6fe" fontSize="8" fontWeight="600">
-        1838–1839 · Todos los seres vivos están formados por una o más células
+      {/* Puente de unificación */}
+      <g filter="url(#ss-glow)">
+        <path className="ss-flow" d="M132 100C146 72 176 72 190 100" stroke="url(#ss-bridge)" strokeWidth="3" fill="none" />
+        <path className="ss-flow" d="M132 100C146 128 176 128 190 100" stroke="url(#ss-bridge)" strokeWidth="3" fill="none" />
+
+        <circle r="3.4" fill="#fef08a">
+          <animateMotion dur="3.4s" repeatCount="indefinite" path="M132 100C146 72 176 72 190 100" />
+        </circle>
+        <circle r="3" fill="#86efac">
+          <animateMotion dur="3.8s" repeatCount="indefinite" begin="0.9s" path="M190 100C176 128 146 128 132 100" />
+        </circle>
+
+        <g className="ss-medallion">
+          <circle cx="160" cy="100" r="18" fill="#1e1b4b" stroke="#facc15" strokeWidth="2" />
+          <circle cx="160" cy="100" r="22" fill="none" stroke="#facc15" strokeOpacity="0.35" strokeWidth="1" strokeDasharray="2 4" />
+          <text x="160" y="98.5" textAnchor="middle" fill="#fde047" fontSize="7.6" fontWeight="900">1.er</text>
+          <text x="160" y="107.5" textAnchor="middle" fill="#ffffff" fontSize="4.6" fontWeight="800" letterSpacing="0.3">POSTULADO</text>
+        </g>
+      </g>
+
+      <text x="160" y="194" textAnchor="middle" fill="#ddd6fe" fontSize="8.2" fontWeight="700" letterSpacing="0.3">
+        1838–1839 · Todos los seres vivos estamos formados por células
       </text>
     </svg>
   );
@@ -685,171 +691,165 @@ export function SchleidenSchwannGraphic2D({ className }: GraphicProps) {
 export function VirchowDivisionGraphic2D({ className }: GraphicProps) {
   return (
     <svg
-      viewBox="0 0 320 200"
-      className={className ?? 'w-full h-auto max-h-56'}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      {...SVG_PROPS}
+      className={className ?? 'h-full w-full'}
       role="img"
       aria-label="División celular mitótica demostrada por Rudolf Virchow en 1855"
     >
       <defs>
-        <radialGradient id="divCellGrad1" cx="40%" cy="50%" r="50%">
-          <stop stopColor="#b45309" />
-          <stop offset="0.7" stopColor="#78350f" />
-          <stop offset="1" stopColor="#451a03" />
-        </radialGradient>
-
-        <radialGradient id="divCellGrad2" cx="60%" cy="50%" r="50%">
-          <stop stopColor="#b45309" />
-          <stop offset="0.7" stopColor="#78350f" />
-          <stop offset="1" stopColor="#451a03" />
-        </radialGradient>
-
-        <linearGradient id="dnaGlow" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id="vc-bg" x1="0" y1="0" x2="320" y2="200">
+          <stop stopColor="#2b1a06" />
+          <stop offset="0.55" stopColor="#1a1005" />
+          <stop offset="1" stopColor="#020617" />
+        </linearGradient>
+        <linearGradient id="vc-left" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="#f59e0b" stopOpacity="0.9" />
+          <stop offset="0.6" stopColor="#b45309" stopOpacity="0.85" />
+          <stop offset="1" stopColor="#78350f" opacity="0.9" />
+        </linearGradient>
+        <linearGradient id="vc-right" x1="1" y1="0" x2="0" y2="1">
+          <stop stopColor="#fbbf24" stopOpacity="0.9" />
+          <stop offset="0.6" stopColor="#b45309" stopOpacity="0.85" />
+          <stop offset="1" stopColor="#78350f" opacity="0.9" />
+        </linearGradient>
+        <linearGradient id="vc-dna" x1="0" y1="0" x2="1" y2="0">
           <stop stopColor="#f59e0b" />
           <stop offset="0.5" stopColor="#f43f5e" />
           <stop offset="1" stopColor="#ec4899" />
         </linearGradient>
-
-        <filter id="virchowGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3.5" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        <filter id="vc-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.8" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
-
         <style>
           {`
-            @keyframes pinchFurrow {
-              0%, 100% { transform: scaleY(1); }
-              50% { transform: scaleY(0.92); }
+            @keyframes vcPinch {
+              0%, 8% { transform: scaleX(1); }
+              55% { transform: scaleX(0.9); }
+              100% { transform: scaleX(1); }
             }
-            @keyframes chromoGlow {
-              0%, 100% { opacity: 0.7; filter: drop-shadow(0 0 3px #f59e0b); }
-              50% { opacity: 1; filter: drop-shadow(0 0 8px #f43f5e); }
+            @keyframes vcSepLeft {
+              0%, 20% { transform: translateX(0px); }
+              60% { transform: translateX(-9px); }
+              100% { transform: translateX(0px); }
             }
-            @keyframes arrowShift {
-              0%, 100% { transform: translateX(0); }
-              50% { transform: translateX(3px); }
+            @keyframes vcSepRight {
+              0%, 20% { transform: translateX(0px); }
+              60% { transform: translateX(9px); }
+              100% { transform: translateX(0px); }
             }
-            .animate-pinch {
-              transform-origin: 160px 100px;
-              animation: pinchFurrow 3s ease-in-out infinite;
+            @keyframes vcChromo {
+              0%, 100% { opacity: 0.75; }
+              50% { opacity: 1; }
             }
-            .animate-chromo {
-              animation: chromoGlow 2.2s ease-in-out infinite;
+            @keyframes vcArrow {
+              0%, 100% { transform: translateX(0px); opacity: 0.7; }
+              50% { transform: translateX(4px); opacity: 1; }
             }
-            .animate-arrow {
-              animation: arrowShift 1.5s ease-in-out infinite;
+            @keyframes vcTwinkle {
+              0%, 100% { opacity: 0.15; transform: scale(0.8); }
+              50% { opacity: 0.95; transform: scale(1.2); }
             }
+            .vc-pinch { animation: vcPinch 6s ease-in-out infinite; transform-origin: 160px 100px; }
+            .vc-left { animation: vcSepLeft 6s ease-in-out infinite; }
+            .vc-right { animation: vcSepRight 6s ease-in-out infinite; }
+            .vc-chromo { animation: vcChromo 2.6s ease-in-out infinite; }
+            .vc-arrow { animation: vcArrow 1.8s ease-in-out infinite; }
+            .vc-tw { animation: vcTwinkle 2.8s ease-in-out infinite; }
+            .vc-tw-2 { animation-delay: 0.9s; }
+            .vc-tw-3 { animation-delay: 1.8s; }
           `}
         </style>
       </defs>
 
-      {/* Marco contenedor */}
-      <rect x="6" y="6" width="308" height="188" rx="16" fill="#1a1005" stroke="#f59e0b" strokeWidth="1.2" />
+      <rect width="320" height="200" fill="url(#vc-bg)" />
+      <g opacity="0.1" stroke="#f59e0b" strokeWidth="0.8">
+        <line x1="0" y1="100" x2="320" y2="100" strokeDasharray="5 5" />
+        <line x1="160" y1="20" x2="160" y2="180" strokeDasharray="5 5" />
+      </g>
 
-      {/* ── CÉLULA EN BIPARTICIÓN / CITOCINESIS (FIGURA EN 8) ── */}
-      <g className="animate-pinch">
-        {/* Membrana celular estrangulándose en el centro (surco de clivaje) */}
+      {/* Célula en división */}
+      <g className="vc-pinch">
         <path
-          d="M160 48 C120 48 80 60 80 100 C80 140 120 152 160 152 C166 138 166 112 160 100 C166 88 166 62 160 48 Z"
-          fill="url(#divCellGrad1)"
-          stroke="#f59e0b"
-          strokeWidth="2.5"
+          d="M160 46C118 46 78 60 78 100s40 54 82 54c6-16 6-92 0-108Z"
+          fill="url(#vc-left)"
+          stroke="#fbbf24"
+          strokeWidth="2.4"
         />
         <path
-          d="M160 48 C200 48 240 60 240 100 C240 140 200 152 160 152 C154 138 154 112 160 100 C154 88 154 62 160 48 Z"
-          fill="url(#divCellGrad2)"
-          stroke="#f59e0b"
-          strokeWidth="2.5"
+          d="M160 46c42 0 82 14 82 54s-40 54-82 54c-6-16-6-92 0-108Z"
+          fill="url(#vc-right)"
+          stroke="#fbbf24"
+          strokeWidth="2.4"
         />
-
-        {/* Anillo contráctil de actina/miosina en el ecuador */}
-        <g stroke="#f43f5e" strokeWidth="2" strokeDasharray="3 2" filter="url(#virchowGlow)">
-          <line x1="160" y1="48" x2="160" y2="70" />
-          <line x1="160" y1="130" x2="160" y2="152" />
+        <path d="M160 46c6 16 6 92 0 108" stroke="#7c2d12" strokeWidth="2" opacity="0.55" />
+        <g stroke="#f43f5e" strokeWidth="2" strokeDasharray="3 3" filter="url(#vc-glow)">
+          <line x1="160" y1="52" x2="160" y2="70" />
+          <line x1="160" y1="130" x2="160" y2="148" />
         </g>
       </g>
 
-      {/* ── HUSO ACROMÁTICO Y CROMOSOMAS (LADO IZQUIERDO: HIJA 1) ── */}
-      <g>
-        {/* Microtúbulos del huso acromático */}
+      {/* Célula hija A */}
+      <g className="vc-left">
         <g stroke="#fef08a" strokeWidth="0.8" opacity="0.4" strokeDasharray="2 2">
-          <line x1="90" y1="100" x2="120" y2="82" />
-          <line x1="90" y1="100" x2="122" y2="100" />
-          <line x1="90" y1="100" x2="120" y2="118" />
+          <line x1="88" y1="100" x2="118" y2="82" />
+          <line x1="88" y1="100" x2="120" y2="100" />
+          <line x1="88" y1="100" x2="118" y2="118" />
         </g>
-        {/* Centrosoma / Polo */}
-        <circle cx="90" cy="100" r="3.5" fill="#facc15" stroke="#ffffff" strokeWidth="1" />
-
-        {/* Cromosomas condensados migrando al polo izquierdo */}
-        <g className="animate-chromo">
-          {/* Cromosoma 1 (forma en X o V) */}
-          <path d="M115 80 L123 88 M123 80 L115 88" stroke="#f43f5e" strokeWidth="2.8" strokeLinecap="round" />
-          {/* Cromosoma 2 */}
-          <path d="M118 96 L126 104 M126 96 L118 104" stroke="#ec4899" strokeWidth="2.8" strokeLinecap="round" />
-          {/* Cromosoma 3 */}
-          <path d="M115 112 L123 120 M123 112 L115 120" stroke="#f43f5e" strokeWidth="2.8" strokeLinecap="round" />
+        <circle cx="88" cy="100" r="3.6" fill="#facc15" stroke="#ffffff" strokeWidth="1" />
+        <g className="vc-chromo">
+          <path d="M105 80l8 8M113 80l-8 8" stroke="#fb7185" strokeWidth="2.8" strokeLinecap="round" />
+          <path d="M108 96l8 8M116 96l-8 8" stroke="#ec4899" strokeWidth="2.8" strokeLinecap="round" />
+          <path d="M105 112l8 8M113 112l-8 8" stroke="#fb7185" strokeWidth="2.8" strokeLinecap="round" />
         </g>
-
-        {/* Futuro núcleo hija 1 */}
-        <circle cx="118" cy="100" r="22" stroke="#fbbf24" strokeWidth="1" strokeDasharray="4 3" opacity="0.6" />
-        <text x="118" y="68" textAnchor="middle" fill="#fef08a" fontSize="7" fontWeight="bold">
-          Célula Hija A
-        </text>
+        <circle cx="109" cy="100" r="22" stroke="#fbbf24" strokeOpacity="0.55" strokeWidth="1" strokeDasharray="4 3" />
+        <text x="112" y="66" textAnchor="middle" fill="#fef08a" fontSize="7.2" fontWeight="800">CÉLULA A</text>
       </g>
 
-      {/* ── HUSO ACROMÁTICO Y CROMOSOMAS (LADO DERECHO: HIJA 2) ── */}
-      <g>
-        {/* Microtúbulos del huso acromático */}
+      {/* Célula hija B */}
+      <g className="vc-right">
         <g stroke="#fef08a" strokeWidth="0.8" opacity="0.4" strokeDasharray="2 2">
-          <line x1="230" y1="100" x2="200" y2="82" />
-          <line x1="230" y1="100" x2="198" y2="100" />
-          <line x1="230" y1="100" x2="200" y2="118" />
+          <line x1="232" y1="100" x2="202" y2="82" />
+          <line x1="232" y1="100" x2="200" y2="100" />
+          <line x1="232" y1="100" x2="202" y2="118" />
         </g>
-        {/* Centrosoma / Polo */}
-        <circle cx="230" cy="100" r="3.5" fill="#facc15" stroke="#ffffff" strokeWidth="1" />
-
-        {/* Cromosomas idénticos migrando al polo derecho */}
-        <g className="animate-chromo">
-          {/* Cromosoma 1 */}
-          <path d="M197 80 L205 88 M205 80 L197 88" stroke="#f43f5e" strokeWidth="2.8" strokeLinecap="round" />
-          {/* Cromosoma 2 */}
-          <path d="M194 96 L202 104 M202 96 L194 104" stroke="#ec4899" strokeWidth="2.8" strokeLinecap="round" />
-          {/* Cromosoma 3 */}
-          <path d="M197 112 L205 120 M205 112 L197 120" stroke="#f43f5e" strokeWidth="2.8" strokeLinecap="round" />
+        <circle cx="232" cy="100" r="3.6" fill="#facc15" stroke="#ffffff" strokeWidth="1" />
+        <g className="vc-chromo">
+          <path d="M209 80l8 8M217 80l-8 8" stroke="#fb7185" strokeWidth="2.8" strokeLinecap="round" />
+          <path d="M206 96l8 8M214 96l-8 8" stroke="#ec4899" strokeWidth="2.8" strokeLinecap="round" />
+          <path d="M209 112l8 8M217 112l-8 8" stroke="#fb7185" strokeWidth="2.8" strokeLinecap="round" />
         </g>
-
-        {/* Futuro núcleo hija 2 */}
-        <circle cx="202" cy="100" r="22" stroke="#fbbf24" strokeWidth="1" strokeDasharray="4 3" opacity="0.6" />
-        <text x="202" y="68" textAnchor="middle" fill="#fef08a" fontSize="7" fontWeight="bold">
-          Célula Hija B
-        </text>
+        <circle cx="211" cy="100" r="22" stroke="#fbbf24" strokeOpacity="0.55" strokeWidth="1" strokeDasharray="4 3" />
+        <text x="208" y="66" textAnchor="middle" fill="#fef08a" fontSize="7.2" fontWeight="800">CÉLULA B</text>
       </g>
 
-      {/* Flechas indicadoras de separación celular */}
-      <g className="animate-arrow" stroke="#facc15" strokeWidth="1.5">
-        <path d="M72 100 L58 100 M64 94 L58 100 L64 106" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M248 100 L262 100 M256 94 L262 100 L256 106" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Flechas de separación */}
+      <g className="vc-arrow" stroke="#facc15" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M70 100H54M60 94L54 100L60 106" />
+        <path d="M250 100H266M260 94L266 100L260 106" />
       </g>
 
-      {/* Lema histórico en latín de Virchow */}
-      <g filter="url(#virchowGlow)">
-        <rect x="75" y="22" width="170" height="18" rx="6" fill="#451a03" stroke="#f59e0b" strokeWidth="1.2" />
-        <text x="160" y="34" textAnchor="middle" fill="#fef08a" fontSize="8" fontWeight="900" letterSpacing="0.8">
+      {/* Lema */}
+      <g filter="url(#vc-glow)">
+        <rect x="72" y="20" width="176" height="19" rx="7" fill="#451a03" stroke="#f59e0b" strokeWidth="1.3" />
+        <text x="160" y="33" textAnchor="middle" fill="#fef08a" fontSize="8" fontWeight="900" letterSpacing="0.9">
           «OMNIS CELLULA E CELLULA»
         </text>
       </g>
 
-      {/* Indicador de surco de división */}
-      <text x="160" y="103" textAnchor="middle" fill="#fda4af" fontSize="6.5" fontWeight="bold">
-        Surco
+      <text x="160" y="104" textAnchor="middle" fill="#fda4af" fontSize="6.4" fontWeight="800">SURCO DE DIVISIÓN</text>
+      <text x="160" y="194" textAnchor="middle" fill="#fde68a" fontSize="8.2" fontWeight="700" letterSpacing="0.3">
+        Rudolf Virchow (1855) · Toda célula procede de otra célula
       </text>
 
-      {/* Insignia inferior */}
-      <rect x="18" y="174" width="284" height="15" rx="5" fill="#78350f" fillOpacity="0.25" />
-      <text x="160" y="185" textAnchor="middle" fill="#fde68a" fontSize="8" fontWeight="600">
-        Rudolf Virchow (1855) · Toda célula procede de otra preexistente por división biológica
-      </text>
+      <g fill="#fde68a" filter="url(#vc-glow)">
+        <circle className="vc-tw" cx="14" cy="52" r="1.4" />
+        <circle className="vc-tw vc-tw-2" cx="306" cy="60" r="1.3" />
+        <circle className="vc-tw vc-tw-3" cx="298" cy="172" r="1.2" />
+      </g>
     </svg>
   );
 }
