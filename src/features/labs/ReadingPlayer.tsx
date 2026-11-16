@@ -70,8 +70,12 @@ import {
 import {
   BodyLifeGraphic2D,
   CellActivityGraphic2D,
+  CellFuelGraphic2D,
+  CellStructuresGraphic2D,
+  CellularMotorGraphic2D,
   CinemaGraphic2D,
-  ParticipationGraphic2D
+  ParticipationGraphic2D,
+  PlantAnimalCellGraphic2D
 } from './InquiryGraphics2D';
 import {
   CellWallGraphic2D,
@@ -2845,25 +2849,134 @@ export function Session2Subactivities({
               </div>
             </div>
 
-            {/* Texto literal oficial de la docente */}
-            <div className="rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 sm:p-5 space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl shrink-0">👩‍🏫</span>
-                <p className="text-sm leading-relaxed text-slate-100 sm:text-base font-medium">
-                  A partir de la identificación de la célula como unidad estructural y funcional de los seres vivos, la docente, busca reconocer los saberes previos de los estudiantes de grado 5.º sobre la clasificación de las células, especialmente las animales y vegetales, así como identificar sus conocimientos acerca de las principales estructuras celulares y sus funciones, promoviendo la curiosidad, la participación y la construcción colectiva del conocimiento.
-                </p>
+            {/* Preguntas para indagar con tarjetas reflectivas y gráficos 2D */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-sky-400/15 text-sky-300">
+                  <Lightbulb className="size-4" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-sky-300">
+                    Preguntas para indagar
+                  </p>
+                  <p className="text-xs leading-relaxed text-slate-400">
+                    Observa cada imagen, imagina una respuesta y compártela con el grupo.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <ReflectiveCard
+                  className="h-full"
+                  reflectionColor="#38bdf8"
+                  borderColor="rgba(56, 189, 248, 0.32)"
+                >
+                  <div className="flex h-full flex-col">
+                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
+                      <PlantAnimalCellGraphic2D />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
+                        aria-hidden
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-4 sm:p-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg bg-sky-400/15 px-2 py-0.5 text-[11px] font-extrabold text-sky-300">
+                          Pregunta 1
+                        </span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                          Clasificación celular
+                        </span>
+                      </div>
+                      <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                        ¿Cómo te imaginas las diferencias entre tus células y las de un árbol o una flor?
+                      </p>
+                    </div>
+                  </div>
+                </ReflectiveCard>
+
+                <ReflectiveCard
+                  className="h-full"
+                  reflectionColor="#34d399"
+                  borderColor="rgba(52, 211, 153, 0.32)"
+                >
+                  <div className="flex h-full flex-col">
+                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
+                      <CellStructuresGraphic2D />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
+                        aria-hidden
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-4 sm:p-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg bg-emerald-400/15 px-2 py-0.5 text-[11px] font-extrabold text-emerald-300">
+                          Pregunta 2
+                        </span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                          Estructuras y funciones
+                        </span>
+                      </div>
+                      <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                        ¿Qué estructuras crees que tiene una célula y para qué le sirve cada una?
+                      </p>
+                    </div>
+                  </div>
+                </ReflectiveCard>
               </div>
             </div>
 
-            {/* Dinámica inmersiva animada con React Bits */}
-            <div className="rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-300 sm:text-sm space-y-1.5">
-              <p className="font-bold text-white flex items-center gap-2">
-                <Share2 className="size-4 text-mint-400" aria-hidden />
-                Dinámica de indagación en el aula:
-              </p>
-              <p>
-                Explora cómo imaginas las diferencias entre tus células y las de un árbol o flor. Antes de ingresar a los visores microscópicos 3D, registra tus hipótesis previas para compartirlas y contrastarlas con la evidencia científica.
-              </p>
+            {/* Invitación inmersiva a participar */}
+            <div className="relative overflow-hidden rounded-3xl border border-emerald-400/25 bg-gradient-to-br from-emerald-500/12 via-sky-500/10 to-violet-500/12 p-4 sm:p-5">
+              <div
+                className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-emerald-400/20 blur-3xl"
+                aria-hidden
+              />
+              <div className="pointer-events-none absolute -bottom-14 -left-10 size-40 rounded-full bg-sky-400/15 blur-3xl" aria-hidden />
+
+              <div className="relative grid items-center gap-4 md:grid-cols-[0.85fr_1.15fr]">
+                <ParticipationGraphic2D />
+
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-400/15 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-300">
+                      <MessageSquare className="size-3.5" aria-hidden />
+                      Tu voz hace ciencia
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-400">Saberes previos · Células animales y vegetales</span>
+                  </div>
+
+                  <h4 className="font-display text-lg font-extrabold leading-snug text-white sm:text-xl">
+                    ¡Participa y comparte lo que imaginas!
+                  </h4>
+
+                  <p className="text-sm leading-relaxed text-slate-200">
+                    Antes de entrar a los visores microscópicos 3D, escribe lo que crees: ¿en qué se parecen o
+                    diferencian las células de tu cuerpo y las de una planta? Luego compártelo con el grupo y{' '}
+                    <strong className="font-bold text-emerald-300">Cito</strong> te acompañará a contrastarlo con la
+                    evidencia científica.
+                  </p>
+
+                  <ul className="grid gap-2 sm:grid-cols-3">
+                    {[
+                      { icon: <Eye className="size-3.5" aria-hidden />, title: 'Imagina', text: 'Piensa en ambas células.' },
+                      { icon: <Share2 className="size-3.5" aria-hidden />, title: 'Comparte', text: 'Registra tus hipótesis.' },
+                      { icon: <Sparkles className="size-3.5" aria-hidden />, title: 'Contrasta', text: 'Compáralo con la evidencia.' }
+                    ].map((step) => (
+                      <li
+                        key={step.title}
+                        className="rounded-xl border border-white/10 bg-ink-950/50 px-2.5 py-2"
+                      >
+                        <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-sky-300">
+                          {step.icon}
+                          {step.title}
+                        </p>
+                        <p className="mt-0.5 text-[11px] leading-snug text-slate-400">{step.text}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
 
             {/* Formulario de saberes previos del estudiante */}
@@ -4425,14 +4538,136 @@ export function Session3Subactivities({
               </div>
             </div>
 
-            {/* Texto literal oficial */}
-            <div className="rounded-2xl border border-amber-400/25 bg-amber-400/8 p-4 sm:p-5">
-              <p className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
-              </p>
-              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
-                «Al inicio la docente, activa los saberes previos de los estudiantes mediante una situación cercana a su realidad, promoviendo la reflexión sobre la importancia de los nutrientes, la energía y las transformaciones que ocurren dentro de las células, como punto de partida para comprender el metabolismo celular»
-              </p>
+            {/* Preguntas para indagar con tarjetas reflectivas y gráficos 2D */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-amber-400/15 text-amber-300">
+                  <Lightbulb className="size-4" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-amber-300">
+                    Preguntas para indagar
+                  </p>
+                  <p className="text-xs leading-relaxed text-slate-400">
+                    Observa cada imagen, imagina una respuesta y compártela con el grupo.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <ReflectiveCard
+                  className="h-full"
+                  reflectionColor="#fbbf24"
+                  borderColor="rgba(251, 191, 36, 0.32)"
+                >
+                  <div className="flex h-full flex-col">
+                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
+                      <CellFuelGraphic2D />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
+                        aria-hidden
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-4 sm:p-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg bg-amber-400/15 px-2 py-0.5 text-[11px] font-extrabold text-amber-300">
+                          Pregunta 1
+                        </span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                          El combustible diario
+                        </span>
+                      </div>
+                      <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                        Cuando desayunas una fruta o un pan, ¿cómo convierte tu cuerpo esos alimentos en la energía
+                        que usas para correr, jugar o estudiar?
+                      </p>
+                    </div>
+                  </div>
+                </ReflectiveCard>
+
+                <ReflectiveCard
+                  className="h-full"
+                  reflectionColor="#fb923c"
+                  borderColor="rgba(251, 146, 60, 0.32)"
+                >
+                  <div className="flex h-full flex-col">
+                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
+                      <CellularMotorGraphic2D />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
+                        aria-hidden
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-4 sm:p-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg bg-orange-400/15 px-2 py-0.5 text-[11px] font-extrabold text-orange-300">
+                          Pregunta 2
+                        </span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                          El motor que nunca duerme
+                        </span>
+                      </div>
+                      <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                        ¿Por qué crees que tus células siguen trabajando incluso mientras duermes, y qué
+                        transformaciones ocurren dentro de ellas?
+                      </p>
+                    </div>
+                  </div>
+                </ReflectiveCard>
+              </div>
+            </div>
+
+            {/* Invitación inmersiva a participar */}
+            <div className="relative overflow-hidden rounded-3xl border border-amber-400/25 bg-gradient-to-br from-amber-500/12 via-orange-500/10 to-violet-500/12 p-4 sm:p-5">
+              <div
+                className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-amber-400/20 blur-3xl"
+                aria-hidden
+              />
+              <div className="pointer-events-none absolute -bottom-14 -left-10 size-40 rounded-full bg-orange-400/15 blur-3xl" aria-hidden />
+
+              <div className="relative grid items-center gap-4 md:grid-cols-[0.85fr_1.15fr]">
+                <ParticipationGraphic2D />
+
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-amber-400/15 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-amber-300">
+                      <MessageSquare className="size-3.5" aria-hidden />
+                      Tu voz hace ciencia
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-400">Saberes previos · Nutrientes y energía</span>
+                  </div>
+
+                  <h4 className="font-display text-lg font-extrabold leading-snug text-white sm:text-xl">
+                    ¡Participa y comparte lo que imaginas!
+                  </h4>
+
+                  <p className="text-sm leading-relaxed text-slate-200">
+                    Antes de explorar la célula como una fábrica, escribe lo que sabes o imaginas sobre cómo las
+                    células transforman lo que comemos en energía. Luego compártelo con el grupo y{' '}
+                    <strong className="font-bold text-amber-300">Cito</strong> te guiará para descubrir el metabolismo
+                    celular.
+                  </p>
+
+                  <ul className="grid gap-2 sm:grid-cols-3">
+                    {[
+                      { icon: <Eye className="size-3.5" aria-hidden />, title: 'Imagina', text: 'Piensa en el alimento.' },
+                      { icon: <Share2 className="size-3.5" aria-hidden />, title: 'Registra', text: 'Escribe tus saberes.' },
+                      { icon: <Sparkles className="size-3.5" aria-hidden />, title: 'Descubre', text: 'Conoce el metabolismo.' }
+                    ].map((step) => (
+                      <li
+                        key={step.title}
+                        className="rounded-xl border border-white/10 bg-ink-950/50 px-2.5 py-2"
+                      >
+                        <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-300">
+                          {step.icon}
+                          {step.title}
+                        </p>
+                        <p className="mt-0.5 text-[11px] leading-snug text-slate-400">{step.text}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
 
             {/* 3 Detonadores de curiosidad científica cotidiana */}
