@@ -34,10 +34,13 @@ import type { Activity } from '../../lib/types';
 import { cn } from '../../lib/utils';
 import { AnimatedList, Aurora, SpotlightCard } from '../../components/reactbits';
 import {
+  DEFAULT_M3_STRUCTURES,
   type GlossaryItem,
   type Scientist,
   Session1Subactivities,
   Session2Subactivities,
+  Session3Subactivities,
+  type StructureItem,
   type TableRow
 } from '../labs/ReadingPlayer';
 
@@ -77,10 +80,11 @@ export function MissionDetailPage() {
   const { required, support } = splitActivities(mission);
   const isSession1 = mission.code === 'm1';
   const isSession2 = mission.code === 'm2';
-  const readingActivity = isSession1 || isSession2
+  const isSession3 = mission.code === 'm3';
+  const readingActivity = isSession1 || isSession2 || isSession3
     ? mission.activities.find((activity) => activity.type === 'reading') ?? mission.activities[0]
     : null;
-  const complementaryActivities = isSession1 || isSession2
+  const complementaryActivities = isSession1 || isSession2 || isSession3
     ? mission.activities.filter((activity) => activity._id !== readingActivity?._id)
     : [];
   const completedRequired = required.filter((activity) => activity.status === 'completed').length;
@@ -427,16 +431,16 @@ export function MissionDetailPage() {
             />
           </section>
 
-          {/* ── Sección por aparte: Misiones complementarias y Reto Obligatorio ── */}
+          {/* ── Sección por aparte: Actividades complementarias exclusivas de la Sesión 1 ── */}
           <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
             <SectionHeading
-              eyebrow="Reto obligatorio y exploración opcional"
-              title="Misiones complementarias y Reto Final"
-              description="El Reto final (Quiz) es obligatorio para conquistar la Sesión 1. Las demás actividades (simulación 3D, microscopía acuática 360, cubo Merge AR, zoom celular, línea de tiempo y cuaderno de bitácora) son experiencias de profundización opcionales."
+              eyebrow="Reto obligatorio y exploración opcional · Sesión 1"
+              title="Actividades complementarias de la Sesión 1: Acercamiento a la teoría celular"
+              description="El Reto final (Quiz) en la estación 1.6 es obligatorio para conquistar la Sesión 1. Estas actividades (simulación 3D, microscopía acuática 360, cubo Merge AR, zoom celular, línea de tiempo y cuaderno de bitácora) son experiencias de profundización opcionales exclusivas de la Sesión 1."
               action={
                 <Chip tone="gold">
                   <Trophy className="size-3.5 text-amber-300" aria-hidden />
-                  1 reto obligatorio · {complementaryActivities.filter((a) => a.type !== 'quiz').length} opcionales
+                  1 reto final · {complementaryActivities.filter((a) => a.type !== 'quiz').length} opcionales
                 </Chip>
               }
             />
@@ -540,12 +544,76 @@ export function MissionDetailPage() {
             />
           </section>
 
-          {/* ── Sección por aparte: Actividades complementarias y Reto Obligatorio ── */}
+          {/* ── Sección por aparte: Actividades complementarias exclusivas de la Sesión 2 ── */}
           <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
             <SectionHeading
-              eyebrow="Reto obligatorio y exploración opcional"
-              title="Actividades complementarias y Reto Final"
-              description="El Reto final (Quiz) en la estación 2.7 evalúa la comprensión de la célula animal y vegetal. Estas actividades complementarias (video 360, modelo 3D de organelos, comparación animada, cubo AR Merge, estación Quiver física, línea comparativa y bitácora) son experiencias de apoyo opcionales."
+              eyebrow="Reto obligatorio y exploración opcional · Sesión 2"
+              title="Actividades complementarias de la Sesión 2: Concepto de célula"
+              description="El Reto final (Quiz) en la estación 2.7 evalúa la comprensión de la célula animal y vegetal. Estas actividades complementarias (video 360, modelo 3D de organelos, comparación animada, cubo AR Merge, estación Quiver física, línea comparativa y bitácora) son experiencias de apoyo opcionales exclusivas de la Sesión 2."
+              action={
+                <Chip tone="gold">
+                  <Trophy className="size-3.5 text-amber-300" aria-hidden />
+                  1 reto final · {complementaryActivities.filter((a) => a.type !== 'quiz').length} opcionales
+                </Chip>
+              }
+            />
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {complementaryActivities.map((act) => (
+                <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission.code} />
+              ))}
+            </div>
+          </section>
+        </>
+      ) : isSession3 && readingActivity ? (
+        <>
+          {/* ── Nivel Superior: Las Estaciones 3.1 a 3.7 de la Sesión 3 ── */}
+          <section id="estaciones-sesion-3" className="scroll-mt-24 space-y-4">
+            <SectionHeading
+              eyebrow="Contenido General · Nivel Superior"
+              title="Procesos metabólicos de la célula"
+              description="Eje central de indagación de la Sesión 3: recorre las 7 estaciones oficiales de forma dinámica (3.1 Saberes previos, 3.2 Fábrica y video 360, 3.3 Preguntas motivadoras, 3.4 Video 360, lectura y Canva, 3.5 Cubo Merge, 3.6 Cuadro estructuras Vercel, 3.7 Reto Final evaluativo)."
+              action={
+                <a
+                  href="#misiones-complementarias"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-1.5 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
+                >
+                  <Sparkles className="size-3.5" aria-hidden />
+                  Ver actividades complementarias
+                </a>
+              }
+            />
+
+            <Session3Subactivities
+              activity={readingActivity}
+              mission={mission}
+              structuresTable={
+                (readingActivity.content?.structuresTable as StructureItem[]) ?? DEFAULT_M3_STRUCTURES
+              }
+              glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
+              mandatoryQuestion={
+                (readingActivity.content?.mandatoryQuestion as string) ??
+                '¿De qué manera las células vegetales y animales llevan a cabo sus actividades para conservar la vida? ¿Cómo se llama el proceso mediante el cual las células adquieren energía y eliminan desechos?'
+              }
+              docUrl={
+                (readingActivity.content?.docUrl as string) ??
+                'https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true'
+              }
+              videoUrl={
+                (readingActivity.content?.videoUrl as string) ?? undefined
+              }
+              videoEmbedUrl={
+                (readingActivity.content?.videoEmbedUrl as string) ?? undefined
+              }
+            />
+          </section>
+
+          {/* ── Sección por aparte: Actividades complementarias exclusivas de la Sesión 3 ── */}
+          <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
+            <SectionHeading
+              eyebrow="Reto obligatorio y exploración opcional · Sesión 3"
+              title="Actividades complementarias de la Sesión 3: Procesos metabólicos de la célula"
+              description="El Reto final (Quiz) en la estación 3.7 evalúa la comprensión de los procesos metabólicos y la fábrica celular. Estas actividades (video 360 de la fábrica celular, video 360 del metabolismo, célula de la energía 3D, animación de plasmólisis y ATP, cubo Merge virtual, danza del metabolismo 2D, bitácora de energía y laboratorio de ósmosis) son experiencias de apoyo opcionales exclusivas de la Sesión 3."
               action={
                 <Chip tone="gold">
                   <Trophy className="size-3.5 text-amber-300" aria-hidden />

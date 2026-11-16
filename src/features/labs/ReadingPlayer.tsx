@@ -10,6 +10,7 @@ import {
   Download,
   ExternalLink,
   Eye,
+  Factory,
   FileText,
   FlaskConical,
   GraduationCap,
@@ -28,7 +29,8 @@ import {
   Sparkles,
   Star,
   Table as TableIcon,
-  Trophy
+  Trophy,
+  Zap
 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -99,7 +101,7 @@ interface ProcessRow {
   who?: string;
 }
 
-interface StructureItem {
+export interface StructureItem {
   id: string;
   name: string;
   placeholder?: string;
@@ -311,6 +313,40 @@ const M2_IDEAS = [
   }
 ];
 
+/* ── Candidate ideas for Mission 3 ──────────────────────────── */
+const M3_IDEAS = [
+  {
+    id: 'm3-fabrica-celular',
+    title: 'La célula como fábrica metabólica activa',
+    description:
+      'La célula funciona como una fábrica: recibe nutrientes como materias primas, los transforma mediante reacciones químicas continuas y usa energía (ATP) para elaborar sustancias vitales.'
+  },
+  {
+    id: 'm3-respiracion-atp',
+    title: 'Respiración celular y generación de ATP',
+    description:
+      'En las mitocondrias de células animales y vegetales se oxidan los nutrientes con ayuda del oxígeno para generar ATP, la batería energética universal que impulsa las maquinarias celulares.'
+  },
+  {
+    id: 'm3-fotosintesis-glucosa',
+    title: 'Fotosíntesis y producción de glucosa',
+    description:
+      'Las células vegetales captan luz solar, agua y CO2 en los cloroplastos para fabricar glucosa y liberar oxígeno, actuando como paneles solares generadores de alimento.'
+  },
+  {
+    id: 'm3-osmosis-turgencia',
+    title: 'Ósmosis, vacuola central y turgencia',
+    description:
+      'El agua entra y sale por ósmosis. En la célula vegetal, la gran vacuola central almacena agua y genera presión de turgencia que mantiene erguida a la planta, evitando la plasmólisis.'
+  },
+  {
+    id: 'm3-eliminacion-desechos',
+    title: 'Catabolismo y eliminación de desechos',
+    description:
+      'El catabolismo degrada nutrientes para liberar energía, produciendo desechos como CO2 y agua que son transportados hacia el exterior a través de la membrana celular.'
+  }
+];
+
 /* ── Virtual space: response to mandatory question on Vercel ── */
 function VercelResponseSection({
   activity,
@@ -404,8 +440,8 @@ function VercelResponseSection({
     });
   };
 
-  const currentIdeas = missionCode === 'm2' ? M2_IDEAS : DEFAULT_IDEAS;
-  const showIdeaSelector = (missionCode === 'm1' || missionCode === 'm2') && structuresTable.length === 0;
+  const currentIdeas = missionCode === 'm3' ? M3_IDEAS : missionCode === 'm2' ? M2_IDEAS : DEFAULT_IDEAS;
+  const showIdeaSelector = structuresTable.length === 0 || missionCode === 'm3';
 
   const handleApplyIdeasToText = () => {
     if (selectedIdeas.size === 0) {
@@ -415,7 +451,9 @@ function VercelResponseSection({
     const chosen = currentIdeas.filter((i) => selectedIdeas.has(i.id));
     let template = '';
     chosen.forEach((item, index) => {
-      if (missionCode === 'm2') {
+      if (missionCode === 'm3') {
+        template += `• ${item.title}:\n${item.description}\nMi conclusión sobre este proceso: Considero que esto demuestra que...\n\n`;
+      } else if (missionCode === 'm2') {
         template += `• ${item.title}:\n${item.description}\nMi argumento para esta pregunta: Considero que esta idea explica por qué...\n\n`;
       } else {
         template += `• Idea ${index + 1}: ${item.title}\nArgumento: ${item.description} Considero que es importante porque...\n\n`;
@@ -1864,7 +1902,6 @@ export function Session1Subactivities({
     </div>
   );
 }
-
 /* ── Elementos del Carrusel Circular 3D con Gráficos 2D (Sesión 2) ── */
 const plantCarouselItems: CircularCarouselItem[] = [
   {
@@ -3193,6 +3230,1738 @@ export function Session2Subactivities({
   );
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   SESIÓN 3: SUB-ACTIVIDADES 3.1 A 3.7 (PROCESOS METABÓLICOS DE LA CÉLULA)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+export const DEFAULT_M3_STRUCTURES: StructureItem[] = [
+  {
+    id: 'membrana',
+    name: 'Membrana celular',
+    placeholder: 'Función: controla la entrada de nutrientes y la salida de desechos por permeabilidad selectiva...'
+  },
+  {
+    id: 'cloroplastos',
+    name: 'Cloroplastos',
+    placeholder: 'Función: captan la luz solar para fabricar glucosa mediante la fotosíntesis (célula vegetal)...'
+  },
+  {
+    id: 'mitocondrias',
+    name: 'Mitocondrias',
+    placeholder: 'Función: transforman nutrientes y oxígeno en energía ATP mediante la respiración celular...'
+  },
+  {
+    id: 'citoplasma',
+    name: 'Citoplasma',
+    placeholder: 'Función: medio gelatinoso donde flotan los organelos y ocurren las reacciones metabólicas...'
+  },
+  {
+    id: 'vacuola',
+    name: 'Vacuola central',
+    placeholder: 'Función: almacena agua y solutos, manteniendo la presión de turgencia firme en la planta...'
+  },
+  {
+    id: 'nucleo',
+    name: 'Núcleo',
+    placeholder: 'Función: resguarda el ADN con los planos maestros y dirige todas las funciones celulares...'
+  }
+];
+
+interface FactoryHotspot {
+  id: string;
+  name: string;
+  analogy: string;
+  organelle: string;
+  icon: string;
+  color: string;
+  description: string;
+  roleInFactory: string;
+  roleInCell: string;
+}
+
+const FACTORY_HOTSPOTS: FactoryHotspot[] = [
+  {
+    id: 'membrana',
+    name: 'Puerta de Embarque y Aduana',
+    analogy: 'Puerta de seguridad y control de acceso',
+    organelle: 'Membrana celular',
+    icon: '🚪',
+    color: '#38bdf8',
+    description: 'Regula celosamente qué materias primas ingresan y qué productos o desechos son expulsados.',
+    roleInFactory: 'Los guardias de seguridad verifican los camiones que llegan y solo autorizan insumos permitidos.',
+    roleInCell: 'Bicapa lipídica semipermeable que permite el paso de agua, oxígeno y glucosa, impidiendo sustancias tóxicas.'
+  },
+  {
+    id: 'citoplasma',
+    name: 'Planta de Producción Central',
+    analogy: 'Nave de montaje y bandas transportadoras',
+    organelle: 'Citoplasma y citoesqueleto',
+    icon: '🏭',
+    color: '#58e6c5',
+    description: 'Espacio dinámico donde las máquinas y trabajadores se mueven para elaborar productos.',
+    roleInFactory: 'Piso industrial amplio con rieles donde se ensamblan piezas y circulan materias primas.',
+    roleInCell: 'Medio acuoso con corrientes de ciclosis donde los organelos interactúan y ocurren las vías metabólicas.'
+  },
+  {
+    id: 'mitocondria',
+    name: 'Central Eléctrica y Generadores',
+    analogy: 'Generador termoeléctrico de alta potencia',
+    organelle: 'Mitocondrias',
+    icon: '⚡',
+    color: '#fbbf24',
+    description: 'Quema combustible (glucosa) en presencia de oxígeno para producir energía utilizable (ATP).',
+    roleInFactory: 'Generador que convierte combustible en electricidad para que todas las máquinas trabajen sin parar.',
+    roleInCell: 'Realiza la respiración celular generando moléculas de ATP, las baterías que alimentan cada proceso vital.'
+  },
+  {
+    id: 'cloroplasto',
+    name: 'Parque de Paneles Solares',
+    analogy: 'Sistema de captación de energía solar limpia',
+    organelle: 'Cloroplastos (célula vegetal)',
+    icon: '🌞',
+    color: '#4ade80',
+    description: 'Captura los fotones de luz del Sol para sintetizar azúcares (glucosa) a partir de CO2 y agua.',
+    roleInFactory: 'Paneles fotovoltaicos en el techo que capturan energía solar gratuita para generar su propio combustible.',
+    roleInCell: 'Contiene clorofila en los tilacoides para llevar a cabo la fotosíntesis y alimentar a todo el organismo.'
+  },
+  {
+    id: 'vacuola',
+    name: 'Torre y Depósito Hidráulico',
+    analogy: 'Tanque cisterna de agua y presión hidrostática',
+    organelle: 'Gran vacuola central',
+    icon: '🛢️',
+    color: '#60a5fa',
+    description: 'Almacena agua y nutrientes, inflando la célula para otorgarle rigidez y firmeza estructural.',
+    roleInFactory: 'Depósito gigante de reserva de agua que mantiene la presión en las tuberías de refrigeración y limpieza.',
+    roleInCell: 'Mantiene la turgencia; si se vacía por falta de agua, la célula se arruga y ocurre la plasmólisis.'
+  },
+  {
+    id: 'nucleo',
+    name: 'Oficina de Gerencia y Dirección',
+    analogy: 'Oficina ejecutiva y archivo de planos maestros',
+    organelle: 'Núcleo celular',
+    icon: '🗂️',
+    color: '#c084fc',
+    description: 'Guarda las instrucciones originales y coordina el ritmo de producción y duplicación.',
+    roleInFactory: 'La oficina de dirección donde los ingenieros custodian las recetas y códigos de fabricación de los productos.',
+    roleInCell: 'Protege el ADN dentro de la envoltura nuclear y envía copias en ARN para la síntesis de proteínas.'
+  }
+];
+
+interface MergeCubeFace {
+  id: string;
+  name: string;
+  organelle: string;
+  icon: string;
+  color: string;
+  metabolicFunction: string;
+  plantRole: string;
+  faceLabel: string;
+}
+
+const MERGE_CUBE_FACES: MergeCubeFace[] = [
+  {
+    id: 'face-mitocondria',
+    name: 'Mitocondria',
+    organelle: 'Generador de ATP',
+    icon: '⚡',
+    color: '#fbbf24',
+    faceLabel: 'Cara 1 · Frente',
+    metabolicFunction: 'Respiración celular catabólica: oxida nutrientes con O2 para recargar ATP continuo.',
+    plantRole: 'Proporciona la energía nocturna y de crecimiento celular a partir de la glucosa almacenada.'
+  },
+  {
+    id: 'face-cloroplasto',
+    name: 'Cloroplasto',
+    organelle: 'Planta de fotosíntesis',
+    icon: '🌞',
+    color: '#4ade80',
+    faceLabel: 'Cara 2 · Derecha',
+    metabolicFunction: 'Fotosíntesis anabólica: transforma fotones solares en glucosa y libera O2.',
+    plantRole: 'Permite la nutrición autótrofa exclusiva del reino vegetal y algas fotosintéticas.'
+  },
+  {
+    id: 'face-vacuola',
+    name: 'Gran Vacuola Central',
+    organelle: 'Depósito osmótico',
+    icon: '🛢️',
+    color: '#38bdf8',
+    faceLabel: 'Cara 3 · Atrás',
+    metabolicFunction: 'Almacenamiento de agua y turgencia hidrostática mediante ósmosis.',
+    plantRole: 'Empuja la membrana contra la pared de celulosa para sostener tallos y hojas erguidas.'
+  },
+  {
+    id: 'face-nucleo',
+    name: 'Núcleo Celular',
+    organelle: 'Centro de control genético',
+    icon: '🗂️',
+    color: '#a78bfa',
+    faceLabel: 'Cara 4 · Izquierda',
+    metabolicFunction: 'Regulación de la expresión genética y replicación del ADN celular.',
+    plantRole: 'Ordena la producción de enzimas fotosintéticas y proteínas de crecimiento.'
+  },
+  {
+    id: 'face-membrana',
+    name: 'Membrana Celular',
+    organelle: 'Filtro selectivo semipermeable',
+    icon: '🚪',
+    color: '#7dd3fc',
+    faceLabel: 'Cara 5 · Arriba',
+    metabolicFunction: 'Transporte de solutos, paso de agua por ósmosis y expulsión de CO2/desechos.',
+    plantRole: 'Comunica a las células vecinas a través de túneles microscópicos de plasmodesmos.'
+  },
+  {
+    id: 'face-citoplasma',
+    name: 'Citoplasma',
+    organelle: 'Medio de reacción metabólica',
+    icon: '🏭',
+    color: '#58e6c5',
+    faceLabel: 'Cara 6 · Abajo',
+    metabolicFunction: 'Glicólisis y ciclosis citoplasmática que transporta vesículas y metabolitos.',
+    plantRole: 'Distribuye los cloroplastos hacia la luz mediante corrientes internas del citosol.'
+  }
+];
+
+const READING_CHAPTERS_M3 = [
+  {
+    number: '1',
+    title: 'Metabolismo: la fábrica de la vida en marcha',
+    tag: 'Concepto Clave',
+    icon: '🏭',
+    body: `El metabolismo celular es el conjunto de todas las reacciones químicas que ocurren dentro de las células para mantenerlas con vida, permitirles crecer, repararse y multiplicarse. Lejos de ser estructuras inertes, las células son verdaderas fábricas biológicas que trabajan sin interrupción las 24 horas del día.
+
+Este gran engranaje metabólico se divide en dos procesos complementarios:
+• Catabolismo: Reacciones de degradación donde moléculas complejas (como la glucosa o los lípidos) se descomponen en sustancias más simples, liberando energía utilizable.
+• Anabolismo: Reacciones de construcción donde la célula utiliza esa energía liberada para fabricar nuevas proteínas, celulosa, ADN y reparar sus organelos.
+
+Sin este flujo coordinado de materia y energía, las maquinarias celulares se apagarían, provocando el colapso de la célula.`
+  },
+  {
+    number: '2',
+    title: 'Respiración celular: las mitocondrias como generadores de energía (ATP)',
+    tag: 'Catabolismo',
+    icon: '⚡',
+    body: `Para que un automóvil funcione necesita gasolina; de manera similar, para que tus células contraigan músculos o transmitan impulsos nerviosos necesitan una molécula llamada ATP (Adenosín Trifosfato), considerada la "moneda energética universal" de la biología.
+
+¿Dónde se fabrica el ATP? En las mitocondrias. A través del proceso de respiración celular, las mitocondrias toman las moléculas de nutrientes (principalmente glucosa) y, en presencia de oxígeno, las oxidan de forma controlada.
+
+Como resultado de esta combustión química limpia, se liberan cerca de 36 a 38 moléculas de ATP por cada molécula de glucosa, produciendo como sustancias de desecho dióxido de carbono (CO2) y agua (H2O), los cuales son transportados fuera de la célula y eliminados por la respiración y los riñones.`
+  },
+  {
+    number: '3',
+    title: 'Fotosíntesis: los cloroplastos captando la energía del Sol',
+    tag: 'Anabolismo Autótrofo',
+    icon: '🌞',
+    body: `A diferencia de los animales, que debemos alimentarnos de otros seres vivos para conseguir glucosa (nutrición heterótrofa), las plantas son capaces de fabricar su propio alimento a partir de elementos inorgánicos del ambiente gracias a la fotosíntesis.
+
+Este proceso ocurre dentro de los cloroplastos de las células vegetales. En su interior, el pigmento verde llamado clorofila absorbe la radiación solar. Utilizando esa energía lumínica, el cloroplasto combina dióxido de carbono (CO2) absorbido del aire y agua (H2O) absorbida por las raíces para producir moléculas de glucosa rica en energía química y liberar oxígeno (O2) a la atmósfera.
+
+Las plantas luego usan esa misma glucosa en sus mitocondrias para producir ATP mediante respiración celular, tanto de día como de noche.`
+  },
+  {
+    number: '4',
+    title: 'Agua y equilibrio interno: ósmosis, turgencia y plasmólisis',
+    tag: 'Equilibrio Hídrico',
+    icon: '💧',
+    body: `El agua es el solvente universal de la vida y el componente principal del citoplasma (más del 70%). El movimiento de agua a través de la membrana semipermeable de la célula se conoce como ósmosis, y se produce desde donde hay menor concentración de sales hacia donde hay mayor concentración de solutos para buscar el equilibrio.
+
+En las células vegetales, la gran vacuola central cumple un papel decisivo:
+• Turgencia: Cuando la planta recibe suficiente agua, la vacuola se infla por completo y empuja con fuerza el citoplasma contra la rígida pared celular. Esta presión hidrostática (presión de turgor) mantiene erguidas las hojas y los tallos sin necesidad de huesos.
+• Plasmólisis: Si la planta deja de recibir agua o se encuentra en un medio muy salino, el agua sale de la vacuola por ósmosis. La vacuola se encoge drásticamente, la membrana se desprende de la pared celular y la planta se marchita visiblemente.`
+  }
+];
+
+const PROCESS_COMPARISON_M3 = [
+  {
+    process: 'Fotosíntesis',
+    where: 'Cloroplastos (en células vegetales y algas)',
+    needs: 'Energía solar, dióxido de carbono (CO2) y agua (H2O)',
+    produces: 'Glucosa (C6H12O6) y oxígeno (O2)',
+    who: 'Organismos autótrofos (plantas, algas y cianobacterias)',
+    color: '#22c55e'
+  },
+  {
+    process: 'Respiración celular',
+    where: 'Mitocondrias (en células vegetales y animales)',
+    needs: 'Glucosa y oxígeno (O2)',
+    produces: 'Energía ATP, dióxido de carbono (CO2) y agua (H2O)',
+    who: 'Organismos autótrofos y heterótrofos (plantas, animales, hongos)',
+    color: '#f59e0b'
+  }
+];
+
+export interface Session3SubactivitiesProps {
+  activity: Activity;
+  mission?: MissionDetail;
+  structuresTable?: StructureItem[];
+  glossary?: GlossaryItem[];
+  mandatoryQuestion?: string;
+  docUrl?: string;
+  videoUrl?: string;
+  videoEmbedUrl?: string;
+  onEvidenceSubmitted?: (result: {
+    evidence: Evidence;
+    missionCompleted: boolean;
+    badgeAwarded: { code: string; name: string; description: string; icon: string } | null;
+  }) => void;
+}
+
+export type Session3TabKey = '3.1' | '3.2' | '3.3' | '3.4' | '3.5' | '3.6' | '3.7';
+
+export function Session3Subactivities({
+  activity,
+  mission,
+  structuresTable = [],
+  glossary = [],
+  mandatoryQuestion,
+  docUrl = 'https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true',
+  onEvidenceSubmitted
+}: Session3SubactivitiesProps) {
+  const [activeTab, setActiveTab] = useState<Session3TabKey>('3.1');
+  const [viewMode, setViewMode] = useState<'tabs' | 'all'>('tabs');
+  const [initialAporte, setInitialAporte] = useState('');
+  const [aporteShared, setAporteShared] = useState(false);
+  const [questionReflection, setQuestionReflection] = useState('');
+  const [questionShared, setQuestionShared] = useState(false);
+  const [activeFactoryHotspot, setActiveFactoryHotspot] = useState<string>('membrana');
+  const [panAngle, setPanAngle] = useState(0);
+  const [activeCubeFaceIndex, setActiveCubeFaceIndex] = useState(0);
+  const [exploredCubeFaces, setExploredCubeFaces] = useState<Set<number>>(new Set([0]));
+  const [canvaUrlInput, setCanvaUrlInput] = useState('');
+  const [activeChapterIndex, setActiveChapterIndex] = useState<number>(0);
+  const [selectedProcessComparison, setSelectedProcessComparison] = useState<'both' | 'fotosintesis' | 'respiracion'>('both');
+  const [showGlossary, setShowGlossary] = useState(false);
+  const toast = useToast();
+
+  const handleSelectTab = (tab: Session3TabKey) => {
+    setActiveTab(tab);
+    if (viewMode === 'all') {
+      const idMap: Record<Session3TabKey, string> = {
+        '3.1': 'sub-3-1',
+        '3.2': 'sub-3-2',
+        '3.3': 'sub-3-3',
+        '3.4': 'sub-3-4',
+        '3.5': 'sub-3-5',
+        '3.6': 'sub-3-6',
+        '3.7': 'sub-3-7'
+      };
+      const el = document.getElementById(idMap[tab]);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
+  const handleShareAporte = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!initialAporte.trim()) {
+      toast.info('Escribe primero tus saberes previos sobre nutrientes y energía.');
+      return;
+    }
+    setAporteShared(true);
+    toast.success('¡Saberes previos registrados! Ahora socializa tu respuesta con el grupo.');
+  };
+
+  const handleShareQuestion = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!questionReflection.trim()) {
+      toast.info('Escribe tu reflexión sobre qué pasaría si la fábrica o la célula se detuvieran.');
+      return;
+    }
+    setQuestionShared(true);
+    toast.success('¡Respuesta registrada en la plataforma!');
+  };
+
+  const handleRotateCube = (index: number) => {
+    setActiveCubeFaceIndex(index);
+    setExploredCubeFaces((prev) => {
+      const next = new Set(prev);
+      next.add(index);
+      if (next.size === 6 && prev.size < 6) {
+        toast.success('¡Felicitaciones! Has explorado las 6 estructuras metabólicas del Cubo Merge.');
+      }
+      return next;
+    });
+  };
+
+  const handleSaveCanvaUrl = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canvaUrlInput.trim()) {
+      toast.info('Ingresa el enlace público de tu infografía de Canva.');
+      return;
+    }
+    try {
+      localStorage.setItem('m3_canva_url', canvaUrlInput.trim());
+      toast.success('Enlace de Canva guardado correctamente.');
+    } catch {
+      toast.info('Enlace registrado en esta sesión.');
+    }
+  };
+
+  const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
+  const extraArCube = mission?.activities.find((a) => a.type === 'ar_cube');
+  const effectiveStructures = structuresTable && structuresTable.length > 0 ? structuresTable : DEFAULT_M3_STRUCTURES;
+  const currentHotspot = FACTORY_HOTSPOTS.find((h) => h.id === activeFactoryHotspot) ?? FACTORY_HOTSPOTS[0];
+  const currentCubeFace = MERGE_CUBE_FACES[activeCubeFaceIndex] ?? MERGE_CUBE_FACES[0];
+
+  const TAB_DEFS_S3: { key: Session3TabKey; number: string; label: string; badge?: string }[] = [
+    { key: '3.1', number: '3.1', label: 'Saberes previos' },
+    { key: '3.2', number: '3.2', label: 'Fábrica y Video 360' },
+    { key: '3.3', number: '3.3', label: 'Preguntas motivadoras' },
+    { key: '3.4', number: '3.4', label: 'Video 360, Lectura y Canva' },
+    { key: '3.5', number: '3.5', label: 'Cubo Merge' },
+    { key: '3.6', number: '3.6', label: 'Cuadro Estructuras Vercel', badge: 'Evaluado' },
+    { key: '3.7', number: '3.7', label: 'Reto Final', badge: 'Examen' }
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* ── Barra de Navegación de Pestañas de la Sesión 3 ── */}
+      <nav
+        aria-label="Sub-actividades oficiales de la Sesión 3"
+        className="sticky top-16 z-30 -mx-2 rounded-2xl border border-white/10 bg-ink-950/95 p-2 backdrop-blur-xl shadow-2xl sm:mx-0"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2 mb-2 px-1">
+          <div className="flex items-center gap-2">
+            <span className="grid size-7 place-items-center rounded-lg bg-amber-400/20 text-xs font-black text-amber-300">
+              S3
+            </span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
+              Estaciones oficiales de indagación (3.1 a 3.7)
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-slate-400 hidden sm:inline">Visualización:</span>
+            <button
+              type="button"
+              onClick={() => setViewMode('tabs')}
+              className={cn(
+                'rounded-lg px-2.5 py-1 text-xs font-semibold transition',
+                viewMode === 'tabs'
+                  ? 'bg-amber-400/20 text-amber-200 border border-amber-400/30 shadow'
+                  : 'text-slate-400 hover:text-white'
+              )}
+            >
+              Pestañas
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('all')}
+              className={cn(
+                'rounded-lg px-2.5 py-1 text-xs font-semibold transition',
+                viewMode === 'all'
+                  ? 'bg-amber-400/20 text-amber-200 border border-amber-400/30 shadow'
+                  : 'text-slate-400 hover:text-white'
+              )}
+            >
+              Ver todo continuo
+            </button>
+          </div>
+        </div>
+
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-white/10">
+          {TAB_DEFS_S3.map((tab) => {
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => handleSelectTab(tab.key)}
+                className={cn(
+                  'group flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition whitespace-nowrap',
+                  isActive
+                    ? 'border border-amber-400/40 bg-gradient-to-r from-amber-400/25 to-amber-500/15 text-amber-100 shadow-lg shadow-amber-500/10'
+                    : 'border border-white/5 bg-white/3 text-slate-400 hover:border-white/15 hover:bg-white/6 hover:text-white'
+                )}
+              >
+                <span
+                  className={cn(
+                    'grid size-5 place-items-center rounded-md text-[10px] font-black',
+                    isActive ? 'bg-amber-400 text-ink-950' : 'bg-white/10 text-slate-300'
+                  )}
+                >
+                  {tab.number}
+                </span>
+                <span>{tab.label}</span>
+                {tab.badge ? (
+                  <span
+                    className={cn(
+                      'rounded-md px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider',
+                      tab.badge === 'Examen'
+                        ? 'bg-rose-400/20 text-rose-300 border border-rose-400/30'
+                        : 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30'
+                    )}
+                  >
+                    {tab.badge}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          3.1 ACTIVACIÓN DE SABERES PREVIOS
+          ══════════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.1') && (
+        <section id="sub-3-1" className="scroll-mt-36 space-y-5">
+          <SpotlightCard
+            spotlightColor="rgba(251, 191, 36, 0.16)"
+            borderColor="rgba(251, 191, 36, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            {/* Encabezado */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-2xl bg-amber-400/20 text-amber-300 text-lg font-black">
+                  3.1
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="gold">Saberes previos · Sesión 3</Chip>
+                    <span className="text-xs text-slate-400">Punto de partida reflexivo</span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    <ShinyText text="Activación de saberes previos: nutrientes y energía" speed={3.5} className="font-extrabold text-amber-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">
+                <GraduationCap className="size-3.5 text-amber-300" aria-hidden />
+                Orientación docente
+              </Chip>
+            </div>
+
+            {/* Texto literal oficial */}
+            <div className="rounded-2xl border border-amber-400/25 bg-amber-400/8 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1.5 flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
+              </p>
+              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
+                «Al inicio la docente, activa los saberes previos de los estudiantes mediante una situación cercana a su realidad, promoviendo la reflexión sobre la importancia de los nutrientes, la energía y las transformaciones que ocurren dentro de las células, como punto de partida para comprender el metabolismo celular»
+              </p>
+            </div>
+
+            {/* 3 Detonadores de curiosidad científica cotidiana */}
+            <div className="space-y-3">
+              <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
+                <Lightbulb className="size-4 text-amber-400" />
+                Situaciones cotidianas para reflexionar en clase:
+              </h4>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🍎</span>
+                    <h5 className="text-xs font-bold text-amber-200 uppercase tracking-wide">El combustible diario</h5>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Cuando desayunas una fruta o un pan, ¿cómo hace tu cuerpo para convertir esos alimentos sólidos en la energía que usas para correr, jugar o estudiar?
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">⚡</span>
+                    <h5 className="text-xs font-bold text-amber-200 uppercase tracking-wide">Transformaciones invisibles</h5>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Los alimentos no entran enteros a las células: se descomponen en micromoléculas de glucosa, agua y minerales que viajan por la sangre hasta cada célula.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🌙</span>
+                    <h5 className="text-xs font-bold text-amber-200 uppercase tracking-wide">El motor que nunca duerme</h5>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Incluso mientras duermes profundamente, tus células siguen respirando químicamente, reparando tejidos y manteniendo tu corazón latiendo.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Formulario de registro de saberes previos */}
+            <div className="rounded-2xl border border-white/10 bg-ink-950/60 p-4 sm:p-5 space-y-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">✍️</span>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-extrabold text-white">
+                    Registra tus saberes previos sobre la energía y los nutrientes
+                  </h4>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Escribe lo que sabes o imaginas sobre cómo nuestras células transforman lo que comemos en energía vital:
+                  </p>
+                </div>
+              </div>
+
+              {/* Ideas de ayuda para inspirarse */}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                <span className="text-slate-400 font-semibold">Ideas sugeridas para inspirarte:</span>
+                {[
+                  'Los alimentos nos dan energía porque las células los transforman.',
+                  'Si no nos alimentamos ni tomamos agua, las células se quedan sin materiales.',
+                  'Dentro de las células ocurren reacciones químicas que nos mantienen vivos.'
+                ].map((sug, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setInitialAporte((prev) => (prev ? `${prev} ${sug}` : sug))}
+                    className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-amber-200 transition hover:border-amber-400/40 hover:bg-amber-400/10"
+                  >
+                    + {sug}
+                  </button>
+                ))}
+              </div>
+
+              <form onSubmit={handleShareAporte} className="space-y-3">
+                <textarea
+                  value={initialAporte}
+                  onChange={(e) => setInitialAporte(e.target.value)}
+                  rows={3}
+                  placeholder="Escribe aquí tu aporte o reflexión inicial sobre los nutrientes, la energía y las células..."
+                  className="w-full rounded-xl border border-white/10 bg-ink-900/80 p-3.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
+                />
+
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="text-xs text-slate-400">
+                    {initialAporte.trim().length} caracteres registrados
+                  </span>
+                  <Button type="submit" variant="primary" size="sm" className="font-bold">
+                    <Send className="size-3.5 mr-1.5" />
+                    Registrar saberes previos
+                  </Button>
+                </div>
+              </form>
+
+              {aporteShared && (
+                <div className="flex items-center gap-2.5 rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-3 text-xs text-emerald-200">
+                  <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+                  <span>
+                    ¡Aporte guardado con éxito! Puedes socializarlo oralmente con tu docente y compañeros antes de continuar.
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Muro colectivo de ideas previas */}
+            <div className="space-y-2 border-t border-white/10 pt-4">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                <MessageSquare className="size-3.5 text-amber-400" />
+                Muro de ideas del salón de clase:
+              </p>
+              <div className="grid gap-2.5 sm:grid-cols-2">
+                <div className="rounded-xl border border-white/5 bg-white/2 p-3 text-xs text-slate-300">
+                  <strong className="text-amber-200 font-bold block mb-1">Sofía (5.º A):</strong>
+                  «Pienso que la comida es como la leña para una fogata: la célula la quema para tener calor y energía para correr.»
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/2 p-3 text-xs text-slate-300">
+                  <strong className="text-amber-200 font-bold block mb-1">Mateo (5.º A):</strong>
+                  «Si no tomamos agua las células se secan como una planta marchita y se detienen todas sus funciones.»
+                </div>
+              </div>
+            </div>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <span className="text-xs text-slate-400">
+                Paso 1 de 7 · Inicio de indagación
+              </span>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => handleSelectTab('3.2')}
+                className="font-bold shadow-lg shadow-amber-500/10"
+              >
+                Siguiente: 3.2 La Fábrica y Video 360
+                <ArrowRight className="size-4 ml-1.5" />
+              </Button>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════
+          3.2 VIDEO 360 Y ANALOGÍA DE LA FÁBRICA CELULAR
+          ══════════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.2') && (
+        <section id="sub-3-2" className="scroll-mt-36 space-y-5">
+          <SpotlightCard
+            spotlightColor="rgba(56, 189, 248, 0.16)"
+            borderColor="rgba(56, 189, 248, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            {/* Encabezado */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-2xl bg-sky-400/20 text-sky-300 text-lg font-black">
+                  3.2
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="sky">Analogía oficial · Sesión 3</Chip>
+                    <span className="text-xs text-slate-400">Recurso 360 interactivo</span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    <ShinyText text="La célula como una pequeña fábrica de producción" speed={3.5} className="font-extrabold text-sky-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">
+                <Factory className="size-3.5 text-sky-300" aria-hidden />
+                Día y noche
+              </Chip>
+            </div>
+
+            {/* Texto literal oficial */}
+            <div className="rounded-2xl border border-sky-400/25 bg-sky-400/8 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-sky-300 mb-1.5 flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
+              </p>
+              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
+                «presenta el video 360 de una fábrica de producción, comparando a la célula con una pequeña fábrica que trabaja día y noche. En esta fábrica llegan materiales que son transformados para elaborar productos, se utiliza energía para que las máquinas funcionen y cada trabajador cumple una tarea especial, de manera parecida, las células de nuestro cuerpo reciben nutrientes, los transforman, obtienen energía y producen sustancias necesarias para mantenerse vivas y realizar sus funciones. A todo este conjunto de procesos lo llamamos metabolismo celular”.»
+              </p>
+            </div>
+
+            {/* Simulador Interactivo de Video 360: La Fábrica Celular */}
+            <div className="overflow-hidden rounded-3xl border border-sky-400/30 bg-ink-950/90 shadow-2xl">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-white/3 px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <span className="grid size-7 place-items-center rounded-lg bg-sky-400/20 text-sky-300 text-xs font-bold">
+                    360°
+                  </span>
+                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                    Simulador panorámico de la fábrica celular
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPanAngle((a) => a - 45)}
+                    className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/10"
+                  >
+                    ← Girar Izq
+                  </button>
+                  <span className="text-[11px] font-mono text-sky-300">{panAngle}°</span>
+                  <button
+                    type="button"
+                    onClick={() => setPanAngle((a) => a + 45)}
+                    className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/10"
+                  >
+                    Girar Der →
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPanAngle(0)}
+                    className="rounded-lg border border-white/10 bg-white/5 p-1 text-slate-400 hover:text-white"
+                    title="Restablecer ángulo"
+                  >
+                    <RotateCcw className="size-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Visor Panorámico Gráfico de la Fábrica Celular */}
+              <div
+                className="relative h-64 sm:h-72 w-full overflow-hidden transition-all duration-500 flex items-center justify-center p-6 text-center"
+                style={{
+                  background: `radial-gradient(ellipse at center, rgba(14, 165, 233, 0.22) 0%, rgba(7, 16, 34, 0.95) 75%), linear-gradient(135deg, #071022 0%, #0c1e3d 100%)`,
+                  backgroundPosition: `${panAngle * 2}px center`
+                }}
+              >
+                {/* Cuadrícula de estaciones de la fábrica en perspectiva */}
+                <div className="relative z-10 max-w-xl space-y-3">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-sky-400/40 bg-sky-400/15 px-3 py-1 text-xs font-bold text-sky-200">
+                    <span className="size-2 rounded-full bg-sky-400 animate-ping" />
+                    Estación seleccionada: {currentHotspot.name}
+                  </div>
+                  <h4 className="font-display text-2xl font-black text-white sm:text-3xl">
+                    {currentHotspot.icon} {currentHotspot.analogy}
+                  </h4>
+                  <p className="text-xs text-slate-300 sm:text-sm leading-relaxed max-w-lg mx-auto">
+                    {currentHotspot.description}
+                  </p>
+                  <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
+                    {extraVideo360 && mission ? (
+                      <LinkButton
+                        to={activityUrl(mission.code, extraVideo360)}
+                        variant="primary"
+                        size="sm"
+                        className="font-bold text-xs shadow-lg"
+                      >
+                        <Play className="size-3.5 mr-1" />
+                        Abrir experiencia 360 completa
+                      </LinkButton>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+
+              {/* Selector de estaciones de la fábrica */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-x divide-y sm:divide-y-0 divide-white/10 border-t border-white/10 bg-white/2">
+                {FACTORY_HOTSPOTS.map((hotspot) => {
+                  const isSelected = activeFactoryHotspot === hotspot.id;
+                  return (
+                    <button
+                      key={hotspot.id}
+                      type="button"
+                      onClick={() => setActiveFactoryHotspot(hotspot.id)}
+                      className={cn(
+                        'flex flex-col items-center gap-1.5 p-3 text-center transition',
+                        isSelected
+                          ? 'bg-sky-400/20 text-white font-extrabold'
+                          : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                      )}
+                    >
+                      <span className="text-2xl">{hotspot.icon}</span>
+                      <span className="text-xs font-bold truncate max-w-full">{hotspot.organelle}</span>
+                      <span className="text-[10px] text-slate-400 font-normal truncate max-w-full">
+                        {hotspot.analogy}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Ficha técnica comparativa Fábrica ↔ Célula */}
+            <div className="rounded-2xl border border-white/10 bg-white/3 p-4 sm:p-5 space-y-3">
+              <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
+                <span className="text-sky-300 font-mono">⚡</span>
+                Detalle comparativo: {currentHotspot.organelle} vs. {currentHotspot.analogy}
+              </h4>
+              <div className="grid gap-3 sm:grid-cols-2 text-xs">
+                <div className="rounded-xl border border-white/10 bg-ink-950/60 p-3 space-y-1">
+                  <strong className="text-sky-300 font-bold block">En la fábrica de producción:</strong>
+                  <p className="text-slate-300 leading-relaxed">{currentHotspot.roleInFactory}</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-ink-950/60 p-3 space-y-1">
+                  <strong className="text-mint-300 font-bold block">En la célula viva:</strong>
+                  <p className="text-slate-300 leading-relaxed">{currentHotspot.roleInCell}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Definición del concepto maestro: Metabolismo Celular */}
+            <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4 sm:p-5 space-y-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="size-4 text-emerald-300" />
+                <h4 className="font-extrabold text-emerald-200 text-sm sm:text-base">
+                  <DecryptedText text="¿Qué es el Metabolismo Celular?" speed={40} className="font-black text-emerald-100" />
+                </h4>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                El <strong className="text-white">metabolismo celular</strong> es el conjunto coordinado de todas las reacciones químicas que ocurren dentro de las células. Se divide en dos ramas principales:
+              </p>
+              <div className="grid gap-2.5 sm:grid-cols-2 pt-1 text-xs">
+                <div className="rounded-xl border border-amber-400/20 bg-amber-400/8 p-3">
+                  <strong className="text-amber-300 font-bold block mb-1">🔥 Catabolismo (Degradación):</strong>
+                  Rompe moléculas complejas (como nutrientes) en sustancias simples para <strong>liberar energía (ATP)</strong>, por ejemplo en la respiración celular.
+                </div>
+                <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/8 p-3">
+                  <strong className="text-emerald-300 font-bold block mb-1">🌱 Anabolismo (Construcción):</strong>
+                  Utiliza esa energía liberada para <strong>fabricar nuevas moléculas</strong>, reparar estructuras y crecer, por ejemplo en la fotosíntesis.
+                </div>
+              </div>
+            </div>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('3.1')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 3.1 Saberes previos
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => handleSelectTab('3.3')}
+                className="font-bold shadow-lg shadow-sky-500/10"
+              >
+                Siguiente: 3.3 Preguntas Motivadoras
+                <ArrowRight className="size-4 ml-1.5" />
+              </Button>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════
+          3.3 PLANTEAMIENTO DE LA PREGUNTA MOTIVADORA
+          ══════════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.3') && (
+        <section id="sub-3-3" className="scroll-mt-36 space-y-5">
+          <SpotlightCard
+            spotlightColor="rgba(245, 158, 11, 0.16)"
+            borderColor="rgba(245, 158, 11, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            {/* Encabezado */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-2xl bg-amber-400/20 text-amber-300 text-lg font-black">
+                  3.3
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="gold">Cuestionamiento · Sesión 3</Chip>
+                    <span className="text-xs text-slate-400">Reflexión en plataforma</span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    <ShinyText text="¿Qué pasaría si la fábrica o la célula se detuvieran?" speed={3.5} className="font-extrabold text-amber-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">
+                <MessageSquare className="size-3.5 text-amber-300" aria-hidden />
+                Participación activa
+              </Chip>
+            </div>
+
+            {/* Texto literal oficial */}
+            <div className="rounded-2xl border border-amber-400/25 bg-amber-400/8 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1.5 flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
+              </p>
+              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
+                «La docente plantea los siguientes cuestionamientos ¿Qué creen que sucedería si una fábrica dejara de recibir materiales o energía para funcionar? ¿Pasaría algo parecido en nuestras células si no recibieran los nutrientes que necesitan? Los estudiantes dan respuesta a pregunta motivadora en la plataforma»
+              </p>
+            </div>
+
+            {/* Las 2 Grandes Preguntas en Tarjetas con Resplandor */}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-sky-400/30 bg-sky-400/10 p-4 space-y-1.5">
+                <span className="text-xs font-black uppercase tracking-wider text-sky-300">Pregunta 1</span>
+                <p className="font-display font-extrabold text-white text-base">
+                  ¿Qué creen que sucedería si una fábrica dejara de recibir materiales o energía para funcionar?
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 space-y-1.5">
+                <span className="text-xs font-black uppercase tracking-wider text-amber-300">Pregunta 2</span>
+                <p className="font-display font-extrabold text-white text-base">
+                  ¿Pasaría algo parecido en nuestras células si no recibieran los nutrientes que necesitan?
+                </p>
+              </div>
+            </div>
+
+            {/* Selector de argumentos científicos guía */}
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <Lightbulb className="size-3.5 text-amber-300" />
+                Haz clic en una idea para añadirla a tu respuesta:
+              </p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[
+                  {
+                    title: 'Paralización de maquinarias',
+                    desc: 'Si una fábrica no recibe energía ni materiales, sus máquinas se apagan y no puede elaborar productos.'
+                  },
+                  {
+                    title: 'Falta de ATP en mitocondrias',
+                    desc: 'En la célula pasa lo mismo: sin nutrientes ni oxígeno, las mitocondrias no pueden generar ATP para vivir.'
+                  },
+                  {
+                    title: 'Pérdida de turgencia y marchitamiento',
+                    desc: 'Sin agua ni nutrientes, la célula pierde presión, se arruga (plasmólisis) y sus funciones se detienen.'
+                  },
+                  {
+                    title: 'Colapso del metabolismo',
+                    desc: 'Se interrumpe el catabolismo y el anabolismo, provocando la debilidad del organismo entero.'
+                  }
+                ].map((idea, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() =>
+                      setQuestionReflection((prev) =>
+                        prev ? `${prev}\n• ${idea.title}: ${idea.desc}` : `• ${idea.title}: ${idea.desc}`
+                      )
+                    }
+                    className="flex flex-col text-left rounded-xl border border-white/10 bg-white/4 p-3 transition hover:border-amber-400/40 hover:bg-amber-400/10"
+                  >
+                    <span className="text-xs font-bold text-amber-200">+ {idea.title}</span>
+                    <span className="text-[11px] text-slate-300 leading-relaxed mt-0.5">{idea.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Espacio de redacción en plataforma */}
+            <form onSubmit={handleShareQuestion} className="space-y-3 rounded-2xl border border-white/10 bg-ink-950/60 p-4 sm:p-5">
+              <label htmlFor="question-reflection-input" className="text-sm font-extrabold text-white block">
+                Tu respuesta fundamentada en la plataforma:
+              </label>
+              <textarea
+                id="question-reflection-input"
+                value={questionReflection}
+                onChange={(e) => setQuestionReflection(e.target.value)}
+                rows={4}
+                placeholder="Explica qué le ocurriría a la fábrica y qué le ocurriría a tus células si no recibieran los materiales y la energía necesarios para funcionar..."
+                className="w-full rounded-xl border border-white/10 bg-ink-900/80 p-3.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
+              />
+
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs text-slate-400">
+                  {questionReflection.trim().length} caracteres redactados
+                </span>
+                <Button type="submit" variant="primary" size="sm" className="font-bold">
+                  <Send className="size-3.5 mr-1.5" />
+                  Guardar respuesta en la plataforma
+                </Button>
+              </div>
+
+              {questionShared && (
+                <div className="flex items-center gap-2.5 rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-3 text-xs text-emerald-200">
+                  <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+                  <span>
+                    ¡Respuesta guardada con éxito en la plataforma! Lista para socializar con tu docente.
+                  </span>
+                </div>
+              )}
+            </form>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('3.2')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 3.2 Fábrica y Video 360
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => handleSelectTab('3.4')}
+                className="font-bold shadow-lg shadow-amber-500/10"
+              >
+                Siguiente: 3.4 Video 360, Lectura e Infografía Canva
+                <ArrowRight className="size-4 ml-1.5" />
+              </Button>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════
+          3.4 VIDEO 360 DEL METABOLISMO, LECTURA OFICIAL E INFOGRAFÍA CANVA
+          ══════════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.4') && (
+        <section id="sub-3-4" className="scroll-mt-36 space-y-5">
+          <SpotlightCard
+            spotlightColor="rgba(244, 63, 94, 0.16)"
+            borderColor="rgba(244, 63, 94, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            {/* Encabezado */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-2xl bg-rose-500/20 text-rose-300 text-lg font-black">
+                  3.4
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="rose">Indagación profunda · Sesión 3</Chip>
+                    <span className="text-xs text-slate-400">Metabolismo y Canva</span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    <ShinyText text="Video 360, Lectura adaptada y Taller de Infografía en Canva" speed={3.5} className="font-extrabold text-rose-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">
+                <Palette className="size-3.5 text-rose-300" aria-hidden />
+                Canva + Docs
+              </Chip>
+            </div>
+
+            {/* Texto literal oficial */}
+            <div className="rounded-2xl border border-rose-400/25 bg-rose-400/8 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-rose-300 mb-1.5 flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
+              </p>
+              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
+                «La docente presenta el video el video 360 y solicita a los estudiantes visualizarlo y dar respuesta al siguiente cuestionamiento: ¿De qué manera las células vegetales y animales llevan a cabo sus actividades para conservar la vida? ¿Cómo se llama el proceso mediante el cual las células adquieren energía y eliminan desechos?, se solicita los estudiantes apoyarse en el contenido del recurso multimedial como también en la lectura “El metabolismo celular: Lectura el metabolismo celular (maquetar lectura desde este enlace: https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true), luego decir: ¿Cómo obtienen y utilizan la energía las células?” para dar respuesta a los cuestionamientos a través de la elaboración de una infografía en la herramienta Canva»
+              </p>
+            </div>
+
+            {/* Cuestionamientos clave a responder */}
+            <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                <Lightbulb className="size-3.5" /> Cuestionamientos guía obligatorios para tu infografía:
+              </h4>
+              <ul className="space-y-1.5 text-xs text-slate-200 sm:text-sm">
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold shrink-0">1.</span>
+                  <span>¿De qué manera las células vegetales y animales llevan a cabo sus actividades para conservar la vida?</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold shrink-0">2.</span>
+                  <span>¿Cómo se llama el proceso mediante el cual las células adquieren energía y eliminan desechos?</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold shrink-0">3.</span>
+                  <span>¿Cómo obtienen y utilizan la energía las células?</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Lectura oficial adaptada directamente maquetada */}
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <BookOpenCheck className="size-4 text-emerald-400" />
+                  <h4 className="text-sm font-extrabold text-white">
+                    Lectura adaptada: «El metabolismo celular: ¿Cómo obtienen y utilizan la energía las células?»
+                  </h4>
+                </div>
+                <a
+                  href={docUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3 py-1.5 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
+                >
+                  <FileText className="size-3.5" /> Abrir en Google Docs original
+                  <ExternalLink className="size-3" />
+                </a>
+              </div>
+
+              {/* Selector de capítulos editoriales */}
+              <div className="flex gap-1.5 overflow-x-auto pb-1">
+                {READING_CHAPTERS_M3.map((ch, idx) => (
+                  <button
+                    key={ch.number}
+                    type="button"
+                    onClick={() => setActiveChapterIndex(idx)}
+                    className={cn(
+                      'shrink-0 flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition',
+                      activeChapterIndex === idx
+                        ? 'border border-emerald-400/40 bg-emerald-400/20 text-emerald-200 shadow'
+                        : 'border border-white/5 bg-white/3 text-slate-400 hover:text-white'
+                    )}
+                  >
+                    <span>{ch.icon}</span>
+                    <span>Cap. {ch.number}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Cuerpo del capítulo seleccionado */}
+              {READING_CHAPTERS_M3[activeChapterIndex] && (
+                <div className="rounded-2xl border border-white/10 bg-ink-950/80 p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-2xl">{READING_CHAPTERS_M3[activeChapterIndex].icon}</span>
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+                          {READING_CHAPTERS_M3[activeChapterIndex].tag}
+                        </span>
+                        <h5 className="text-sm font-extrabold text-white">
+                          Capítulo {READING_CHAPTERS_M3[activeChapterIndex].number}: {READING_CHAPTERS_M3[activeChapterIndex].title}
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="whitespace-pre-line text-xs sm:text-sm text-slate-200 leading-relaxed">
+                    {READING_CHAPTERS_M3[activeChapterIndex].body}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Comparativa Interactiva: Fotosíntesis vs. Respiración Celular */}
+            <div className="space-y-3 border-t border-white/10 pt-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-sm font-extrabold text-white flex items-center gap-2">
+                  <Zap className="size-4 text-amber-400" />
+                  Comparativa de procesos: Fotosíntesis vs. Respiración Celular
+                </h4>
+                <div className="flex items-center gap-1.5 text-xs">
+                  {(['both', 'fotosintesis', 'respiracion'] as const).map((filter) => (
+                    <button
+                      key={filter}
+                      type="button"
+                      onClick={() => setSelectedProcessComparison(filter)}
+                      className={cn(
+                        'rounded-lg px-2.5 py-1 text-[11px] font-bold transition capitalize',
+                        selectedProcessComparison === filter
+                          ? 'border border-white/20 bg-white/15 text-white'
+                          : 'text-slate-400 hover:text-white'
+                      )}
+                    >
+                      {filter === 'both' ? 'Ver ambos' : filter}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {PROCESS_COMPARISON_M3.filter((p) =>
+                  selectedProcessComparison === 'both'
+                    ? true
+                    : p.process.toLowerCase().includes(selectedProcessComparison)
+                ).map((proc) => (
+                  <div
+                    key={proc.process}
+                    className="rounded-2xl border p-4 space-y-2.5"
+                    style={{ borderColor: `${proc.color}40`, backgroundColor: `${proc.color}08` }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-display font-extrabold text-white text-sm" style={{ color: proc.color }}>
+                        {proc.process}
+                      </span>
+                      <Chip tone="neutral">{proc.where}</Chip>
+                    </div>
+                    <div className="space-y-1.5 text-xs">
+                      <div>
+                        <strong className="text-slate-400 block">Materias primas que necesita:</strong>
+                        <span className="text-slate-200">{proc.needs}</span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-400 block">Productos generados:</strong>
+                        <span className="text-slate-200 font-semibold">{proc.produces}</span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-400 block">¿Quiénes lo realizan?:</strong>
+                        <span className="text-slate-300">{proc.who}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Taller de Infografía en Canva */}
+            <div className="rounded-2xl border border-rose-400/30 bg-gradient-to-br from-rose-500/10 via-purple-500/5 to-transparent p-5 space-y-4 border-t-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="grid size-10 place-items-center rounded-2xl bg-rose-500/20 text-rose-300 text-xl">
+                    🎨
+                  </span>
+                  <div>
+                    <h4 className="text-sm font-extrabold text-white sm:text-base">
+                      Taller de Diseño: Elabora tu Infografía en Canva
+                    </h4>
+                    <p className="text-xs text-slate-300">
+                      Plasma de manera visual las respuestas a las preguntas de indagación y la analogía de la fábrica
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href="https://www.canva.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-rose-400/40 bg-rose-500/20 px-4 py-2 text-xs font-black text-rose-100 transition hover:bg-rose-500/30 shadow-lg shadow-rose-500/20"
+                >
+                  <Palette className="size-4 mr-1" />
+                  Abrir Canva en pestaña nueva
+                  <ExternalLink className="size-3.5 ml-1" />
+                </a>
+              </div>
+
+              {/* Checklist de lo que debe incluir la infografía */}
+              <div className="rounded-xl border border-white/10 bg-ink-950/60 p-4 space-y-2">
+                <h5 className="text-xs font-bold uppercase tracking-wider text-rose-300">
+                  Checklist obligatorio de tu infografía:
+                </h5>
+                <div className="grid gap-2 sm:grid-cols-2 text-xs text-slate-200">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="size-3.5 text-rose-400 shrink-0 mt-0.5" />
+                    <span>Título creativo y tu nombre completo.</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="size-3.5 text-rose-400 shrink-0 mt-0.5" />
+                    <span>Respuestas a los cuestionamientos de energía y desechos.</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="size-3.5 text-rose-400 shrink-0 mt-0.5" />
+                    <span>Al menos 3 estructuras celulares con su función metabólica.</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="size-3.5 text-rose-400 shrink-0 mt-0.5" />
+                    <span>Uso de la analogía de la pequeña fábrica celular.</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Registro del enlace público de Canva */}
+              <form onSubmit={handleSaveCanvaUrl} className="space-y-2">
+                <label htmlFor="canva-url-input-field" className="text-xs font-bold text-slate-300 block">
+                  Enlace público de solo lectura de tu infografía en Canva:
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    id="canva-url-input-field"
+                    type="url"
+                    value={canvaUrlInput}
+                    onChange={(e) => setCanvaUrlInput(e.target.value)}
+                    placeholder="https://www.canva.com/design/..."
+                    className="flex-1 rounded-xl border border-white/10 bg-ink-900/80 px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-rose-400/50 focus:outline-none"
+                  />
+                  <Button type="submit" variant="secondary" size="sm" className="font-bold text-xs">
+                    Guardar enlace
+                  </Button>
+                </div>
+              </form>
+            </div>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('3.3')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 3.3 Preguntas Motivadoras
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => handleSelectTab('3.5')}
+                className="font-bold shadow-lg shadow-rose-500/10"
+              >
+                Siguiente: 3.5 Cubo Merge y Estructuras
+                <ArrowRight className="size-4 ml-1.5" />
+              </Button>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════
+          3.5 CUBO MERGE: ESTRUCTURAS CELULARES Y METABOLISMO
+          ══════════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.5') && (
+        <section id="sub-3-5" className="scroll-mt-36 space-y-5">
+          <SpotlightCard
+            spotlightColor="rgba(168, 85, 247, 0.16)"
+            borderColor="rgba(168, 85, 247, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            {/* Encabezado */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-2xl bg-purple-500/20 text-purple-300 text-lg font-black">
+                  3.5
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="grape">Realidad Aumentada · Sesión 3</Chip>
+                    <span className="text-xs text-slate-400">Célula Vegetal y Metabolismo</span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    <ShinyText text="Cubo Merge: Identificación de Estructuras Metabólicas" speed={3.5} className="font-extrabold text-purple-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">
+                <Box className="size-3.5 text-purple-300" aria-hidden />
+                6 Caras Celulares
+              </Chip>
+            </div>
+
+            {/* Texto literal oficial */}
+            <div className="rounded-2xl border border-purple-400/25 bg-purple-400/8 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5 flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
+              </p>
+              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
+                «A partir de la visualización, la docente, presenta y proporciona a los estudiantes un cubo Merge e indica las funcionalidades de la herramienta y propone hacer uso del cubo superponiendo la imagen de la célula vegetal con el propósito de identificar las estructuras celulares para llevar a cabo el metabolismo celular»
+              </p>
+            </div>
+
+            {/* Simulador Interactivo 3D del Cubo Merge */}
+            <div className="rounded-3xl border border-purple-400/30 bg-ink-950/90 p-5 space-y-5 shadow-2xl">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="grid size-7 place-items-center rounded-lg bg-purple-400/20 text-purple-300 text-xs font-bold">
+                    🧊
+                  </span>
+                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                    Simulador Interactivo del Cubo Merge en 3D
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <Chip tone="grape">
+                    {exploredCubeFaces.size} de 6 caras exploradas
+                  </Chip>
+                  {extraArCube && mission ? (
+                    <Link
+                      to={activityUrl(mission.code, extraArCube)}
+                      className="rounded-lg border border-purple-400/30 bg-purple-400/10 px-2.5 py-1 text-xs font-bold text-purple-200 hover:bg-purple-400/20"
+                    >
+                      Pantalla completa ↗
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
+
+              {/* Tarjetas selectoras de caras del cubo */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                {MERGE_CUBE_FACES.map((face, idx) => {
+                  const isSelected = activeCubeFaceIndex === idx;
+                  const isExplored = exploredCubeFaces.has(idx);
+                  return (
+                    <button
+                      key={face.id}
+                      type="button"
+                      onClick={() => handleRotateCube(idx)}
+                      className={cn(
+                        'flex flex-col items-center gap-1.5 rounded-2xl border p-3 text-center transition',
+                        isSelected
+                          ? 'border-purple-400 bg-purple-500/20 shadow-lg shadow-purple-500/20'
+                          : 'border-white/10 bg-white/3 hover:border-white/20 hover:bg-white/6'
+                      )}
+                    >
+                      <div className="relative">
+                        <span className="text-2xl">{face.icon}</span>
+                        {isExplored && (
+                          <CheckCircle2 className="size-3.5 text-emerald-400 absolute -top-1 -right-2" />
+                        )}
+                      </div>
+                      <span className="text-xs font-bold text-white truncate max-w-full">{face.name}</span>
+                      <span className="text-[10px] text-slate-400 font-mono truncate max-w-full">{face.faceLabel}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Ficha de la cara activa del Cubo Merge */}
+              <div className="rounded-2xl border border-white/10 bg-white/4 p-5 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="grid size-12 place-items-center rounded-2xl text-2xl shadow"
+                      style={{ backgroundColor: `${currentCubeFace.color}20`, color: currentCubeFace.color }}
+                    >
+                      {currentCubeFace.icon}
+                    </span>
+                    <div>
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-purple-300">
+                        {currentCubeFace.faceLabel} · {currentCubeFace.organelle}
+                      </span>
+                      <h4 className="text-base font-extrabold text-white sm:text-lg">
+                        {currentCubeFace.name}
+                      </h4>
+                    </div>
+                  </div>
+                  <Chip tone="gold">{currentCubeFace.organelle}</Chip>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 text-xs">
+                  <div className="rounded-xl border border-white/10 bg-ink-950/60 p-3 space-y-1">
+                    <strong className="text-purple-300 font-bold block">Función en el metabolismo celular:</strong>
+                    <p className="text-slate-200 leading-relaxed">{currentCubeFace.metabolicFunction}</p>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-ink-950/60 p-3 space-y-1">
+                    <strong className="text-emerald-300 font-bold block">Importancia en la célula vegetal:</strong>
+                    <p className="text-slate-200 leading-relaxed">{currentCubeFace.plantRole}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('3.4')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 3.4 Video 360, Lectura y Canva
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => handleSelectTab('3.6')}
+                className="font-bold shadow-lg shadow-purple-500/10"
+              >
+                Siguiente: 3.6 Cuadro Estructuras Vercel
+                <ArrowRight className="size-4 ml-1.5" />
+              </Button>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════
+          3.6 CUADRO DE LA ESTRUCTURA CELULAR EN LA PLATAFORMA VERCEL
+          ══════════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.6') && (
+        <section id="sub-3-6" className="scroll-mt-36 space-y-5">
+          <SpotlightCard
+            spotlightColor="rgba(16, 185, 129, 0.16)"
+            borderColor="rgba(16, 185, 129, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            {/* Encabezado */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-2xl bg-emerald-400/20 text-emerald-300 text-lg font-black">
+                  3.6
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="mint">Espacio Virtual Vercel · Sesión 3</Chip>
+                    <span className="text-xs text-slate-400">Entrega formal calificada</span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    <ShinyText text="Cuadro de la estructura celular y funciones metabólicas" speed={3.5} className="font-extrabold text-emerald-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">
+                <TableIcon className="size-3.5 text-emerald-300" aria-hidden />
+                6 Estructuras Clave
+              </Chip>
+            </div>
+
+            {/* Texto literal oficial */}
+            <div className="rounded-2xl border border-emerald-400/25 bg-emerald-400/8 p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-1.5 flex items-center gap-1.5">
+                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
+              </p>
+              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
+                «Los estudiantes completan el cuadro de la estructura celular en la plataforma:
+                Membrana celular, Cloroplastos, Mitocondrias, Citoplasma, Vacuola central y Núcleo con su respectiva función principal»
+              </p>
+            </div>
+
+            {/* Componente del Espacio Virtual de Vercel con autoguardado y envío */}
+            <VercelResponseSection
+              activity={activity}
+              mission={mission}
+              mandatoryQuestion={
+                mandatoryQuestion ??
+                'Los estudiantes completan el cuadro de la estructura celular en la plataforma Vercel con la función principal de cada organelo y responden cómo obtienen y utilizan energía las células.'
+              }
+              structuresTable={effectiveStructures}
+              onEvidenceSubmitted={onEvidenceSubmitted}
+            />
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('3.5')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 3.5 Cubo Merge
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={() => handleSelectTab('3.7')}
+                className="font-bold shadow-lg shadow-emerald-500/10"
+              >
+                Siguiente: 3.7 Reto Final de Evaluación
+                <ArrowRight className="size-4 ml-1.5" />
+              </Button>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════
+          3.7 RETO FINAL DE EVALUACIÓN: LA FÁBRICA DE LA VIDA
+          ══════════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.7') && (
+        <section id="sub-3-7" className="scroll-mt-36 space-y-5">
+          <SpotlightCard
+            spotlightColor="rgba(251, 191, 36, 0.2)"
+            borderColor="rgba(251, 191, 36, 0.45)"
+            className="p-5 sm:p-7 space-y-6 bg-gradient-to-br from-amber-400/5 via-ink-950/80 to-ink-950"
+          >
+            {/* Encabezado */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-11 place-items-center rounded-2xl bg-amber-400/25 text-amber-300 text-xl font-black shadow-lg shadow-amber-400/20">
+                  3.7
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="gold">Reto Final de Evaluación · Obligatorio</Chip>
+                    <span className="text-xs text-amber-300/80 font-bold">Sesión 3</span>
+                  </div>
+                  <h3 className="text-xl font-extrabold text-white sm:text-2xl">
+                    <ShinyText text="Reto Final: La fábrica de la vida y el metabolismo celular" speed={3.5} className="font-extrabold text-amber-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="gold">
+                <Trophy className="size-3.5 text-amber-300" aria-hidden />
+                Requisito para conquistar la Sesión 3
+              </Chip>
+            </div>
+
+            {/* Mensaje de orientación con Cito */}
+            <div className="flex items-start gap-4 rounded-2xl border border-amber-400/30 bg-amber-400/8 p-4 sm:p-5">
+              <div className="shrink-0">
+                <CitoMascot mood="celebrating" size={56} />
+              </div>
+              <div className="space-y-1.5 text-xs text-slate-200 sm:text-sm">
+                <h4 className="font-display font-extrabold text-amber-200 text-sm sm:text-base">
+                  ¡Cito te acompaña a la Gran Evaluación Final!
+                </h4>
+                <p className="leading-relaxed">
+                  Has descubierto la analogía de la fábrica celular, cómo las mitocondrias generan ATP por respiración celular, cómo los cloroplastos capturan luz solar por fotosíntesis, el equilibrio osmótico y completado el cuadro en Vercel. ¡Es hora de demostrar tus aprendizajes y conquistar la insignia maestra de <strong className="text-amber-200">Científico 360</strong>!
+                </p>
+              </div>
+            </div>
+
+            {/* Ficha técnica del reto evaluativo */}
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/3 p-4 text-center space-y-1">
+                <span className="text-2xl font-black text-amber-300 font-mono">8</span>
+                <p className="text-xs font-bold text-white">Preguntas Oficiales</p>
+                <p className="text-[11px] text-slate-400">Selección múltiple e indagación</p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/3 p-4 text-center space-y-1">
+                <span className="text-2xl font-black text-emerald-300 font-mono">70%</span>
+                <p className="text-xs font-bold text-white">Puntaje Aprobatorio</p>
+                <p className="text-[11px] text-slate-400">Mínimo para desbloquear logro</p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/3 p-4 text-center space-y-1">
+                <span className="text-2xl font-black text-sky-300 font-mono">⚡</span>
+                <p className="text-xs font-bold text-white">Insignia Final</p>
+                <p className="text-[11px] text-slate-400">Guardián de la Energía + Científico 360</p>
+              </div>
+            </div>
+
+            {/* Checklist de conceptos evaluados */}
+            <div className="rounded-2xl border border-white/10 bg-ink-950/60 p-4 space-y-2.5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                <CheckCircle2 className="size-3.5 text-amber-400" />
+                Conceptos clave evaluados en el examen:
+              </h4>
+              <ul className="grid gap-2 sm:grid-cols-2 text-xs text-slate-300">
+                <li className="flex items-start gap-2 rounded-xl bg-ink-950/60 p-2.5">
+                  <span className="text-amber-400 font-bold shrink-0">1.</span>
+                  <span><strong>Metabolismo:</strong> Catabolismo que libera energía vs. anabolismo que construye estructuras.</span>
+                </li>
+                <li className="flex items-start gap-2 rounded-xl bg-ink-950/60 p-2.5">
+                  <span className="text-amber-400 font-bold shrink-0">2.</span>
+                  <span><strong>Respiración Celular:</strong> Oxidación de glucosa con O2 en mitocondrias para generar ATP.</span>
+                </li>
+                <li className="flex items-start gap-2 rounded-xl bg-ink-950/60 p-2.5">
+                  <span className="text-amber-400 font-bold shrink-0">3.</span>
+                  <span><strong>Fotosíntesis:</strong> Conversión de luz solar, agua y CO2 en glucosa y O2 en cloroplastos.</span>
+                </li>
+                <li className="flex items-start gap-2 rounded-xl bg-ink-950/60 p-2.5">
+                  <span className="text-amber-400 font-bold shrink-0">4.</span>
+                  <span><strong>Ósmosis y Turgencia:</strong> Paso de agua que infla la gran vacuola central y evita la plasmólisis.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Botón de acción para presentar el Reto */}
+            <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-400/40 bg-gradient-to-r from-amber-400/15 to-mint-400/10 p-5">
+              <div>
+                <p className="text-sm font-extrabold text-white">¿Listo para presentar tu reto evaluativo final?</p>
+                <p className="text-xs text-slate-300 mt-0.5">Puedes rendirlo cuantas veces necesites. Siempre se conserva tu calificación más alta.</p>
+              </div>
+              <LinkButton
+                to={`/misiones/${mission?.code ?? 'm3'}/quiz`}
+                variant="gold"
+                size="lg"
+                className="shadow-xl shadow-amber-400/20 font-black"
+              >
+                <Trophy className="size-5 mr-2" />
+                Comenzar Reto Final (8 Preguntas)
+                <ArrowRight className="size-5 ml-2" />
+              </LinkButton>
+            </div>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('3.6')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 3.6 Cuadro Estructuras Vercel
+              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="md"
+                  onClick={() => handleSelectTab('3.1')}
+                >
+                  <RotateCcw className="size-4 mr-1.5" />
+                  Repasar desde 3.1 Saberes previos
+                </Button>
+                <a
+                  href="#misiones-complementarias"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-2 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
+                >
+                  <Sparkles className="size-3.5" />
+                  Explorar actividades complementarias ↓
+                </a>
+              </div>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* Glosario Científico de la Sesión 3 Desplegable */}
+      {glossary.length > 0 && (
+        <section className="space-y-3">
+          <button
+            type="button"
+            onClick={() => setShowGlossary((prev) => !prev)}
+            className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/4 p-4 text-left transition hover:border-white/20 hover:bg-white/6"
+          >
+            <div className="flex items-center gap-2.5">
+              <BookOpenCheck className="size-5 text-amber-400" />
+              <span className="font-display font-extrabold text-white text-sm sm:text-base">
+                Glosario Científico de la Sesión 3: Términos clave del metabolismo
+              </span>
+              <Chip tone="neutral">{glossary.length} términos</Chip>
+            </div>
+            {showGlossary ? <ChevronUp className="size-4 text-slate-400" /> : <ChevronDown className="size-4 text-slate-400" />}
+          </button>
+
+          {showGlossary && (
+            <div className="grid gap-2.5 sm:grid-cols-2 rounded-2xl border border-white/10 bg-ink-950/80 p-4">
+              {glossary.map((item, idx) => (
+                <div key={idx} className="rounded-xl border border-white/5 bg-white/3 p-3 space-y-1">
+                  <span className="text-xs font-bold text-amber-300 font-mono">{item.term}</span>
+                  <p className="text-xs text-slate-300 leading-relaxed">{item.definition}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+    </div>
+  );
+}
+
 /* ── Main ReadingPlayer component ───────────────────────────── */
 export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: ReadingPlayerProps) {
   const content = (activity.content ?? {}) as Record<string, unknown>;
@@ -3248,6 +5017,11 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
     mission?.code === 'm2' ||
     content.sessionNumber === 2 ||
     (typeof sessionTitle === 'string' && sessionTitle.includes('Sesión 2'));
+
+  const isSession3 =
+    mission?.code === 'm3' ||
+    content.sessionNumber === 3 ||
+    (typeof sessionTitle === 'string' && sessionTitle.includes('Sesión 3'));
 
   return (
     <article className="space-y-6">
@@ -3323,6 +5097,25 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
           }
           plantTemplateDriveUrl={plantTemplateDriveUrl}
           animalTemplateDriveUrl={animalTemplateDriveUrl}
+          videoUrl={videoUrl}
+          videoEmbedUrl={videoEmbedUrl}
+          onEvidenceSubmitted={onEvidenceSubmitted}
+        />
+      ) : isSession3 ? (
+        /* ── Si es Sesión 3: Renderizamos la estructura específica de sub-actividades 3.1 a 3.7 ── */
+        <Session3Subactivities
+          activity={activity}
+          mission={mission}
+          structuresTable={structuresTable.length > 0 ? structuresTable : DEFAULT_M3_STRUCTURES}
+          glossary={glossary}
+          mandatoryQuestion={
+            mandatoryQuestion ??
+            '¿De qué manera las células vegetales y animales llevan a cabo sus actividades para conservar la vida? ¿Cómo se llama el proceso mediante el cual las células adquieren energía y eliminan desechos?'
+          }
+          docUrl={
+            docUrl ??
+            'https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true'
+          }
           videoUrl={videoUrl}
           videoEmbedUrl={videoEmbedUrl}
           onEvidenceSubmitted={onEvidenceSubmitted}
