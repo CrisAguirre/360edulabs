@@ -1460,18 +1460,18 @@ export function Session1Subactivities({
                 <div>
                   <div className="flex items-center gap-2">
                     <Chip tone="grape">Sub-actividad 1.5 · Exploración opcional</Chip>
-                    <span className="text-xs text-slate-400">No bloquea tu avance</span>
+                    <span className="text-xs text-slate-400">Ruta 1.1 a 1.5 obligatoria</span>
                   </div>
                   <h3 className="text-lg font-extrabold text-white sm:text-xl">
                     Contenidos extras de apoyo (Opcionales para el estudiante)
                   </h3>
                 </div>
               </div>
-              <Chip tone="neutral">7 recursos de profundización</Chip>
+              <Chip tone="neutral">Recursos complementarios</Chip>
             </div>
 
             <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
-              Los contenidos extras que no se encuentran en 1.1, 1.2, 1.3 ni 1.4 están reunidos en esta sección de manera opcional para enriquecer tu experiencia científica con modelos 3D, simulaciones y laboratorios sin bloquear tu avance curricular:
+              En la Sesión 1, los pasos obligatorios son del <strong>1.1 al 1.5</strong> y el <strong>Reto final (Quiz)</strong> es obligatorio para conquistar la sesión. Las actividades complementarias de apoyo (modelos 3D, simulaciones, cubo AR y bitácora) son opcionales para enriquecer tu aprendizaje sin bloquear tu avance curricular:
             </p>
 
             {/* Rejilla de contenidos extras con lanzadores */}
@@ -1481,7 +1481,7 @@ export function Session1Subactivities({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-1">
                     <span className="text-2xl">💧</span>
-                    <Chip tone="sky">Video 360 · +20 XP</Chip>
+                    <Chip tone="sky">Video 360 · Opcional</Chip>
                   </div>
                   <h5 className="text-sm font-extrabold text-white">Dentro de una gota de agua</h5>
                   <p className="text-xs text-slate-300 leading-relaxed">
@@ -1503,7 +1503,7 @@ export function Session1Subactivities({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-1">
                     <span className="text-2xl">🔬</span>
-                    <Chip tone="mint">Modelo 3D · +20 XP</Chip>
+                    <Chip tone="mint">Modelo 3D · Opcional</Chip>
                   </div>
                   <h5 className="text-sm font-extrabold text-white">El microscopio y la célula</h5>
                   <p className="text-xs text-slate-300 leading-relaxed">
@@ -1525,7 +1525,7 @@ export function Session1Subactivities({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-1">
                     <span className="text-2xl">🧊</span>
-                    <Chip tone="gold">Cubo AR · +15 XP</Chip>
+                    <Chip tone="gold">Cubo AR · Opcional</Chip>
                   </div>
                   <h5 className="text-sm font-extrabold text-white">Cubo de la teoría celular</h5>
                   <p className="text-xs text-slate-300 leading-relaxed">
@@ -1547,7 +1547,7 @@ export function Session1Subactivities({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-1">
                     <span className="text-2xl">🔎</span>
-                    <Chip tone="grape">Animación 3D · +15 XP</Chip>
+                    <Chip tone="grape">Animación 3D · Opcional</Chip>
                   </div>
                   <h5 className="text-sm font-extrabold text-white">Zoom microscópico</h5>
                   <p className="text-xs text-slate-300 leading-relaxed">
@@ -1569,7 +1569,7 @@ export function Session1Subactivities({
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-1">
                     <span className="text-2xl">⏳</span>
-                    <Chip tone="sky">Línea de tiempo · +15 XP</Chip>
+                    <Chip tone="sky">Línea de tiempo · Opcional</Chip>
                   </div>
                   <h5 className="text-sm font-extrabold text-white">Línea de tiempo de científicos</h5>
                   <p className="text-xs text-slate-300 leading-relaxed">
@@ -1595,23 +1595,26 @@ export function Session1Subactivities({
                 </div>
               </div>
 
-              {/* Extra 6: Reto final (Quiz) */}
-              <div className="flex flex-col justify-between rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 space-y-3 transition hover:border-amber-400/50">
+              {/* Extra 6: Reto final (Quiz) - OBLIGATORIO */}
+              <div className="flex flex-col justify-between rounded-2xl border border-amber-400/40 bg-amber-400/12 p-4 space-y-3 transition hover:border-amber-400/60 shadow-lg shadow-amber-400/5">
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between gap-1">
                     <span className="text-2xl">🏆</span>
-                    <Chip tone="gold">Reto Evaluativo · +30 XP</Chip>
+                    <Chip tone="gold">
+                      <Trophy className="size-3" aria-hidden />
+                      Reto final obligatorio · +30 XP
+                    </Chip>
                   </div>
                   <h5 className="text-sm font-extrabold text-white">Quiz de la Sesión 1</h5>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Examen interactivo de 6 preguntas con Cito como guía. Necesitas el 70% para aprobar y conquistar la sesión.
+                    Examen interactivo de 6 preguntas con Cito como guía. <strong>Obligatorio:</strong> necesitas al menos el 70% para aprobar y conquistar la sesión.
                   </p>
                 </div>
                 <Link
                   to={`/misiones/${mission?.code ?? 'm1'}/quiz`}
                   className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-extrabold text-ink-950 transition hover:bg-amber-300 shadow-md shadow-amber-400/20"
                 >
-                  <Trophy className="size-3.5" /> Presentar Quiz
+                  <Trophy className="size-3.5" /> Presentar Quiz Obligatorio
                 </Link>
               </div>
             </div>

@@ -1,7 +1,6 @@
 import {
   ArrowLeft,
   ChevronRight,
-  Compass,
   Home
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { sessionInfo } from '../../lib/curriculum';
 import { cn } from '../../lib/utils';
 
 interface BreadcrumbBarProps {
-  onOpenSiteMap: () => void;
+  onOpenSiteMap?: () => void;
 }
 
 const PHASE_LABELS: Record<string, string> = {
@@ -19,7 +18,7 @@ const PHASE_LABELS: Record<string, string> = {
   cierre: 'Fase Cierre'
 };
 
-export function BreadcrumbBar({ onOpenSiteMap }: BreadcrumbBarProps) {
+export function BreadcrumbBar({ onOpenSiteMap: _onOpenSiteMap }: BreadcrumbBarProps = {}) {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -151,21 +150,6 @@ export function BreadcrumbBar({ onOpenSiteMap }: BreadcrumbBarProps) {
               );
             })}
           </nav>
-        </div>
-
-        {/* Lado derecho: Botón "Mapa del Sitio" */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onOpenSiteMap}
-            className="flex min-h-8 items-center gap-1.5 rounded-lg border border-mint-400/25 bg-mint-400/8 px-2.5 py-1 text-xs font-bold text-mint-300 transition hover:border-mint-400/40 hover:bg-mint-400/15 hover:text-white"
-            title="Abrir mapa general del Laboratorio 360"
-            aria-label="Ubicación y mapa del sitio"
-          >
-            <Compass className="size-3.5 text-mint-300" aria-hidden />
-            <span className="hidden sm:inline">Mapa del Sitio</span>
-            <span className="sm:hidden">Mapa</span>
-          </button>
         </div>
       </div>
     </div>

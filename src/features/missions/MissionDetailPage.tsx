@@ -234,12 +234,12 @@ export function MissionDetailPage() {
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
                 <Target className="size-3.5 text-amber-300" aria-hidden />
-                {isSession1 ? '5 estaciones de indagación' : `${required.length} pasos obligatorios`}
+                {isSession1 ? 'Estaciones 1.1 a 1.5 + Reto final obligatorio' : `${required.length} pasos obligatorios`}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
                 <Sparkles className="size-3.5 text-mint-300" aria-hidden />
                 {isSession1
-                  ? `${complementaryActivities.length} misiones complementarias`
+                  ? `${complementaryActivities.filter((a) => a.type !== 'quiz').length} complementarias opcionales`
                   : `${support.length} actividades opcionales`}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
@@ -258,12 +258,16 @@ export function MissionDetailPage() {
                     <Play className="size-5" aria-hidden />
                     Explorar las 5 estaciones
                   </a>
+                  <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
+                    <Trophy className="size-5" aria-hidden />
+                    Presentar Reto Final (Obligatorio)
+                  </LinkButton>
                   <a
                     href="#misiones-complementarias"
                     className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
                   >
                     <Sparkles className="size-4 text-mint-300" aria-hidden />
-                    Misiones complementarias ({complementaryActivities.length})
+                    Misiones complementarias opcionales ({complementaryActivities.filter((a) => a.type !== 'quiz').length})
                   </a>
                 </>
               ) : nextStep ? (
@@ -395,16 +399,16 @@ export function MissionDetailPage() {
             />
           </section>
 
-          {/* ── Sección por aparte: Misiones complementarias ── */}
+          {/* ── Sección por aparte: Misiones complementarias y Reto Obligatorio ── */}
           <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
             <SectionHeading
-              eyebrow="Profundización, bitácora y evaluación"
-              title="Misiones complementarias"
-              description="Actividades de profundización científica de la Sesión 1: simulaciones 3D, microscopía acuática 360, cubo Merge AR, zoom celular, línea de tiempo, bitácora y quiz evaluativo."
+              eyebrow="Reto obligatorio y exploración opcional"
+              title="Misiones complementarias y Reto Final"
+              description="El Reto final (Quiz) es obligatorio para conquistar la Sesión 1. Las demás actividades (simulación 3D, microscopía acuática 360, cubo Merge AR, zoom celular, línea de tiempo y cuaderno de bitácora) son experiencias de profundización opcionales."
               action={
                 <Chip tone="gold">
-                  <Sparkles className="size-3.5" aria-hidden />
-                  {complementaryActivities.length} misiones complementarias
+                  <Trophy className="size-3.5 text-amber-300" aria-hidden />
+                  1 reto obligatorio · {complementaryActivities.filter((a) => a.type !== 'quiz').length} opcionales
                 </Chip>
               }
             />
@@ -699,11 +703,14 @@ function ComplementaryMissionCard({
           <div className="flex flex-wrap items-center justify-end gap-1.5">
             <Chip tone="neutral">{phase.label}</Chip>
             {isQuiz ? (
-              <Chip tone="gold">Reto final</Chip>
+              <Chip tone="gold">
+                <Trophy className="size-3" aria-hidden />
+                Obligatorio · Reto final
+              </Chip>
             ) : isEvidence ? (
-              <Chip tone="sky">Bitácora</Chip>
+              <Chip tone="sky">Bitácora · Opcional</Chip>
             ) : (
-              <Chip tone="mint">Complementaria</Chip>
+              <Chip tone="mint">Complementaria · Opcional</Chip>
             )}
             {done ? (
               <Chip tone="mint">
@@ -716,7 +723,7 @@ function ComplementaryMissionCard({
 
         <div>
           <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-            {meta.label} · +{activity.xp} XP
+            {meta.label} · +{activity.xp} XP {isQuiz ? '· Obligatorio' : '· Opcional'}
           </span>
           <h3 className="mt-1 font-display text-base font-bold text-white sm:text-lg">
             {activity.title}

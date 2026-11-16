@@ -157,7 +157,7 @@ export function AppShell() {
       </header>
 
       {/* Barra de Migas de Pan y Orientación Superior */}
-      <BreadcrumbBar onOpenSiteMap={() => setSiteMapOpen(true)} />
+      <BreadcrumbBar />
 
       <main id="contenido" className="mx-auto w-full max-w-7xl px-4 pb-28 pt-6 sm:px-6 sm:pt-8 md:pb-12">
         <AnimatePresence mode="wait" initial={false}>
