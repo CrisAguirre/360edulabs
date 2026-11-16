@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronUp,
   Cloud,
+  Compass,
   Download,
   ExternalLink,
   Eye,
@@ -14,6 +15,7 @@ import {
   FileText,
   FlaskConical,
   GraduationCap,
+  Layers,
   Layout,
   Lightbulb,
   Loader2,
@@ -80,6 +82,7 @@ import {
   VirchowDivisionGraphic2D
 } from './CellGraphics2D';
 import { ReflectiveStructureCarousel } from './ReflectiveStructureCarousel';
+import { ComplementaryMissionCard } from '../missions/ComplementaryMissionCard';
 
 export interface Scientist {
   name?: string;
@@ -118,6 +121,7 @@ export interface StructureItem {
 export interface ReadingPlayerProps {
   activity: Activity;
   mission?: MissionDetail;
+  complementaryActivities?: Activity[];
   onEvidenceSubmitted?: (result: {
     evidence: Evidence;
     missionCompleted: boolean;
@@ -791,6 +795,7 @@ function VercelResponseSection({
 export interface Session1SubactivitiesProps {
   activity: Activity;
   mission?: MissionDetail;
+  complementaryActivities?: Activity[];
   content: Record<string, unknown>;
   postulates: string[];
   scientists: Scientist[];
@@ -807,6 +812,7 @@ export type Session1TabKey = '1.1' | '1.2' | '1.3' | '1.4' | '1.5' | '1.6';
 export function Session1Subactivities({
   activity,
   mission,
+  complementaryActivities,
   postulates,
   scientists,
   glossary,
@@ -858,7 +864,13 @@ export function Session1Subactivities({
     setRevealedPostulates((prev) => prev + 1);
   };
 
-  // Extra activities from mission to link in 1.5
+  // Complementary activities of mission 1
+  const effectiveComplementaryActivities =
+    complementaryActivities && complementaryActivities.length > 0
+      ? complementaryActivities
+      : (mission?.activities ?? []).filter((a) => a._id !== activity._id);
+
+  // Extra activities from mission to link in 1.6
   const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
   const extraModel3d = mission?.activities.find((a) => a.type === 'model3d');
   const extraArCube = mission?.activities.find((a) => a.type === 'ar_cube');
@@ -887,8 +899,8 @@ export function Session1Subactivities({
             { tab: '1.2' as const, label: '1.2 Aporte conceptual', shortLabel: '1.2 Concepto' },
             { tab: '1.3' as const, label: '1.3 Video: Historia celular', shortLabel: '1.3 Video' },
             { tab: '1.4' as const, label: '1.4 Lectura y Espacio Vercel', shortLabel: '1.4 Lectura y Vercel' },
-            { tab: '1.5' as const, label: '1.5 Contenidos extras (Opcional)', shortLabel: '1.5 Extras' },
-            { tab: '1.6' as const, label: '1.6 Reto Final de Evaluación', shortLabel: '1.6 Reto Final 🏆' }
+            { tab: '1.5' as const, label: '1.5 Reto Final de Evaluación', shortLabel: '1.5 Reto Final 🏆' },
+            { tab: '1.6' as const, label: '1.6 Contenidos extras (Opcional)', shortLabel: '1.6 Extras' }
           ].map((item) => (
             <button
               key={item.tab}
@@ -897,7 +909,9 @@ export function Session1Subactivities({
               className={cn(
                 'rounded-xl px-3 py-1.5 text-xs font-extrabold transition-all',
                 activeTab === item.tab
-                  ? 'bg-mint-400 text-ink-950 shadow-md shadow-mint-400/25 scale-[1.02]'
+                  ? item.tab === '1.5'
+                    ? 'bg-amber-400 text-ink-950 shadow-md shadow-amber-400/25 scale-[1.02]'
+                    : 'bg-mint-400 text-ink-950 shadow-md shadow-mint-400/25 scale-[1.02]'
                   : 'text-slate-300 hover:bg-white/8 hover:text-white'
               )}
             >
@@ -905,15 +919,6 @@ export function Session1Subactivities({
               <span className="md:hidden">{item.shortLabel}</span>
             </button>
           ))}
-
-          <a
-            href="#misiones-complementarias"
-            className="inline-flex items-center gap-1 rounded-xl border border-amber-400/30 bg-amber-400/10 px-2.5 py-1.5 text-xs font-bold text-amber-200 transition hover:bg-amber-400/20"
-          >
-            <Sparkles className="size-3 text-amber-300" aria-hidden />
-            <span className="hidden sm:inline">Misiones complementarias</span>
-            <span className="sm:hidden">Complementarias</span>
-          </a>
         </div>
 
         <div className="flex items-center gap-1 border-l border-white/10 pl-2">
@@ -1470,7 +1475,7 @@ export function Session1Subactivities({
               </Button>
               <Button
                 type="button"
-                variant="primary"
+                variant="gold"
                 size="md"
                 onClick={() => {
                   setActiveTab('1.5');
@@ -1479,8 +1484,8 @@ export function Session1Subactivities({
                   }
                 }}
               >
-                Siguiente: 1.5 Contenidos extras
-                <ArrowRight className="size-4" aria-hidden />
+                Siguiente: 1.5 Reto Final de Evaluación
+                <ArrowRight className="size-4 ml-1.5" aria-hidden />
               </Button>
             </div>
           </SpotlightCard>
@@ -1488,262 +1493,10 @@ export function Session1Subactivities({
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          1.5 CONTENIDOS EXTRAS (OPCIONALES PARA EL ESTUDIANTE)
+          1.5 RETO FINAL DE EVALUACIÓN: TEORÍA CELULAR (OBLIGATORIO)
           ══════════════════════════════════════════════════════════════ */}
       {(viewMode === 'all' || activeTab === '1.5') && (
         <section id="sub-1-5" className="scroll-mt-36 space-y-4 animate-in fade-in duration-300">
-          <SpotlightCard
-            spotlightColor="rgba(167, 139, 250, 0.15)"
-            borderColor="rgba(167, 139, 250, 0.35)"
-            className="p-5 sm:p-7 space-y-5"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-violet-400/20 pb-3">
-              <div className="flex items-center gap-2.5">
-                <span className="grid size-9 place-items-center rounded-xl bg-violet-500/20 text-violet-300 font-extrabold text-sm">
-                  1.5
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Chip tone="grape">Sub-actividad 1.5 · Exploración opcional</Chip>
-                    <span className="text-xs text-slate-400">Ruta 1.1 a 1.5 obligatoria</span>
-                  </div>
-                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
-                    Contenidos extras de apoyo (Opcionales para el estudiante)
-                  </h3>
-                </div>
-              </div>
-              <Chip tone="neutral">Recursos complementarios</Chip>
-            </div>
-
-            <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
-              En la Sesión 1, los pasos obligatorios son del <strong>1.1 al 1.5</strong> y el <strong>Reto final (Quiz)</strong> es obligatorio para conquistar la sesión. Las actividades complementarias de apoyo (modelos 3D, simulaciones, cubo AR y bitácora) son opcionales para enriquecer tu aprendizaje sin bloquear tu avance curricular:
-            </p>
-
-            {/* Rejilla de contenidos extras con lanzadores */}
-            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Extra 1: Dentro de una gota de agua */}
-              <div className="flex flex-col justify-between rounded-2xl border border-sky-400/25 bg-sky-400/5 p-4 space-y-3 transition hover:border-sky-400/40">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-2xl">💧</span>
-                    <Chip tone="sky">Video 360 · Opcional</Chip>
-                  </div>
-                  <h5 className="text-sm font-extrabold text-white">Dentro de una gota de agua</h5>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Simulación panorámica de microscopía acuática con paramecios y signos explícitos de nutrición, crecimiento celular y reproducción por bipartición.
-                  </p>
-                </div>
-                {extraVideo360 && mission ? (
-                  <Link
-                    to={activityUrl(mission.code, extraVideo360)}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3 py-2 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
-                  >
-                    <Eye className="size-3.5" /> Explorar escena 360
-                  </Link>
-                ) : null}
-              </div>
-
-              {/* Extra 2: Microscopio 3D */}
-              <div className="flex flex-col justify-between rounded-2xl border border-mint-400/25 bg-mint-400/5 p-4 space-y-3 transition hover:border-mint-400/40">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-2xl">🔬</span>
-                    <Chip tone="mint">Modelo 3D · Opcional</Chip>
-                  </div>
-                  <h5 className="text-sm font-extrabold text-white">El microscopio y la célula</h5>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Visor 3D interactivo en Three.js con aumentos 10x, 40x y 100x y exploración de componentes ópticos (ocular, objetivos y platina).
-                  </p>
-                </div>
-                {extraModel3d && mission ? (
-                  <Link
-                    to={activityUrl(mission.code, extraModel3d)}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-mint-400/30 bg-mint-400/10 px-3 py-2 text-xs font-bold text-mint-200 transition hover:bg-mint-400/20"
-                  >
-                    <Eye className="size-3.5" /> Abrir microscopio 3D
-                  </Link>
-                ) : null}
-              </div>
-
-              {/* Extra 3: Cubo Merge AR */}
-              <div className="flex flex-col justify-between rounded-2xl border border-amber-400/25 bg-amber-400/5 p-4 space-y-3 transition hover:border-amber-400/40">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-2xl">🧊</span>
-                    <Chip tone="gold">Cubo AR · Opcional</Chip>
-                  </div>
-                  <h5 className="text-sm font-extrabold text-white">Cubo de la teoría celular</h5>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Simulador 3D virtual del Cubo Merge con matrices CSS para girar 6 caras de científicos y organismos unicelulares/pluricelulares.
-                  </p>
-                </div>
-                {extraArCube && mission ? (
-                  <Link
-                    to={activityUrl(mission.code, extraArCube)}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs font-bold text-amber-200 transition hover:bg-amber-400/20"
-                  >
-                    <Eye className="size-3.5" /> Girar Cubo Merge
-                  </Link>
-                ) : null}
-              </div>
-
-              {/* Extra 4: Zoom microscópico */}
-              <div className="flex flex-col justify-between rounded-2xl border border-violet-400/25 bg-violet-400/5 p-4 space-y-3 transition hover:border-violet-400/40">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-2xl">🔎</span>
-                    <Chip tone="grape">Animación 3D · Opcional</Chip>
-                  </div>
-                  <h5 className="text-sm font-extrabold text-white">Zoom microscópico</h5>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Viaje visual guiado paso a paso desde el cuerpo completo del organismo hasta el tejido, la célula y el núcleo con material genético.
-                  </p>
-                </div>
-                {extraAnimation3d && mission ? (
-                  <Link
-                    to={activityUrl(mission.code, extraAnimation3d)}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-violet-400/30 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-200 transition hover:bg-violet-400/20"
-                  >
-                    <Eye className="size-3.5" /> Ver zoom animado
-                  </Link>
-                ) : null}
-              </div>
-
-              {/* Extra 5: Línea de tiempo interactiva */}
-              <div className="flex flex-col justify-between rounded-2xl border border-sky-400/25 bg-sky-400/5 p-4 space-y-3 transition hover:border-sky-400/40">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-2xl">⏳</span>
-                    <Chip tone="sky">Línea de tiempo · Opcional</Chip>
-                  </div>
-                  <h5 className="text-sm font-extrabold text-white">Línea de tiempo de científicos</h5>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Cronología desplegable con los aportes de Hooke (1665), Leeuwenhoek (1674), Schleiden (1838), Schwann (1839) y Virchow (1855).
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowTimeline((prev) => !prev)}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-sky-300 hover:text-sky-200"
-                  >
-                    {showTimeline ? 'Ocultar aquí' : 'Ver aquí abajo'}
-                  </button>
-                  {extraAnimation2d && mission ? (
-                    <Link
-                      to={activityUrl(mission.code, extraAnimation2d)}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-white"
-                    >
-                      Abrir estación →
-                    </Link>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-
-            {/* Vista desplegada de la Línea de tiempo si el estudiante la activa */}
-            {showTimeline && scientists.length > 0 ? (
-              <div className="rounded-2xl border border-sky-400/30 bg-ink-950/80 p-5 space-y-4 animate-in fade-in duration-300">
-                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
-                  <h4 className="font-bold text-white flex items-center gap-2 text-sm">
-                    <Microscope className="size-4 text-sky-400" />
-                    Científicos históricos de la teoría celular
-                  </h4>
-                  <button
-                    type="button"
-                    onClick={() => setShowTimeline(false)}
-                    className="text-xs text-slate-400 hover:text-white"
-                  >
-                    Cerrar vista
-                  </button>
-                </div>
-                <div className="relative pl-6 sm:pl-8 pt-2">
-                  <div className="timeline-rail" aria-hidden />
-                  <div className="space-y-3">
-                    {scientists.map((scientist) => (
-                      <ScientistCard key={`${scientist.name}-${scientist.year}`} scientist={scientist} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : null}
-
-            {/* Vista desplegada del Glosario si el estudiante la activa */}
-            <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-3">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="size-4 text-violet-300" />
-                  <h5 className="text-xs font-extrabold uppercase tracking-wider text-violet-200">
-                    Glosario científico y datos clave
-                  </h5>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowGlossary((prev) => !prev)}
-                  className="text-xs font-bold text-violet-300 hover:underline"
-                >
-                  {showGlossary ? 'Ocultar términos' : 'Explorar términos (+)'}
-                </button>
-              </div>
-
-              {showGlossary && glossary.length > 0 ? (
-                <div className="grid gap-2.5 sm:grid-cols-2 pt-2 animate-in fade-in">
-                  {glossary.map((item) => (
-                    <GlossaryTerm key={item.term} item={item} />
-                  ))}
-                </div>
-              ) : null}
-            </div>
-
-            {/* Pie de navegación de pestaña 1.5 */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-violet-400/20 pt-4">
-              <Button
-                type="button"
-                variant="secondary"
-                size="md"
-                onClick={() => {
-                  setActiveTab('1.4');
-                  if (viewMode === 'all') {
-                    document.getElementById('sub-1-4')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-              >
-                <ArrowLeft className="size-4 mr-1.5" />
-                Anterior: 1.4 Lectura y Vercel
-              </Button>
-              <div className="flex flex-wrap items-center gap-2">
-                <a
-                  href="#misiones-complementarias"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
-                >
-                  <Sparkles className="size-3.5 text-mint-300" aria-hidden />
-                  Ver actividades complementarias
-                </a>
-                <Button
-                  type="button"
-                  variant="gold"
-                  size="md"
-                  onClick={() => {
-                    setActiveTab('1.6');
-                    if (viewMode === 'all') {
-                      document.getElementById('sub-1-6')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }}
-                >
-                  Siguiente: 1.6 Reto Final (Quiz)
-                  <ArrowRight className="size-4 ml-1.5" />
-                </Button>
-              </div>
-            </div>
-          </SpotlightCard>
-        </section>
-      )}
-
-      {/* ══════════════════════════════════════════════════════════════
-          1.6 RETO FINAL DE EVALUACIÓN: TEORÍA CELULAR
-          ══════════════════════════════════════════════════════════════ */}
-      {(viewMode === 'all' || activeTab === '1.6') && (
-        <section id="sub-1-6" className="scroll-mt-36 space-y-4 animate-in fade-in duration-300">
           <SpotlightCard
             spotlightColor="rgba(251, 191, 36, 0.2)"
             borderColor="rgba(251, 191, 36, 0.45)"
@@ -1752,11 +1505,11 @@ export function Session1Subactivities({
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-400/25 pb-4">
               <div className="flex items-center gap-3">
                 <span className="grid size-11 place-items-center rounded-2xl bg-amber-400/20 text-amber-300 font-extrabold text-base">
-                  1.6
+                  1.5
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <Chip tone="gold">Sub-actividad 1.6 · Cierre y Reto Final Obligatorio</Chip>
+                    <Chip tone="gold">Sub-actividad 1.5 · Cierre y Reto Final Obligatorio</Chip>
                     <span className="text-xs font-bold text-amber-200">+30 XP</span>
                   </div>
                   <h3 className="text-xl font-extrabold text-white sm:text-2xl">
@@ -1808,7 +1561,7 @@ export function Session1Subactivities({
             <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-3">
               <h5 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 flex items-center gap-2">
                 <CheckCircle2 className="size-4 text-mint-300" />
-                Checklist de conceptos clave para el Reto 1.6:
+                Checklist de conceptos clave para el Reto 1.5:
               </h5>
               <ul className="grid gap-2 text-xs text-slate-300 sm:grid-cols-2">
                 <li className="flex items-start gap-2 rounded-xl bg-white/4 p-2.5">
@@ -1850,8 +1603,259 @@ export function Session1Subactivities({
               </Link>
             </div>
 
-            {/* Pie de navegación de pestaña 1.6 */}
+            {/* Pie de navegación de pestaña 1.5 */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => {
+                  setActiveTab('1.4');
+                  if (viewMode === 'all') {
+                    document.getElementById('sub-1-4')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 1.4 Lectura y Vercel
+              </Button>
+              <Button
+                type="button"
+                variant="gold"
+                size="md"
+                onClick={() => {
+                  setActiveTab('1.6');
+                  if (viewMode === 'all') {
+                    document.getElementById('sub-1-6')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              >
+                Siguiente: 1.6 Contenidos extras (Opcional)
+                <ArrowRight className="size-4 ml-1.5" />
+              </Button>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          1.6 CONTENIDOS EXTRAS Y ACTIVIDADES COMPLEMENTARIAS (OPCIONAL)
+          ══════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '1.6') && (
+        <section id="sub-1-6" className="scroll-mt-36 space-y-4 animate-in fade-in duration-300">
+          <SpotlightCard
+            spotlightColor="rgba(167, 139, 250, 0.15)"
+            borderColor="rgba(167, 139, 250, 0.35)"
+            className="p-5 sm:p-7 space-y-5"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-violet-400/20 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-9 place-items-center rounded-xl bg-violet-500/20 text-violet-300 font-extrabold text-sm">
+                  1.6
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="grape">Sub-actividad 1.6 · Contenidos extras y complementarias</Chip>
+                    <span className="text-xs text-slate-400">Exploración opcional</span>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    Contenidos extras de apoyo y actividades complementarias de la Sesión 1
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">Recursos complementarios</Chip>
+            </div>
+
+            <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+              En la Sesión 1, el <strong>Reto final (Quiz) en la estación 1.5</strong> es el requisito evaluativo para conquistar la sesión. Las siguientes actividades complementarias de apoyo (modelos 3D, microscopía acuática 360, cubo Merge AR, zoom celular, línea de tiempo histórica y bitácora) son experiencias opcionales exclusivas de la Sesión 1 para enriquecer y profundizar tu aprendizaje:
+            </p>
+
+            {/* Rejilla de contenidos extras con lanzadores */}
+            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+              {/* Extra 1: Dentro de una gota de agua */}
+              <div className="flex flex-col justify-between rounded-2xl border border-sky-400/25 bg-sky-400/5 p-4 space-y-3 transition hover:border-sky-400/40">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-2xl">💧</span>
+                    <Chip tone="sky">Video 360 · Opcional</Chip>
+                  </div>
+                  <h5 className="text-sm font-extrabold text-white">Dentro de una gota de agua</h5>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Simulación panorámica de microscopía acuática con paramecios y signos explícitos de nutrición, crecimiento celular y reproducción por bipartición.
+                  </p>
+                </div>
+                {extraVideo360 && mission ? (
+                  <Link
+                    to={activityUrl(mission.code, extraVideo360)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3 py-2 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
+                  >
+                    <Eye className="size-3.5" /> Explorar escena 360
+                  </Link>
+                ) : null}
+              </div>
+
+              {/* Extra 2: Microscopio 3D */}
+              <div className="flex flex-col justify-between rounded-2xl border border-mint-400/25 bg-mint-400/5 p-4 space-y-3 transition hover:border-mint-400/40">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-2xl">🔬</span>
+                    <Chip tone="mint">Modelo 3D · Opcional</Chip>
+                  </div>
+                  <h5 className="text-sm font-extrabold text-white">Microscopio óptico 3D</h5>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Manipula el microscopio óptico interactivo con rotación 360°, enfoque macrométrico/micrométrico y etiquetas científicas de sus partes.
+                  </p>
+                </div>
+                {extraModel3d && mission ? (
+                  <Link
+                    to={activityUrl(mission.code, extraModel3d)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-mint-400/30 bg-mint-400/10 px-3 py-2 text-xs font-bold text-mint-200 transition hover:bg-mint-400/20"
+                  >
+                    <Eye className="size-3.5" /> Ver en 3D
+                  </Link>
+                ) : null}
+              </div>
+
+              {/* Extra 3: Cubo Merge AR */}
+              <div className="flex flex-col justify-between rounded-2xl border border-violet-400/25 bg-violet-400/5 p-4 space-y-3 transition hover:border-violet-400/40">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-2xl">🧊</span>
+                    <Chip tone="grape">Cubo Merge AR · Opcional</Chip>
+                  </div>
+                  <h5 className="text-sm font-extrabold text-white">Cubo holográfico celular</h5>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Experiencia de Realidad Aumentada con 6 caras interactivas para rotar la célula en tu mano y explorar sus estructuras con hologramas.
+                  </p>
+                </div>
+                {extraArCube && mission ? (
+                  <Link
+                    to={activityUrl(mission.code, extraArCube)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-violet-400/30 bg-violet-400/10 px-3 py-2 text-xs font-bold text-violet-200 transition hover:bg-violet-400/20"
+                  >
+                    <Box className="size-3.5" /> Abrir Cubo AR
+                  </Link>
+                ) : null}
+              </div>
+
+              {/* Extra 4: Zoom celular 3D */}
+              <div className="flex flex-col justify-between rounded-2xl border border-amber-400/25 bg-amber-400/5 p-4 space-y-3 transition hover:border-amber-400/40">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-2xl">🔎</span>
+                    <Chip tone="gold">Animación 3D · Opcional</Chip>
+                  </div>
+                  <h5 className="text-sm font-extrabold text-white">Viaje al interior celular</h5>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Viaje inmersivo desde el tejido orgánico hasta el núcleo y el ADN con controles de zoom progresivo y escala nanométrica.
+                  </p>
+                </div>
+                {extraAnimation3d && mission ? (
+                  <Link
+                    to={activityUrl(mission.code, extraAnimation3d)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs font-bold text-amber-200 transition hover:bg-amber-400/20"
+                  >
+                    <Layers className="size-3.5" /> Iniciar viaje
+                  </Link>
+                ) : null}
+              </div>
+
+              {/* Extra 5: Línea de tiempo histórica interactiva */}
+              <div className="flex flex-col justify-between rounded-2xl border border-rose-400/25 bg-rose-400/5 p-4 space-y-3 transition hover:border-rose-400/40">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-2xl">⏳</span>
+                    <Chip tone="rose">Línea de tiempo · Opcional</Chip>
+                  </div>
+                  <h5 className="text-sm font-extrabold text-white">Línea del tiempo histórica</h5>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Recorrido cronológico interactivo (1590 a 1858) con los 5 descubrimientos científicos que forjaron la biología moderna.
+                  </p>
+                </div>
+                {extraAnimation2d && mission ? (
+                  <Link
+                    to={activityUrl(mission.code, extraAnimation2d)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-xs font-bold text-rose-200 transition hover:bg-rose-400/20"
+                  >
+                    <Compass className="size-3.5" /> Explorar cronología
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowTimeline((prev) => !prev)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-400/30 bg-rose-400/10 px-3 py-2 text-xs font-bold text-rose-200 transition hover:bg-rose-400/20"
+                  >
+                    <Compass className="size-3.5" /> {showTimeline ? 'Ocultar línea de tiempo' : 'Ver línea de tiempo'}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Glosario científico opcional de la Sesión 1 */}
+            {glossary && glossary.length > 0 && (
+              <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <h5 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                    <BookOpenCheck className="size-4 text-mint-300" />
+                    Glosario científico de la Sesión 1:
+                  </h5>
+                  <button
+                    type="button"
+                    onClick={() => setShowGlossary((prev) => !prev)}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-mint-300 hover:text-mint-200"
+                  >
+                    {showGlossary ? 'Ocultar glosario' : `Ver glosario (${glossary.length} términos)`}
+                    {showGlossary ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+                  </button>
+                </div>
+                {showGlossary && (
+                  <div className="grid gap-2.5 sm:grid-cols-2 pt-2 animate-in fade-in duration-300">
+                    {glossary.map((item) => (
+                      <GlossaryTerm key={item.term} item={item} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Actividades complementarias exclusivas de la Sesión 1 */}
+            {effectiveComplementaryActivities.filter((a) => a.type !== 'quiz').length > 0 && (
+              <div className="space-y-3 pt-3 border-t border-white/10">
+                <div className="flex items-center justify-between gap-2">
+                  <h5 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                    <Sparkles className="size-4 text-violet-300" />
+                    Actividades complementarias exclusivas de la Sesión 1:
+                  </h5>
+                  <Chip tone="grape">
+                    {effectiveComplementaryActivities.filter((a) => a.type !== 'quiz').length} actividades
+                  </Chip>
+                </div>
+                <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+                  {effectiveComplementaryActivities
+                    .filter((a) => a.type !== 'quiz')
+                    .map((act) => (
+                      <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission?.code ?? 'm1'} />
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* Línea de tiempo desplegable en la misma vista si el usuario la activa */}
+            {showTimeline && scientists.length > 0 && (
+              <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-3 animate-in fade-in duration-300">
+                <h5 className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+                  Línea de tiempo histórica desplegada:
+                </h5>
+                <div className="space-y-4">
+                  {scientists.map((s, idx) => (
+                    <ScientistCard key={idx} scientist={s} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Pie de navegación de pestaña 1.6 */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-violet-400/20 pt-4">
               <Button
                 type="button"
                 variant="secondary"
@@ -1864,7 +1868,7 @@ export function Session1Subactivities({
                 }}
               >
                 <ArrowLeft className="size-4 mr-1.5" />
-                Anterior: 1.5 Contenidos extras
+                Anterior: 1.5 Reto Final de Evaluación
               </Button>
               <Button
                 type="button"
@@ -1878,7 +1882,7 @@ export function Session1Subactivities({
                 }}
               >
                 <RotateCcw className="size-4 mr-1.5" />
-                Repasar desde 1.1 Aportes
+                Repasar desde 1.1 Aportes y socialización
               </Button>
             </div>
           </SpotlightCard>
@@ -2294,6 +2298,7 @@ const animalCarouselItems: CircularCarouselItem[] = [
 interface Session2SubactivitiesProps {
   activity: Activity;
   mission?: MissionDetail;
+  complementaryActivities?: Activity[];
   comparisonTable: TableRow[];
   glossary: GlossaryItem[];
   mandatoryQuestion: string;
@@ -2308,11 +2313,12 @@ interface Session2SubactivitiesProps {
   }) => void;
 }
 
-export type Session2TabKey = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '2.6' | '2.7';
+export type Session2TabKey = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '2.6' | '2.7' | '2.8';
 
 export function Session2Subactivities({
   activity,
   mission,
+  complementaryActivities,
   comparisonTable = [],
   glossary = [],
   mandatoryQuestion,
@@ -2341,7 +2347,8 @@ export function Session2Subactivities({
         '2.4': 'sub-2-4',
         '2.5': 'sub-2-5',
         '2.6': 'sub-2-6',
-        '2.7': 'sub-2-7'
+        '2.7': 'sub-2-7',
+        '2.8': 'sub-2-8'
       };
       const el = document.getElementById(idMap[tab]);
       if (el) {
@@ -2359,6 +2366,12 @@ export function Session2Subactivities({
     setAporteShared(true);
     toast.success('¡Saberes previos registrados! Ahora socializa tu respuesta con el grupo.');
   };
+
+  // Complementary activities of mission 2
+  const effectiveComplementaryActivities =
+    complementaryActivities && complementaryActivities.length > 0
+      ? complementaryActivities
+      : (mission?.activities ?? []).filter((a) => a._id !== activity._id);
 
   // Extra activities from mission to link in 2.4
   const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
@@ -2413,7 +2426,8 @@ export function Session2Subactivities({
             { tab: '2.4' as const, label: '2.4 Modelo 360 y Video', shortLabel: '2.4 360 y Video' },
             { tab: '2.5' as const, label: '2.5 Pregunta y Vercel', shortLabel: '2.5 Vercel' },
             { tab: '2.6' as const, label: '2.6 Quiver y Comparación', shortLabel: '2.6 Quiver' },
-            { tab: '2.7' as const, label: '2.7 Reto Final (Quiz)', shortLabel: '2.7 Reto Final' }
+            { tab: '2.7' as const, label: '2.7 Reto Final (Quiz)', shortLabel: '2.7 Reto Final 🏆' },
+            { tab: '2.8' as const, label: '2.8 Actividades complementarias', shortLabel: '2.8 Extras' }
           ].map((item) => (
             <button
               key={item.tab}
@@ -2424,7 +2438,9 @@ export function Session2Subactivities({
                 activeTab === item.tab
                   ? item.tab === '2.7'
                     ? 'bg-amber-400 text-ink-950 shadow-md shadow-amber-400/25 scale-[1.02]'
-                    : 'bg-sky-400 text-ink-950 shadow-md shadow-sky-400/25 scale-[1.02]'
+                    : item.tab === '2.8'
+                      ? 'bg-violet-400 text-ink-950 shadow-md shadow-violet-400/25 scale-[1.02]'
+                      : 'bg-sky-400 text-ink-950 shadow-md shadow-sky-400/25 scale-[1.02]'
                   : 'text-slate-300 hover:bg-white/8 hover:text-white'
               )}
             >
@@ -2432,15 +2448,6 @@ export function Session2Subactivities({
               <span className="lg:hidden">{item.shortLabel}</span>
             </button>
           ))}
-
-          <a
-            href="#misiones-complementarias"
-            className="inline-flex items-center gap-1 rounded-xl border border-sky-400/30 bg-sky-400/10 px-2.5 py-1.5 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
-          >
-            <Sparkles className="size-3 text-sky-300" aria-hidden />
-            <span className="hidden sm:inline">Misiones complementarias</span>
-            <span className="sm:hidden">Complementarias</span>
-          </a>
         </div>
 
         <div className="flex items-center gap-1 border-l border-white/10 pl-2">
@@ -3426,6 +3433,81 @@ export function Session2Subactivities({
                 <ArrowLeft className="size-4 mr-1.5" />
                 Anterior: 2.6 Quiver y Comparación
               </Button>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="md"
+                  onClick={() => handleSelectTab('2.1')}
+                >
+                  <RotateCcw className="size-4 mr-1.5" />
+                  Repasar desde 2.1
+                </Button>
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="md"
+                  onClick={() => handleSelectTab('2.8')}
+                >
+                  Siguiente: 2.8 Actividades complementarias
+                  <ArrowRight className="size-4 ml-1.5" />
+                </Button>
+              </div>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          2.8 ACTIVIDADES COMPLEMENTARIAS DE LA SESIÓN 2 (OPCIONAL)
+          ══════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '2.8') && (
+        <section id="sub-2-8" className="scroll-mt-36 space-y-4 animate-in fade-in duration-300">
+          <SpotlightCard
+            spotlightColor="rgba(56, 189, 248, 0.15)"
+            borderColor="rgba(56, 189, 248, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sky-400/20 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-9 place-items-center rounded-xl bg-sky-400/20 text-sky-300 font-extrabold text-sm">
+                  2.8
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="sky">Sub-actividad 2.8 · Exploración opcional y profundización</Chip>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    Actividades complementarias de la Sesión 2: Concepto de célula
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">Recursos complementarios</Chip>
+            </div>
+
+            <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+              El <strong>Reto final (Quiz) en la estación 2.7</strong> evalúa la comprensión de la célula animal y vegetal. Las siguientes actividades (video 360, modelo 3D de organelos, comparación animada, cubo AR Merge, estación Quiver física, línea comparativa y bitácora) son experiencias de apoyo y profundización opcionales exclusivas de la Sesión 2:
+            </p>
+
+            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+              {effectiveComplementaryActivities
+                .filter((a) => a.type !== 'quiz')
+                .map((act) => (
+                  <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission?.code ?? 'm2'} />
+                ))}
+            </div>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('2.7')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 2.7 Reto Final (Quiz)
+              </Button>
               <Button
                 type="button"
                 variant="ghost"
@@ -3706,6 +3788,7 @@ const PROCESS_COMPARISON_M3 = [
 export interface Session3SubactivitiesProps {
   activity: Activity;
   mission?: MissionDetail;
+  complementaryActivities?: Activity[];
   structuresTable?: StructureItem[];
   glossary?: GlossaryItem[];
   mandatoryQuestion?: string;
@@ -3719,11 +3802,12 @@ export interface Session3SubactivitiesProps {
   }) => void;
 }
 
-export type Session3TabKey = '3.1' | '3.2' | '3.3' | '3.4' | '3.5' | '3.6' | '3.7';
+export type Session3TabKey = '3.1' | '3.2' | '3.3' | '3.4' | '3.5' | '3.6' | '3.7' | '3.8';
 
 export function Session3Subactivities({
   activity,
   mission,
+  complementaryActivities,
   structuresTable = [],
   glossary = [],
   mandatoryQuestion,
@@ -3756,7 +3840,8 @@ export function Session3Subactivities({
         '3.4': 'sub-3-4',
         '3.5': 'sub-3-5',
         '3.6': 'sub-3-6',
-        '3.7': 'sub-3-7'
+        '3.7': 'sub-3-7',
+        '3.8': 'sub-3-8'
       };
       const el = document.getElementById(idMap[tab]);
       if (el) {
@@ -3811,6 +3896,12 @@ export function Session3Subactivities({
     }
   };
 
+  // Complementary activities of mission 3
+  const effectiveComplementaryActivities =
+    complementaryActivities && complementaryActivities.length > 0
+      ? complementaryActivities
+      : (mission?.activities ?? []).filter((a) => a._id !== activity._id);
+
   const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
   const extraArCube = mission?.activities.find((a) => a.type === 'ar_cube');
   const effectiveStructures = structuresTable && structuresTable.length > 0 ? structuresTable : DEFAULT_M3_STRUCTURES;
@@ -3824,7 +3915,8 @@ export function Session3Subactivities({
     { key: '3.4', number: '3.4', label: 'Video 360, Lectura y Canva' },
     { key: '3.5', number: '3.5', label: 'Cubo Merge' },
     { key: '3.6', number: '3.6', label: 'Cuadro Estructuras Vercel', badge: 'Evaluado' },
-    { key: '3.7', number: '3.7', label: 'Reto Final', badge: 'Examen' }
+    { key: '3.7', number: '3.7', label: 'Reto Final', badge: 'Examen' },
+    { key: '3.8', number: '3.8', label: 'Actividades complementarias', badge: 'Opcional' }
   ];
 
   return (
@@ -3840,7 +3932,7 @@ export function Session3Subactivities({
               S3
             </span>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              Estaciones oficiales de indagación (3.1 a 3.7)
+              Estaciones oficiales de indagación (3.1 a 3.8)
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-xs">
@@ -5118,7 +5210,7 @@ export function Session3Subactivities({
                 <ArrowLeft className="size-4 mr-1.5" />
                 Anterior: 3.6 Cuadro Estructuras Vercel
               </Button>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   type="button"
                   variant="ghost"
@@ -5126,16 +5218,82 @@ export function Session3Subactivities({
                   onClick={() => handleSelectTab('3.1')}
                 >
                   <RotateCcw className="size-4 mr-1.5" />
-                  Repasar desde 3.1 Saberes previos
+                  Repasar desde 3.1
                 </Button>
-                <a
-                  href="#misiones-complementarias"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-2 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="md"
+                  onClick={() => handleSelectTab('3.8')}
                 >
-                  <Sparkles className="size-3.5" />
-                  Explorar actividades complementarias ↓
-                </a>
+                  Siguiente: 3.8 Actividades complementarias
+                  <ArrowRight className="size-4 ml-1.5" />
+                </Button>
               </div>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          3.8 ACTIVIDADES COMPLEMENTARIAS DE LA SESIÓN 3 (OPCIONAL)
+          ══════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '3.8') && (
+        <section id="sub-3-8" className="scroll-mt-36 space-y-4 animate-in fade-in duration-300">
+          <SpotlightCard
+            spotlightColor="rgba(251, 191, 36, 0.15)"
+            borderColor="rgba(251, 191, 36, 0.35)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-400/20 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="grid size-9 place-items-center rounded-xl bg-amber-400/20 text-amber-300 font-extrabold text-sm">
+                  3.8
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="gold">Sub-actividad 3.8 · Exploración opcional y profundización</Chip>
+                  </div>
+                  <h3 className="text-lg font-extrabold text-white sm:text-xl">
+                    Actividades complementarias de la Sesión 3: Procesos metabólicos
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="neutral">Recursos complementarios</Chip>
+            </div>
+
+            <p className="text-xs sm:text-sm leading-relaxed text-slate-300">
+              El <strong>Reto final (Quiz) en la estación 3.7</strong> evalúa la comprensión de los procesos metabólicos y la fábrica celular. Las siguientes actividades (video 360 de la fábrica celular, video 360 del metabolismo, célula de la energía 3D, animación de plasmólisis y ATP, cubo Merge virtual, danza del metabolismo 2D, bitácora de energía y laboratorio de ósmosis) son experiencias de apoyo y profundización opcionales exclusivas de la Sesión 3:
+            </p>
+
+            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+              {effectiveComplementaryActivities
+                .filter((a) => a.type !== 'quiz')
+                .map((act) => (
+                  <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission?.code ?? 'm3'} />
+                ))}
+            </div>
+
+            {/* Pie de navegación */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => handleSelectTab('3.7')}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 3.7 Reto Final (Quiz)
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="md"
+                onClick={() => handleSelectTab('3.1')}
+              >
+                <RotateCcw className="size-4 mr-1.5" />
+                Repasar desde 3.1 Saberes previos
+              </Button>
             </div>
           </SpotlightCard>
         </section>
@@ -5176,7 +5334,7 @@ export function Session3Subactivities({
 }
 
 /* ── Main ReadingPlayer component ───────────────────────────── */
-export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: ReadingPlayerProps) {
+export function ReadingPlayer({ activity, mission, complementaryActivities, onEvidenceSubmitted }: ReadingPlayerProps) {
   const content = (activity.content ?? {}) as Record<string, unknown>;
   const scientists: Scientist[] = Array.isArray(content.scientists) ? content.scientists : [];
   const postulates: string[] = Array.isArray(content.postulates) ? content.postulates : [];
@@ -5282,11 +5440,12 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
         </div>
       </header>
 
-      {/* ── Si es Sesión 1: Renderizamos la estructura específica de sub-actividades 1.1 a 1.5 ── */}
+      {/* ── Si es Sesión 1: Renderizamos la estructura específica de sub-actividades 1.1 a 1.6 ── */}
       {isSession1 ? (
         <Session1Subactivities
           activity={activity}
           mission={mission}
+          complementaryActivities={complementaryActivities}
           content={content}
           postulates={postulates}
           scientists={scientists}
@@ -5298,10 +5457,11 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
           onEvidenceSubmitted={onEvidenceSubmitted}
         />
       ) : isSession2 ? (
-        /* ── Si es Sesión 2: Renderizamos la estructura específica de sub-actividades 2.1 a 2.6 ── */
+        /* ── Si es Sesión 2: Renderizamos la estructura específica de sub-actividades 2.1 a 2.8 ── */
         <Session2Subactivities
           activity={activity}
           mission={mission}
+          complementaryActivities={complementaryActivities}
           comparisonTable={comparisonTable}
           glossary={glossary}
           mandatoryQuestion={
@@ -5315,10 +5475,11 @@ export function ReadingPlayer({ activity, mission, onEvidenceSubmitted }: Readin
           onEvidenceSubmitted={onEvidenceSubmitted}
         />
       ) : isSession3 ? (
-        /* ── Si es Sesión 3: Renderizamos la estructura específica de sub-actividades 3.1 a 3.7 ── */
+        /* ── Si es Sesión 3: Renderizamos la estructura específica de sub-actividades 3.1 a 3.8 ── */
         <Session3Subactivities
           activity={activity}
           mission={mission}
+          complementaryActivities={complementaryActivities}
           structuresTable={structuresTable.length > 0 ? structuresTable : DEFAULT_M3_STRUCTURES}
           glossary={glossary}
           mandatoryQuestion={

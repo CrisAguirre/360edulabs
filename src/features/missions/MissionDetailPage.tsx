@@ -249,7 +249,7 @@ export function MissionDetailPage() {
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
                 <Sparkles className="size-3.5 text-mint-300" aria-hidden />
-                {isSession1 || isSession2
+                {isSession1 || isSession2 || isSession3
                   ? `${complementaryActivities.filter((a) => a.type !== 'quiz').length} complementarias opcionales`
                   : `${support.length} actividades opcionales`}
               </span>
@@ -271,15 +271,8 @@ export function MissionDetailPage() {
                   </a>
                   <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
                     <Trophy className="size-5" aria-hidden />
-                    Presentar Reto Final (1.6)
+                    Presentar Reto Final (1.5)
                   </LinkButton>
-                  <a
-                    href="#misiones-complementarias"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
-                  >
-                    <Sparkles className="size-4 text-mint-300" aria-hidden />
-                    Misiones complementarias opcionales ({complementaryActivities.filter((a) => a.type !== 'quiz').length})
-                  </a>
                 </>
               ) : isSession2 ? (
                 <>
@@ -288,19 +281,26 @@ export function MissionDetailPage() {
                     className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-sky-400/20 transition hover:brightness-110"
                   >
                     <Play className="size-5" aria-hidden />
-                    Explorar las estaciones 2.1 a 2.7
+                    Explorar las 8 estaciones (2.1 a 2.8)
                   </a>
                   <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
                     <Trophy className="size-5" aria-hidden />
                     Presentar Reto Final (2.7)
                   </LinkButton>
+                </>
+              ) : isSession3 ? (
+                <>
                   <a
-                    href="#misiones-complementarias"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
+                    href="#estaciones-sesion-3"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-mint-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-amber-400/20 transition hover:brightness-110"
                   >
-                    <Sparkles className="size-4 text-mint-300" aria-hidden />
-                    Actividades complementarias opcionales ({complementaryActivities.filter((a) => a.type !== 'quiz').length})
+                    <Play className="size-5" aria-hidden />
+                    Explorar las 8 estaciones (3.1 a 3.8)
                   </a>
+                  <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
+                    <Trophy className="size-5" aria-hidden />
+                    Presentar Reto Final (3.7)
+                  </LinkButton>
                 </>
               ) : nextStep ? (
                 <Button size="lg" onClick={handleStart} loading={startMission.isPending}>
@@ -317,7 +317,7 @@ export function MissionDetailPage() {
                   Presentar el reto final
                 </LinkButton>
               )}
-              {!isSession1 && !isSession2 && support.length > 0 ? (
+              {!isSession1 && !isSession2 && !isSession3 && support.length > 0 ? (
                 <a
                   href="#apoyo"
                   className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
@@ -378,257 +378,179 @@ export function MissionDetailPage() {
         </ul>
       </Card>
 
-      {/* ── Si es Sesión 1: Contenido General en Nivel Superior con 5 Pestañas y Misiones Complementarias ── */}
+      {/* ── Si es Sesión 1: Contenido General en Nivel Superior con 6 Pestañas ── */}
       {isSession1 && readingActivity ? (
-        <>
-          {/* ── Nivel Superior: Las 5 Pestañas de la Sesión 1 ── */}
-          <section id="estaciones-sesion-1" className="scroll-mt-24 space-y-4">
-            <SectionHeading
-              eyebrow="Contenido General · Nivel Superior"
-              title="La extraña historia de la teoría celular"
-              description="Eje central de indagación de la Sesión 1: recorre las 6 estaciones oficiales de forma dinámica (1.1 Aportes, 1.2 Aporte conceptual, 1.3 Video documental, 1.4 Lectura y Espacio Virtual Vercel, 1.5 Contenidos extras y 1.6 Reto Final evaluativo)."
-              action={
-                <a
-                  href="#misiones-complementarias"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-1.5 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
-                >
-                  <Sparkles className="size-3.5" aria-hidden />
-                  Ver misiones complementarias
-                </a>
-              }
-            />
+        <section id="estaciones-sesion-1" className="scroll-mt-24 space-y-4">
+          <SectionHeading
+            eyebrow="Contenido General · Nivel Superior"
+            title="La extraña historia de la teoría celular"
+            description="Eje central de indagación de la Sesión 1: recorre las 6 estaciones oficiales de forma dinámica (1.1 Aportes, 1.2 Aporte conceptual, 1.3 Video documental, 1.4 Lectura y Espacio Virtual Vercel, 1.5 Reto Final evaluativo y 1.6 Contenidos extras de apoyo)."
+            action={
+              <Chip tone="mint">
+                <Trophy className="size-3.5 text-mint-300" aria-hidden />
+                Ruta oficial 1.1 a 1.6
+              </Chip>
+            }
+          />
 
-            <Session1Subactivities
-              activity={readingActivity}
-              mission={mission}
-              content={(readingActivity.content as Record<string, unknown>) ?? {}}
-              postulates={
-                (readingActivity.content?.postulates as string[]) ?? [
-                  'Todos los seres vivos que habitan el planeta se componen de una (unicelulares) o más células (pluricelulares).',
-                  'Toda célula procede de otra preexistente, que ha copiado su información genética antes de dividirse en dos células hijas.',
-                  'Toda célula se compone básicamente de las mismas sustancias químicas: agua, trazas de minerales, carbohidratos, lípidos, proteínas y ácidos nucleicos, conocidas como “moléculas de la vida o biomoléculas”.',
-                  'La célula es la unidad funcional de los seres vivos, porque independientemente del organismo al cual se haga referencia, es en ella donde ocurre las reacciones químicas que se necesitan para vivir.'
-                ]
-              }
-              scientists={(readingActivity.content?.scientists as Scientist[]) ?? []}
-              glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
-              mandatoryQuestion={
-                (readingActivity.content?.mandatoryQuestion as string) ??
-                'Identifique dos ideas mencionadas en la lectura que usted considera importantes para el estudio de la biología. Argumente cada una de ellas.'
-              }
-              docUrl={
-                (readingActivity.content?.docUrl as string) ??
-                'https://docs.google.com/document/d/1sP7mzPT9L0z-RH3FDHUBztziEnZ56rqG/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true'
-              }
-              videoUrl={
-                (readingActivity.content?.videoUrl as string) ??
-                'https://youtu.be/OOXO3fGImoU'
-              }
-              videoEmbedUrl={
-                (readingActivity.content?.videoEmbedUrl as string) ??
-                'https://www.youtube-nocookie.com/embed/OOXO3fGImoU'
-              }
-            />
-          </section>
-
-          {/* ── Sección por aparte: Actividades complementarias exclusivas de la Sesión 1 ── */}
-          <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
-            <SectionHeading
-              eyebrow="Reto obligatorio y exploración opcional · Sesión 1"
-              title="Actividades complementarias de la Sesión 1: Acercamiento a la teoría celular"
-              description="El Reto final (Quiz) en la estación 1.6 es obligatorio para conquistar la Sesión 1. Estas actividades (simulación 3D, microscopía acuática 360, cubo Merge AR, zoom celular, línea de tiempo y cuaderno de bitácora) son experiencias de profundización opcionales exclusivas de la Sesión 1."
-              action={
-                <Chip tone="gold">
-                  <Trophy className="size-3.5 text-amber-300" aria-hidden />
-                  1 reto final · {complementaryActivities.filter((a) => a.type !== 'quiz').length} opcionales
-                </Chip>
-              }
-            />
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {complementaryActivities.map((act) => (
-                <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission.code} />
-              ))}
-            </div>
-          </section>
-        </>
+          <Session1Subactivities
+            activity={readingActivity}
+            mission={mission}
+            complementaryActivities={complementaryActivities}
+            content={(readingActivity.content as Record<string, unknown>) ?? {}}
+            postulates={
+              (readingActivity.content?.postulates as string[]) ?? [
+                'Todos los seres vivos que habitan el planeta se componen de una (unicelulares) o más células (pluricelulares).',
+                'Toda célula procede de otra preexistente, que ha copiado su información genética antes de dividirse en dos células hijas.',
+                'Toda célula se compone básicamente de las mismas sustancias químicas: agua, trazas de minerales, carbohidratos, lípidos, proteínas y ácidos nucleicos, conocidas como “moléculas de la vida o biomoléculas”.',
+                'La célula es la unidad funcional de los seres vivos, porque independientemente del organismo al cual se haga referencia, es en ella donde ocurre las reacciones químicas que se necesitan para vivir.'
+              ]
+            }
+            scientists={(readingActivity.content?.scientists as Scientist[]) ?? []}
+            glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
+            mandatoryQuestion={
+              (readingActivity.content?.mandatoryQuestion as string) ??
+              'Identifique dos ideas mencionadas en la lectura que usted considera importantes para el estudio de la biología. Argumente cada una de ellas.'
+            }
+            docUrl={
+              (readingActivity.content?.docUrl as string) ??
+              'https://docs.google.com/document/d/1sP7mzPT9L0z-RH3FDHUBztziEnZ56rqG/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true'
+            }
+            videoUrl={
+              (readingActivity.content?.videoUrl as string) ??
+              'https://youtu.be/OOXO3fGImoU'
+            }
+            videoEmbedUrl={
+              (readingActivity.content?.videoEmbedUrl as string) ??
+              'https://www.youtube-nocookie.com/embed/OOXO3fGImoU'
+            }
+          />
+        </section>
       ) : isSession2 && readingActivity ? (
-        <>
-          {/* ── Nivel Superior: Las Estaciones 2.1 a 2.7 de la Sesión 2 ── */}
-          <section id="estaciones-sesion-2" className="scroll-mt-24 space-y-4">
-            <SectionHeading
-              eyebrow="Contenido General · Nivel Superior"
-              title="Construyendo el concepto de célula"
-              description="Eje central de indagación de la Sesión 2: recorre las estaciones oficiales de forma dinámica (2.1 Saberes previos, 2.2 Célula vegetal, 2.3 Célula animal, 2.4 Modelo 360 y video, 2.5 Pregunta e indagación Vercel, 2.6 Quiver y comparación, 2.7 Reto Final evaluativo)."
-              action={
-                <a
-                  href="#misiones-complementarias"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-1.5 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
-                >
-                  <Sparkles className="size-3.5" aria-hidden />
-                  Ver actividades complementarias
-                </a>
-              }
-            />
+        <section id="estaciones-sesion-2" className="scroll-mt-24 space-y-4">
+          <SectionHeading
+            eyebrow="Contenido General · Nivel Superior"
+            title="Construyendo el concepto de célula"
+            description="Eje central de indagación de la Sesión 2: recorre las 8 estaciones oficiales de forma dinámica (2.1 Saberes previos, 2.2 Célula vegetal, 2.3 Célula animal, 2.4 Modelo 360 y video, 2.5 Pregunta e indagación Vercel, 2.6 Quiver y comparación, 2.7 Reto Final evaluativo, 2.8 Actividades complementarias)."
+            action={
+              <Chip tone="sky">
+                <Trophy className="size-3.5 text-sky-300" aria-hidden />
+                Ruta oficial 2.1 a 2.8
+              </Chip>
+            }
+          />
 
-            <Session2Subactivities
-              activity={readingActivity}
-              mission={mission}
-              comparisonTable={
-                (readingActivity.content?.comparisonTable as TableRow[]) ?? [
-                  {
-                    structure: 'Membrana plasmática',
-                    animal: 'Sí (delgada y elástica)',
-                    plant: 'Sí (debajo de la pared celular)',
-                    function: 'Límite celular y control de entrada/salida de sustancias.'
-                  },
-                  {
-                    structure: 'Pared celular',
-                    animal: 'No presente',
-                    plant: 'Sí (rígida, de celulosa)',
-                    function: 'Soporte mecánico, rigidez y protección contra estallamiento.'
-                  },
-                  {
-                    structure: 'Núcleo',
-                    animal: 'Sí (generalmente central)',
-                    plant: 'Sí (generalmente periférico)',
-                    function: 'Alberga el ADN y coordina todas las actividades celulares.'
-                  },
-                  {
-                    structure: 'Mitocondrias',
-                    animal: 'Sí (muy abundantes)',
-                    plant: 'Sí (presentes)',
-                    function: 'Respiración celular y producción de energía (ATP).'
-                  },
-                  {
-                    structure: 'Cloroplastos',
-                    animal: 'No presente',
-                    plant: 'Sí (con clorofila)',
-                    function: 'Fotosíntesis: conversión de luz y CO2 en glucosa y O2.'
-                  },
-                  {
-                    structure: 'Vacuolas',
-                    animal: 'Pequeñas y dispersas',
-                    plant: 'Una gran vacuola central (hasta 90% del volumen)',
-                    function: 'Almacena agua, nutrientes, pigmentos y da turgencia.'
-                  },
-                  {
-                    structure: 'Citoplasma y Citoesqueleto',
-                    animal: 'Sí (muy dinámico)',
-                    plant: 'Sí (con corrientes citoplasmáticas)',
-                    function: 'Sostén interno, transporte vesicular y medio metabólico.'
-                  }
-                ]
-              }
-              glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
-              mandatoryQuestion={
-                (readingActivity.content?.mandatoryQuestion as string) ??
-                '¿Creen que las células de nuestro cuerpo son iguales a las de una planta? ¿Qué diferencias imaginan que existen entre ellas y qué partes creen que necesitan para poder vivir y funcionar?'
-              }
-              plantTemplateDriveUrl={
-                (readingActivity.content?.plantTemplateDriveUrl as string) ??
-                'https://drive.google.com/file/d/1Rc_5xG1CsOAcfSwXpzT3dA5aBwOfNMMa/view?usp=sharing'
-              }
-              animalTemplateDriveUrl={
-                (readingActivity.content?.animalTemplateDriveUrl as string) ??
-                'https://drive.google.com/file/d/1euCki6yPm4LXeIMCyWAKvnBfRPPVmJmu/view?usp=sharing'
-              }
-              videoUrl={
-                (readingActivity.content?.videoUrl as string) ??
-                'https://www.youtube.com/watch?v=h1gryskdtmk'
-              }
-              videoEmbedUrl={
-                (readingActivity.content?.videoEmbedUrl as string) ??
-                'https://www.youtube-nocookie.com/embed/h1gryskdtmk'
-              }
-            />
-          </section>
-
-          {/* ── Sección por aparte: Actividades complementarias exclusivas de la Sesión 2 ── */}
-          <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
-            <SectionHeading
-              eyebrow="Reto obligatorio y exploración opcional · Sesión 2"
-              title="Actividades complementarias de la Sesión 2: Concepto de célula"
-              description="El Reto final (Quiz) en la estación 2.7 evalúa la comprensión de la célula animal y vegetal. Estas actividades complementarias (video 360, modelo 3D de organelos, comparación animada, cubo AR Merge, estación Quiver física, línea comparativa y bitácora) son experiencias de apoyo opcionales exclusivas de la Sesión 2."
-              action={
-                <Chip tone="gold">
-                  <Trophy className="size-3.5 text-amber-300" aria-hidden />
-                  1 reto final · {complementaryActivities.filter((a) => a.type !== 'quiz').length} opcionales
-                </Chip>
-              }
-            />
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {complementaryActivities.map((act) => (
-                <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission.code} />
-              ))}
-            </div>
-          </section>
-        </>
+          <Session2Subactivities
+            activity={readingActivity}
+            mission={mission}
+            complementaryActivities={complementaryActivities}
+            comparisonTable={
+              (readingActivity.content?.comparisonTable as TableRow[]) ?? [
+                {
+                  structure: 'Membrana plasmática',
+                  animal: 'Sí (delgada y elástica)',
+                  plant: 'Sí (debajo de la pared celular)',
+                  function: 'Límite celular y control de entrada/salida de sustancias.'
+                },
+                {
+                  structure: 'Pared celular',
+                  animal: 'No presente',
+                  plant: 'Sí (rígida, de celulosa)',
+                  function: 'Soporte mecánico, rigidez y protección contra estallamiento.'
+                },
+                {
+                  structure: 'Núcleo',
+                  animal: 'Sí (generalmente central)',
+                  plant: 'Sí (generalmente periférico)',
+                  function: 'Alberga el ADN y coordina todas las actividades celulares.'
+                },
+                {
+                  structure: 'Mitocondrias',
+                  animal: 'Sí (muy abundantes)',
+                  plant: 'Sí (presentes)',
+                  function: 'Respiración celular y producción de energía (ATP).'
+                },
+                {
+                  structure: 'Cloroplastos',
+                  animal: 'No presente',
+                  plant: 'Sí (con clorofila)',
+                  function: 'Fotosíntesis: conversión de luz y CO2 en glucosa y O2.'
+                },
+                {
+                  structure: 'Vacuolas',
+                  animal: 'Pequeñas y dispersas',
+                  plant: 'Una gran vacuola central (hasta 90% del volumen)',
+                  function: 'Almacena agua, nutrientes, pigmentos y da turgencia.'
+                },
+                {
+                  structure: 'Citoplasma y Citoesqueleto',
+                  animal: 'Sí (muy dinámico)',
+                  plant: 'Sí (con corrientes citoplasmáticas)',
+                  function: 'Sostén interno, transporte vesicular y medio metabólico.'
+                }
+              ]
+            }
+            glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
+            mandatoryQuestion={
+              (readingActivity.content?.mandatoryQuestion as string) ??
+              '¿Creen que las células de nuestro cuerpo son iguales a las de una planta? ¿Qué diferencias imaginan que existen entre ellas y qué partes creen que necesitan para poder vivir y funcionar?'
+            }
+            plantTemplateDriveUrl={
+              (readingActivity.content?.plantTemplateDriveUrl as string) ??
+              'https://drive.google.com/file/d/1Rc_5xG1CsOAcfSwXpzT3dA5aBwOfNMMa/view?usp=sharing'
+            }
+            animalTemplateDriveUrl={
+              (readingActivity.content?.animalTemplateDriveUrl as string) ??
+              'https://drive.google.com/file/d/1euCki6yPm4LXeIMCyWAKvnBfRPPVmJmu/view?usp=sharing'
+            }
+            videoUrl={
+              (readingActivity.content?.videoUrl as string) ??
+              'https://www.youtube.com/watch?v=h1gryskdtmk'
+            }
+            videoEmbedUrl={
+              (readingActivity.content?.videoEmbedUrl as string) ??
+              'https://www.youtube-nocookie.com/embed/h1gryskdtmk'
+            }
+          />
+        </section>
       ) : isSession3 && readingActivity ? (
-        <>
-          {/* ── Nivel Superior: Las Estaciones 3.1 a 3.7 de la Sesión 3 ── */}
-          <section id="estaciones-sesion-3" className="scroll-mt-24 space-y-4">
-            <SectionHeading
-              eyebrow="Contenido General · Nivel Superior"
-              title="Procesos metabólicos de la célula"
-              description="Eje central de indagación de la Sesión 3: recorre las 7 estaciones oficiales de forma dinámica (3.1 Saberes previos, 3.2 Fábrica y video 360, 3.3 Preguntas motivadoras, 3.4 Video 360, lectura y Canva, 3.5 Cubo Merge, 3.6 Cuadro estructuras Vercel, 3.7 Reto Final evaluativo)."
-              action={
-                <a
-                  href="#misiones-complementarias"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-1.5 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
-                >
-                  <Sparkles className="size-3.5" aria-hidden />
-                  Ver actividades complementarias
-                </a>
-              }
-            />
+        <section id="estaciones-sesion-3" className="scroll-mt-24 space-y-4">
+          <SectionHeading
+            eyebrow="Contenido General · Nivel Superior"
+            title="Procesos metabólicos de la célula"
+            description="Eje central de indagación de la Sesión 3: recorre las 8 estaciones oficiales de forma dinámica (3.1 Saberes previos, 3.2 Fábrica y video 360, 3.3 Preguntas motivadoras, 3.4 Video 360, lectura y Canva, 3.5 Cubo Merge, 3.6 Cuadro estructuras Vercel, 3.7 Reto Final evaluativo, 3.8 Actividades complementarias)."
+            action={
+              <Chip tone="gold">
+                <Trophy className="size-3.5 text-amber-300" aria-hidden />
+                Ruta oficial 3.1 a 3.8
+              </Chip>
+            }
+          />
 
-            <Session3Subactivities
-              activity={readingActivity}
-              mission={mission}
-              structuresTable={
-                (readingActivity.content?.structuresTable as StructureItem[]) ?? DEFAULT_M3_STRUCTURES
-              }
-              glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
-              mandatoryQuestion={
-                (readingActivity.content?.mandatoryQuestion as string) ??
-                '¿De qué manera las células vegetales y animales llevan a cabo sus actividades para conservar la vida? ¿Cómo se llama el proceso mediante el cual las células adquieren energía y eliminan desechos?'
-              }
-              docUrl={
-                (readingActivity.content?.docUrl as string) ??
-                'https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true'
-              }
-              videoUrl={
-                (readingActivity.content?.videoUrl as string) ?? undefined
-              }
-              videoEmbedUrl={
-                (readingActivity.content?.videoEmbedUrl as string) ?? undefined
-              }
-            />
-          </section>
-
-          {/* ── Sección por aparte: Actividades complementarias exclusivas de la Sesión 3 ── */}
-          <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
-            <SectionHeading
-              eyebrow="Reto obligatorio y exploración opcional · Sesión 3"
-              title="Actividades complementarias de la Sesión 3: Procesos metabólicos de la célula"
-              description="El Reto final (Quiz) en la estación 3.7 evalúa la comprensión de los procesos metabólicos y la fábrica celular. Estas actividades (video 360 de la fábrica celular, video 360 del metabolismo, célula de la energía 3D, animación de plasmólisis y ATP, cubo Merge virtual, danza del metabolismo 2D, bitácora de energía y laboratorio de ósmosis) son experiencias de apoyo opcionales exclusivas de la Sesión 3."
-              action={
-                <Chip tone="gold">
-                  <Trophy className="size-3.5 text-amber-300" aria-hidden />
-                  1 reto final · {complementaryActivities.filter((a) => a.type !== 'quiz').length} opcionales
-                </Chip>
-              }
-            />
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {complementaryActivities.map((act) => (
-                <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission.code} />
-              ))}
-            </div>
-          </section>
-        </>
+          <Session3Subactivities
+            activity={readingActivity}
+            mission={mission}
+            complementaryActivities={complementaryActivities}
+            structuresTable={
+              (readingActivity.content?.structuresTable as StructureItem[]) ?? DEFAULT_M3_STRUCTURES
+            }
+            glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
+            mandatoryQuestion={
+              (readingActivity.content?.mandatoryQuestion as string) ??
+              '¿De qué manera las células vegetales y animales llevan a cabo sus actividades para conservar la vida? ¿Cómo se llama el proceso mediante el cual las células adquieren energía y eliminan desechos?'
+            }
+            docUrl={
+              (readingActivity.content?.docUrl as string) ??
+              'https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true'
+            }
+            videoUrl={
+              (readingActivity.content?.videoUrl as string) ?? undefined
+            }
+            videoEmbedUrl={
+              (readingActivity.content?.videoEmbedUrl as string) ?? undefined
+            }
+          />
+        </section>
       ) : (
         <>
           {/* ── Ruta obligatoria del documento (Sesiones 2 y 3) ── */}
@@ -869,92 +791,6 @@ function SupportCard({ activity, missionCode }: { activity: Activity; missionCod
           Abrir
           <ArrowRight className="size-3.5" aria-hidden />
         </Link>
-      </div>
-    </SpotlightCard>
-  );
-}
-
-/* ── Tarjeta de misión complementaria (Sesión 1) ──────────────── */
-function ComplementaryMissionCard({
-  activity,
-  missionCode
-}: {
-  activity: Activity;
-  missionCode: string;
-}) {
-  const meta = ACTIVITY_META[activity.type];
-  const phase = PHASE_META[activity.phase];
-  const Icon = meta.icon;
-  const done = activity.status === 'completed';
-  const isQuiz = activity.type === 'quiz';
-  const isEvidence = activity.type === 'evidence';
-
-  return (
-    <SpotlightCard
-      spotlightColor={`${meta.color}20`}
-      borderColor={
-        done
-          ? 'rgba(88, 230, 197, 0.35)'
-          : isQuiz
-            ? 'rgba(251, 191, 36, 0.35)'
-            : 'rgba(255, 255, 255, 0.12)'
-      }
-      className="flex flex-col justify-between p-5 space-y-4 bg-ink-900/60 transition-all hover:border-white/20"
-    >
-      <div className="space-y-3">
-        <div className="flex items-start justify-between gap-2">
-          <span
-            className="grid size-11 shrink-0 place-items-center rounded-2xl"
-            style={{ background: `${meta.color}22`, color: meta.color }}
-          >
-            <Icon className="size-5" aria-hidden />
-          </span>
-          <div className="flex flex-wrap items-center justify-end gap-1.5">
-            <Chip tone="neutral">{phase.label}</Chip>
-            {isQuiz ? (
-              <Chip tone="gold">
-                <Trophy className="size-3" aria-hidden />
-                Obligatorio · Reto final
-              </Chip>
-            ) : isEvidence ? (
-              <Chip tone="sky">Bitácora · Opcional</Chip>
-            ) : (
-              <Chip tone="mint">Complementaria · Opcional</Chip>
-            )}
-            {done ? (
-              <Chip tone="mint">
-                <CheckCircle2 className="size-3" aria-hidden />
-                Completada
-              </Chip>
-            ) : null}
-          </div>
-        </div>
-
-        <div>
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-            {meta.label} · +{activity.xp} XP {isQuiz ? '· Obligatorio' : '· Opcional'}
-          </span>
-          <h3 className="mt-1 font-display text-base font-bold text-white sm:text-lg">
-            {activity.title}
-          </h3>
-          <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-slate-300">
-            {activity.instructions}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between border-t border-white/8 pt-3">
-        <span className="text-xs font-bold text-slate-400">
-          {done ? '✨ Misión cumplida' : `+${activity.xp} XP`}
-        </span>
-        <LinkButton
-          to={activityUrl(missionCode, activity)}
-          variant={done ? 'secondary' : isQuiz ? 'gold' : 'primary'}
-          size="sm"
-        >
-          {done ? 'Repasar' : isQuiz ? 'Presentar' : 'Iniciar'}
-          <ArrowRight className="size-4" aria-hidden />
-        </LinkButton>
       </div>
     </SpotlightCard>
   );
