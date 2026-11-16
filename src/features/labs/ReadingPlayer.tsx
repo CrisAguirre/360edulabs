@@ -70,6 +70,7 @@ import {
 import {
   BodyLifeGraphic2D,
   CellActivityGraphic2D,
+  CinemaGraphic2D,
   ParticipationGraphic2D
 } from './InquiryGraphics2D';
 import {
@@ -1144,20 +1145,28 @@ export function Session1Subactivities({
                   reflectionColor="#38bdf8"
                   borderColor="rgba(56, 189, 248, 0.32)"
                 >
-                  <div className="flex h-full flex-col p-4 sm:p-5">
-                    <BodyLifeGraphic2D />
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      <span className="rounded-lg bg-sky-400/15 px-2 py-0.5 text-[11px] font-extrabold text-sky-300">
-                        Pregunta 1
-                      </span>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                        Unidad en la diversidad
-                      </span>
+                  <div className="flex h-full flex-col">
+                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
+                      <BodyLifeGraphic2D />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
+                        aria-hidden
+                      />
                     </div>
-                    <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
-                      ¿Sabías que tu cuerpo, las plantas y los animales están formados por millones de
-                      pequeñas estructuras que no podemos ver a simple vista?
-                    </p>
+                    <div className="flex flex-1 flex-col p-4 sm:p-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg bg-sky-400/15 px-2 py-0.5 text-[11px] font-extrabold text-sky-300">
+                          Pregunta 1
+                        </span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                          Unidad en la diversidad
+                        </span>
+                      </div>
+                      <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                        ¿Sabías que tu cuerpo, las plantas y los animales están formados por millones de
+                        pequeñas estructuras que no podemos ver a simple vista?
+                      </p>
+                    </div>
                   </div>
                 </ReflectiveCard>
 
@@ -1166,33 +1175,83 @@ export function Session1Subactivities({
                   reflectionColor="#58e6c5"
                   borderColor="rgba(88, 230, 197, 0.32)"
                 >
-                  <div className="flex h-full flex-col p-4 sm:p-5">
-                    <CellActivityGraphic2D />
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      <span className="rounded-lg bg-mint-400/15 px-2 py-0.5 text-[11px] font-extrabold text-mint-300">
-                        Pregunta 2
-                      </span>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                        Vida en acción
-                      </span>
+                  <div className="flex h-full flex-col">
+                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
+                      <CellActivityGraphic2D />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
+                        aria-hidden
+                      />
                     </div>
-                    <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
-                      ¿Se imaginan cómo son y qué hacen para mantenerse vivos?
-                    </p>
+                    <div className="flex flex-1 flex-col p-4 sm:p-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg bg-mint-400/15 px-2 py-0.5 text-[11px] font-extrabold text-mint-300">
+                          Pregunta 2
+                        </span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                          Vida en acción
+                        </span>
+                      </div>
+                      <p className="mt-2 font-display text-base font-extrabold leading-snug text-white sm:text-lg">
+                        ¿Se imaginan cómo son y qué hacen para mantenerse vivos?
+                      </p>
+                    </div>
                   </div>
                 </ReflectiveCard>
               </div>
             </div>
 
-            {/* Texto literal de participación */}
-            <div className="rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-300 sm:text-sm space-y-1.5">
-              <p className="font-bold text-white flex items-center gap-2">
-                <Share2 className="size-4 text-mint-400" aria-hidden />
-                Dinámica de la sesión:
-              </p>
-              <p>
-                Los estudiantes participan de forma oral y escrita en la plataforma, dan a conocer sus aportes y socializan con el grupo sus ideas, la docente, proyecta un recurso multimedial que explica los aportes, sus inicios y representantes en la construcción del conocimiento de lo que actualmente se reconoce como teoría celular,
-              </p>
+            {/* Invitación inmersiva a participar */}
+            <div className="relative overflow-hidden rounded-3xl border border-mint-400/25 bg-gradient-to-br from-mint-500/12 via-sky-500/10 to-violet-500/12 p-4 sm:p-5">
+              <div
+                className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-mint-400/20 blur-3xl"
+                aria-hidden
+              />
+              <div className="pointer-events-none absolute -bottom-14 -left-10 size-40 rounded-full bg-sky-400/15 blur-3xl" aria-hidden />
+
+              <div className="relative grid items-center gap-4 md:grid-cols-[0.85fr_1.15fr]">
+                <ParticipationGraphic2D />
+
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-mint-400/15 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-mint-300">
+                      <MessageSquare className="size-3.5" aria-hidden />
+                      Tu voz hace ciencia
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-400">Aportes y socialización</span>
+                  </div>
+
+                  <h4 className="font-display text-lg font-extrabold leading-snug text-white sm:text-xl">
+                    ¡Participa y comparte lo que imaginas!
+                  </h4>
+
+                  <p className="text-sm leading-relaxed text-slate-200">
+                    Cuenta con tus palabras cómo te imaginas esas estructuras invisibles, escucha las
+                    ideas de tus compañeros y únelas con las tuyas. Mientras compartimos,{' '}
+                    <strong className="font-bold text-mint-300">Cito</strong> proyectará un recurso
+                    multimedia que revela cómo nació la teoría celular y quiénes la construyeron.
+                  </p>
+
+                  <ul className="grid gap-2 sm:grid-cols-3">
+                    {[
+                      { icon: <MessageSquare className="size-3.5" aria-hidden />, title: 'Habla', text: 'Di tus ideas en voz alta.' },
+                      { icon: <Share2 className="size-3.5" aria-hidden />, title: 'Escribe', text: 'Regístralas en la plataforma.' },
+                      { icon: <Sparkles className="size-3.5" aria-hidden />, title: 'Descubre', text: 'Mira el recurso y compáralo.' }
+                    ].map((step) => (
+                      <li
+                        key={step.title}
+                        className="rounded-xl border border-white/10 bg-ink-950/50 px-2.5 py-2"
+                      >
+                        <p className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-sky-300">
+                          {step.icon}
+                          {step.title}
+                        </p>
+                        <p className="mt-0.5 text-[11px] leading-snug text-slate-400">{step.text}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
 
             {/* Interacción escrita del estudiante */}
@@ -1410,44 +1469,112 @@ export function Session1Subactivities({
               ) : null}
             </div>
 
-            {/* Texto de solicitud literal */}
-            <p className="text-sm leading-relaxed text-slate-200 sm:text-base font-medium">
-              Se solicita a los estudiantes visualizar el video{' '}
-              <strong className="text-rose-200">
-                «Video YouTube: La extraña historia de la teoría celular»
-              </strong>{' '}
-              (<a href="https://youtu.be/OOXO3fGImoU" target="_blank" rel="noreferrer" className="text-sky-300 underline hover:text-sky-200">https://youtu.be/OOXO3fGImoU</a>).
-            </p>
+            {/* Invitación inmersiva a la función científica */}
+            <div className="relative overflow-hidden rounded-3xl border border-rose-400/25 bg-gradient-to-br from-rose-500/12 via-violet-500/10 to-sky-500/12 p-4 sm:p-5">
+              <div
+                className="pointer-events-none absolute -left-12 -top-14 size-44 rounded-full bg-rose-500/20 blur-3xl"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute -bottom-16 -right-10 size-48 rounded-full bg-violet-500/20 blur-3xl"
+                aria-hidden
+              />
 
-            {/* Reproductor embebido sin cookies */}
+              <div className="relative grid items-center gap-4 md:grid-cols-[1.05fr_0.95fr]">
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-lg bg-rose-500/15 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-rose-200">
+                      <Play className="size-3.5 fill-current" aria-hidden />
+                      Función científica
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-400">Video · 8 minutos</span>
+                  </div>
+
+                  <h4 className="font-display text-lg font-extrabold leading-snug text-white sm:text-xl">
+                    ¿Y si la célula fuera el mayor misterio de la historia?
+                  </h4>
+
+                  <p className="text-sm leading-relaxed text-slate-200">
+                    Sube al tren del tiempo con <strong className="font-bold text-rose-200">Cito</strong>:
+                    viajarás a los talleres de los primeros microscopistas, espiarás agua de lluvia llena
+                    de «animálculos» y descubrirás por qué una simple lámina de corcho cambió para siempre
+                    la biología.
+                  </p>
+
+                  <ul className="flex flex-wrap gap-1.5">
+                    {['Microscopios artesanales', 'Personajes excéntricos', 'Rivalidades científicas'].map(
+                      (tag) => (
+                        <li
+                          key={tag}
+                          className="rounded-lg border border-white/12 bg-ink-950/50 px-2 py-1 text-[11px] font-bold text-slate-300"
+                        >
+                          {tag}
+                        </li>
+                      )
+                    )}
+                  </ul>
+
+                  <p className="text-[11px] leading-relaxed text-slate-400">
+                    Mientras lo miras, anota en tu bitácora los nombres y los descubrimientos que más te
+                    sorprendan: los necesitarás más adelante.
+                  </p>
+                </div>
+
+                <CinemaGraphic2D />
+              </div>
+            </div>
+
+            {/* Reproductor embebido en marco inmersivo */}
             {videoEmbedUrl ? (
-              <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
-                <iframe
-                  src={videoEmbedUrl}
-                  title="Video YouTube: La extraña historia de la teoría celular"
-                  className="absolute inset-0 size-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+              <div className="pt-2">
+                <div className="relative rounded-[2rem] border border-white/12 bg-white/4 p-2 shadow-2xl sm:p-3">
+                  <div
+                    className="pointer-events-none absolute -inset-1 rounded-[2.4rem] bg-gradient-to-r from-rose-500/20 via-violet-500/20 to-sky-500/20 opacity-70 blur-xl"
+                    aria-hidden
+                  />
+                  <div className="relative aspect-video w-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-black">
+                    <iframe
+                      src={videoEmbedUrl}
+                      title="Video YouTube: La extraña historia de la teoría celular"
+                      className="absolute inset-0 size-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                    <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-ink-950/80 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-rose-200 backdrop-blur">
+                      <span className="size-1.5 animate-pulse rounded-full bg-rose-400" aria-hidden />
+                      En pantalla
+                    </div>
+                    <div className="pointer-events-none absolute inset-x-3 bottom-3 flex items-center justify-between text-[10px] font-bold text-white/70">
+                      <span>La extraña historia de la teoría celular</span>
+                      <span className="hidden sm:inline">TED-Ed</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2 px-1.5 pb-0.5 text-[11px] font-semibold text-slate-400">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Play className="size-3 text-rose-300" aria-hidden />
+                      Video animado · TED-Ed (Lauren Royal-Woods)
+                    </span>
+                    {videoUrl ? (
+                      <a
+                        href={videoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 font-bold text-sky-300 hover:text-sky-200"
+                      >
+                        Ver en YouTube
+                        <ExternalLink className="size-3" aria-hidden />
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             ) : null}
 
-            {/* Descripción pedagógica del video */}
-            <div className="space-y-2 rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-300 sm:text-sm">
-              <h4 className="font-bold text-white flex items-center gap-2">
-                <Play className="size-4 text-rose-400 fill-current" aria-hidden />
-                Descripción del video:
-              </h4>
-              <p>
-                Este video animado (basado en la famosa lección de TED-Ed escrita por Lauren Royal-Woods) narra de manera divertida cómo se construyeron los cimientos de la biología moderna. Muestra que el progreso científico no fue un camino recto ni limpio, sino una apasionante aventura repleta de microscopios artesanales, personajes excéntricos, rivalidades y debates históricos.
-              </p>
-            </div>
-
-            {/* ¿Para qué se mira este video? */}
+            {/* ¿Qué vas a descubrir en este video? */}
             <div className="space-y-3 rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 sm:p-5">
               <h4 className="text-sm font-extrabold text-sky-200 uppercase tracking-wider flex items-center gap-2">
                 <Star className="size-4 text-sky-300 fill-current" aria-hidden />
-                ¿Para qué se mira este video? (Propósito pedagógico):
+                ¿Qué vas a descubrir en este video?
               </h4>
               <ul className="grid gap-2 sm:grid-cols-2 text-xs leading-relaxed text-slate-200 sm:text-sm">
                 <li className="flex items-start gap-2">
