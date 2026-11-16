@@ -34,7 +34,7 @@ import {
   Trophy,
   Zap
 } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, Chip, EvidenceStatusBadge, LinkButton } from '../../components/ui';
 import { CitoMascot } from '../../components/Cito';
@@ -59,6 +59,8 @@ import {
   type CircularCarouselItem,
   ClickSpark,
   DecryptedText,
+  DriftWall,
+  type DriftWallItem,
   OrbitCards,
   type OrbitItem,
   ShinyText,
@@ -844,7 +846,6 @@ export function Session1Subactivities({
 }: Session1SubactivitiesProps) {
   const [initialAporte, setInitialAporte] = useState('');
   const [aporteShared, setAporteShared] = useState(false);
-  const [revealedPostulates, setRevealedPostulates] = useState(0);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
   const [activeTab, setActiveTab] = useState<Session1TabKey>('1.1');
@@ -880,9 +881,112 @@ export function Session1Subactivities({
     toast.success('¡Aporte registrado! Ahora socializa tu respuesta con el grupo.');
   };
 
-  const handlePostulateReveal = () => {
-    setRevealedPostulates((prev) => prev + 1);
+  const [revealedPostulateIds, setRevealedPostulateIds] = useState<Set<string>>(new Set());
+
+  const handleDriftWallItemClick = (item: DriftWallItem) => {
+    if (!revealedPostulateIds.has(item.id)) {
+      setRevealedPostulateIds((prev) => new Set(prev).add(item.id));
+    }
   };
+
+  const session1DriftWallItems: DriftWallItem[] = useMemo(() => {
+    const p1 =
+      postulates[0] ??
+      'Todos los seres vivos que habitan el planeta se componen de una (unicelulares) o más células (pluricelulares).';
+    const p2 =
+      postulates[1] ??
+      'Toda célula procede de otra preexistente, que ha copiado su información genética antes de dividirse en dos células hijas.';
+    const p3 =
+      postulates[2] ??
+      'Toda célula se compone básicamente de las mismas sustancias químicas: agua, trazas de minerales, carbohidratos, lípidos, proteínas y ácidos nucleicos, conocidas como biomoléculas.';
+    const p4 =
+      postulates[3] ??
+      'La célula es la unidad funcional de los seres vivos, porque independientemente del organismo al cual se haga referencia, es en ella donde ocurren las reacciones químicas que se necesitan para vivir.';
+
+    return [
+      {
+        id: 'postulado-1-estructural',
+        title: '1. Unidad Estructural',
+        subtitle: 'Postulado I · Todos los seres vivos están formados por células',
+        description: p1,
+        tag: 'Unidad Estructural',
+        icon: '🧱',
+        color: '#58e6c5',
+        keyTerm: 'Unicelulares y Pluricelulares',
+        details: [
+          'Seres unicelulares: bacterias, protozoos y algas microscópicas formadas por una sola célula.',
+          'Seres pluricelulares: plantas, animales y hongos formados por millones o billones de células.',
+          'La célula es la pieza anatómica mínima capaz de poseer vida propia.'
+        ]
+      },
+      {
+        id: 'postulado-2-funcional',
+        title: '2. Unidad Funcional',
+        subtitle: 'Postulado II · La célula realiza todas las funciones vitales',
+        description: p4.includes('unidad funcional') ? p4 : p2,
+        tag: 'Unidad Funcional',
+        icon: '⚡',
+        color: '#38bdf8',
+        keyTerm: 'Metabolismo celular',
+        details: [
+          'En cada célula se realizan las reacciones químicas del metabolismo (nutrición, respiración, síntesis).',
+          'Catabolismo: obtención de energía vital en forma de ATP.',
+          'Anabolismo: fabricación y reparación de componentes biológicos.'
+        ]
+      },
+      {
+        id: 'postulado-3-origen',
+        title: '3. Unidad de Origen',
+        subtitle: 'Postulado III · Toda célula proviene de otra preexistente',
+        description: p2.includes('preexistente') ? p2 : p4,
+        tag: 'Unidad de Origen',
+        icon: '🧬',
+        color: '#a855f7',
+        keyTerm: 'División celular (ADN)',
+        details: [
+          'Postulado formulado por Rudolf Virchow: "Omnis cellula e cellula".',
+          'Toda célula copia su información genética (ADN) antes de dividirse.',
+          'Descarta definitivamente la teoría de la generación espontánea.'
+        ]
+      },
+      ...(postulates.length >= 4 && p3
+        ? [
+            {
+              id: 'postulado-4-quimico',
+              title: '4. Composición Química Universal',
+              subtitle: 'Postulado IV · Biomoléculas de la vida',
+              description: p3,
+              tag: 'Biomoléculas',
+              icon: '🧪',
+              color: '#34d399',
+              keyTerm: 'Biomoléculas universales',
+              details: [
+                'Composición universal compartida: agua, carbohidratos, lípidos, proteínas y ácidos nucleicos.',
+                'Código genético universal compartido por todas las formas de vida celular.',
+                'Mismas leyes bioquímicas en bacterias, plantas y seres humanos.'
+              ]
+            }
+          ]
+        : []),
+      {
+        id: 'mensaje-final-virus',
+        title: '¿Por qué la teoría celular excluye a los virus?',
+        subtitle: 'Mensaje Final · Exclusión científica de entidades acelulares',
+        description:
+          'Los virus son acelulares: carecen de citoplasma y metabolismo propio, y no pueden nutrirse ni reproducirse por sí mismos; dependen obligatoriamente de invadir una célula viva para multiplicarse. Por eso, la célula es la unidad de vida universal.',
+        tag: 'Mensaje Final',
+        icon: '🦠',
+        color: '#f59e0b',
+        isSpecial: true,
+        keyTerm: 'Entidades acelulares',
+        details: [
+          'No poseen citoplasma, membrana lipídica autónoma ni organelos generadores de energía.',
+          'No metabolizan nutrientes ni generan ATP por su cuenta.',
+          'Son parásitos intracelulares obligados: solo se replican al secuestrar una célula hospedera viva.'
+        ]
+      }
+    ];
+  }, [postulates]);
 
   // Complementary activities of mission 1
   const effectiveComplementaryActivities =
@@ -1121,7 +1225,7 @@ export function Session1Subactivities({
                 </div>
               </div>
               <span className="text-xs text-slate-400 font-semibold">
-                {revealedPostulates}/{postulates.length} postulados revelados
+                {revealedPostulateIds.size}/{session1DriftWallItems.length} conceptos analizados
               </span>
             </div>
 
@@ -1136,28 +1240,15 @@ export function Session1Subactivities({
               </p>
             </div>
 
-            {/* Tarjetas interactivas de los 4 postulados literales */}
-            <ol className="grid gap-3 sm:grid-cols-2">
-              {postulates.map((postulate, index) => (
-                <PostulateCard
-                  key={postulate}
-                  postulate={postulate}
-                  index={index}
-                  onReveal={handlePostulateReveal}
-                />
-              ))}
-            </ol>
-
-            {/* Nota especial sobre virus acelulares */}
-            <div className="flex items-start gap-3 rounded-2xl border border-amber-400/25 bg-amber-400/8 p-4">
-              <Lightbulb className="size-5 text-amber-300 shrink-0 mt-0.5" aria-hidden />
-              <div className="text-xs leading-relaxed text-amber-100 sm:text-sm space-y-1">
-                <p className="font-bold text-amber-300">¿Por qué la teoría celular excluye a los virus?</p>
-                <p>
-                  Los virus son <strong className="text-white">acelulares</strong>: carecen de citoplasma y metabolismo propio, y no pueden nutrirse ni reproducirse por sí mismos; dependen obligatoriamente de invadir una célula viva. Por eso, la célula es la unidad de vida universal.
-                </p>
-              </div>
-            </div>
+            {/* Muro interactivo Drift Wall (React Bits) con las 3 opciones y el mensaje final */}
+            <DriftWall
+              items={session1DriftWallItems}
+              revealedIds={revealedPostulateIds}
+              onItemClick={handleDriftWallItemClick}
+              title="Muro en perspectiva 3D: Los postulados de la Teoría Celular"
+              instruction="Observa el desplazamiento continuo de las opciones y el mensaje final. Pasa el cursor para pausar, arrastra o toca cualquier tarjeta para inspeccionar su postulado en profundidad."
+              accentColor="#58e6c5"
+            />
 
             {/* Pie de navegación de pestaña 1.2 */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-mint-400/20 pt-4">

@@ -31,5 +31,10 @@ export {
   type OrbitCardsProps,
   type OrbitItem
 } from './OrbitCards';
+export {
+  DriftWall,
+  type DriftWallProps,
+  type DriftWallItem
+} from './DriftWall';
 
 
