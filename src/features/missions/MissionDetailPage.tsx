@@ -33,6 +33,11 @@ import { useMission, useStartMission } from '../../lib/queries';
 import type { Activity } from '../../lib/types';
 import { cn } from '../../lib/utils';
 import { AnimatedList, Aurora, SpotlightCard } from '../../components/reactbits';
+import {
+  type GlossaryItem,
+  type Scientist,
+  Session1Subactivities
+} from '../labs/ReadingPlayer';
 
 export function MissionDetailPage() {
   const { user } = useAuth();
@@ -68,6 +73,13 @@ export function MissionDetailPage() {
   const isLocked = mission.progress.status === 'locked' && user?.role !== 'admin';
 
   const { required, support } = splitActivities(mission);
+  const isSession1 = mission.code === 'm1';
+  const readingActivity = isSession1
+    ? mission.activities.find((activity) => activity.type === 'reading') ?? mission.activities[0]
+    : null;
+  const complementaryActivities = isSession1
+    ? mission.activities.filter((activity) => activity._id !== readingActivity?._id)
+    : [];
   const completedRequired = required.filter((activity) => activity.status === 'completed').length;
   const remainingRequired = required.length - completedRequired;
   const nextStep = required.find((activity) => activity.status !== 'completed') ?? null;
@@ -222,11 +234,13 @@ export function MissionDetailPage() {
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
                 <Target className="size-3.5 text-amber-300" aria-hidden />
-                {required.length} pasos obligatorios
+                {isSession1 ? '5 estaciones de indagación' : `${required.length} pasos obligatorios`}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
                 <Sparkles className="size-3.5 text-mint-300" aria-hidden />
-                {support.length} actividades opcionales
+                {isSession1
+                  ? `${complementaryActivities.length} misiones complementarias`
+                  : `${support.length} actividades opcionales`}
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-3 py-1.5 text-xs font-bold text-slate-300">
                 <Star className="size-3.5 text-amber-300" aria-hidden />
@@ -235,7 +249,24 @@ export function MissionDetailPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              {nextStep ? (
+              {isSession1 ? (
+                <>
+                  <a
+                    href="#estaciones-sesion-1"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-mint-400 to-sky-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-mint-400/20 transition hover:brightness-110"
+                  >
+                    <Play className="size-5" aria-hidden />
+                    Explorar las 5 estaciones
+                  </a>
+                  <a
+                    href="#misiones-complementarias"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
+                  >
+                    <Sparkles className="size-4 text-mint-300" aria-hidden />
+                    Misiones complementarias ({complementaryActivities.length})
+                  </a>
+                </>
+              ) : nextStep ? (
                 <Button size="lg" onClick={handleStart} loading={startMission.isPending}>
                   <Play className="size-5" aria-hidden />
                   {completed
@@ -250,7 +281,7 @@ export function MissionDetailPage() {
                   Presentar el reto final
                 </LinkButton>
               )}
-              {support.length > 0 ? (
+              {!isSession1 && support.length > 0 ? (
                 <a
                   href="#apoyo"
                   className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-white/12 bg-white/5 px-5 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10 hover:text-white"
@@ -311,62 +342,140 @@ export function MissionDetailPage() {
         </ul>
       </Card>
 
-      {/* ── Ruta obligatoria del documento ────────────────────────── */}
-      <section id="ruta" className="scroll-mt-24 space-y-4">
-        <SectionHeading
-          eyebrow={`Contenido oficial · Sesión ${sessionNumber}`}
-          title="Ruta obligatoria de la sesión"
-          description="Estos son los pasos que describe Estrategia Indagación.docx. Recórrelos en orden: cuentan para tu progreso y desbloquean la insignia."
-          action={
-            <Chip tone="gold">
-              <Target className="size-3.5" aria-hidden />
-              {completedRequired} de {required.length} completados
-            </Chip>
-          }
-        />
-
-        <ol className="space-y-3">
-          {required.map((activity, index) => (
-            <RouteStep
-              key={activity._id}
-              activity={activity}
-              index={index}
-              total={required.length}
-              missionCode={mission.code}
-              isNext={nextStep?._id === activity._id}
+      {/* ── Si es Sesión 1: Contenido General en Nivel Superior con 5 Pestañas y Misiones Complementarias ── */}
+      {isSession1 && readingActivity ? (
+        <>
+          {/* ── Nivel Superior: Las 5 Pestañas de la Sesión 1 ── */}
+          <section id="estaciones-sesion-1" className="scroll-mt-24 space-y-4">
+            <SectionHeading
+              eyebrow="Contenido General · Nivel Superior"
+              title="La extraña historia de la teoría celular"
+              description="Eje central de indagación de la Sesión 1: recorre las 5 estaciones oficiales (Aportes, Aporte conceptual, Video documental, Lectura con Espacio Virtual Vercel y Contenidos extras)."
+              action={
+                <a
+                  href="#misiones-complementarias"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-sky-400/30 bg-sky-400/10 px-3.5 py-1.5 text-xs font-bold text-sky-200 transition hover:bg-sky-400/20"
+                >
+                  <Sparkles className="size-3.5" aria-hidden />
+                  Ver misiones complementarias
+                </a>
+              }
             />
-          ))}
-        </ol>
 
-        {required.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-slate-400">
-            Esta sesión todavía no tiene pasos obligatorios configurados.
-          </div>
-        ) : null}
-      </section>
+            <Session1Subactivities
+              activity={readingActivity}
+              mission={mission}
+              content={(readingActivity.content as Record<string, unknown>) ?? {}}
+              postulates={
+                (readingActivity.content?.postulates as string[]) ?? [
+                  'Todos los seres vivos que habitan el planeta se componen de una (unicelulares) o más células (pluricelulares).',
+                  'Toda célula procede de otra preexistente, que ha copiado su información genética antes de dividirse en dos células hijas.',
+                  'Toda célula se compone básicamente de las mismas sustancias químicas: agua, trazas de minerales, carbohidratos, lípidos, proteínas y ácidos nucleicos, conocidas como “moléculas de la vida o biomoléculas”.',
+                  'La célula es la unidad funcional de los seres vivos, porque independientemente del organismo al cual se haga referencia, es en ella donde ocurre las reacciones químicas que se necesitan para vivir.'
+                ]
+              }
+              scientists={(readingActivity.content?.scientists as Scientist[]) ?? []}
+              glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
+              mandatoryQuestion={
+                (readingActivity.content?.mandatoryQuestion as string) ??
+                'Identifique dos ideas mencionadas en la lectura que usted considera importantes para el estudio de la biología. Argumente cada una de ellas.'
+              }
+              docUrl={
+                (readingActivity.content?.docUrl as string) ??
+                'https://docs.google.com/document/d/1sP7mzPT9L0z-RH3FDHUBztziEnZ56rqG/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true'
+              }
+              videoUrl={
+                (readingActivity.content?.videoUrl as string) ??
+                'https://youtu.be/OOXO3fGImoU'
+              }
+              videoEmbedUrl={
+                (readingActivity.content?.videoEmbedUrl as string) ??
+                'https://www.youtube-nocookie.com/embed/OOXO3fGImoU'
+              }
+            />
+          </section>
 
-      {/* ── Exploración de apoyo ──────────────────────────────────── */}
-      {support.length > 0 ? (
-        <section id="apoyo" className="scroll-mt-24 space-y-4">
-          <SectionHeading
-            eyebrow="Exploración de apoyo"
-            title="Actividades opcionales"
-            description="No forman parte de la ruta del documento curricular. Amplían la sesión con modelos, animaciones y laboratorios, pero no bloquean el avance."
-            action={
-              <Chip tone="neutral">
-                <Sparkles className="size-3.5 text-mint-300" aria-hidden />
-                No cuentan para el progreso
-              </Chip>
-            }
-          />
+          {/* ── Sección por aparte: Misiones complementarias ── */}
+          <section id="misiones-complementarias" className="scroll-mt-24 space-y-4">
+            <SectionHeading
+              eyebrow="Profundización, bitácora y evaluación"
+              title="Misiones complementarias"
+              description="Actividades de profundización científica de la Sesión 1: simulaciones 3D, microscopía acuática 360, cubo Merge AR, zoom celular, línea de tiempo, bitácora y quiz evaluativo."
+              action={
+                <Chip tone="gold">
+                  <Sparkles className="size-3.5" aria-hidden />
+                  {complementaryActivities.length} misiones complementarias
+                </Chip>
+              }
+            />
 
-          <AnimatedList className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
-            {support.map((activity) => (
-              <SupportCard key={activity._id} activity={activity} missionCode={mission.code} />
-            ))}
-          </AnimatedList>
-        </section>
-      ) : null}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {complementaryActivities.map((act) => (
+                <ComplementaryMissionCard key={act._id} activity={act} missionCode={mission.code} />
+              ))}
+            </div>
+          </section>
+        </>
+      ) : (
+        <>
+          {/* ── Ruta obligatoria del documento (Sesiones 2 y 3) ── */}
+          <section id="ruta" className="scroll-mt-24 space-y-4">
+            <SectionHeading
+              eyebrow={`Contenido oficial · Sesión ${sessionNumber}`}
+              title="Ruta obligatoria de la sesión"
+              description="Estos son los pasos que describe Estrategia Indagación.docx. Recórrelos en orden: cuentan para tu progreso y desbloquean la insignia."
+              action={
+                <Chip tone="gold">
+                  <Target className="size-3.5" aria-hidden />
+                  {completedRequired} de {required.length} completados
+                </Chip>
+              }
+            />
+
+            <ol className="space-y-3">
+              {required.map((activity, index) => (
+                <RouteStep
+                  key={activity._id}
+                  activity={activity}
+                  index={index}
+                  total={required.length}
+                  missionCode={mission.code}
+                  isNext={nextStep?._id === activity._id}
+                />
+              ))}
+            </ol>
+
+            {required.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-slate-400">
+                Esta sesión todavía no tiene pasos obligatorios configurados.
+              </div>
+            ) : null}
+          </section>
+
+          {/* ── Exploración de apoyo (Sesiones 2 y 3) ── */}
+          {support.length > 0 ? (
+            <section id="apoyo" className="scroll-mt-24 space-y-4">
+              <SectionHeading
+                eyebrow="Exploración de apoyo"
+                title="Actividades opcionales"
+                description="No forman parte de la ruta del documento curricular. Amplían la sesión con modelos, animaciones y laboratorios, pero no bloquean el avance."
+                action={
+                  <Chip tone="neutral">
+                    <Sparkles className="size-3.5 text-mint-300" aria-hidden />
+                    No cuentan para el progreso
+                  </Chip>
+                }
+              />
+
+              <AnimatedList className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.05}>
+                {support.map((activity) => (
+                  <SupportCard key={activity._id} activity={activity} missionCode={mission.code} />
+                ))}
+              </AnimatedList>
+            </section>
+          ) : null}
+        </>
+      )}
 
       {/* ── Cierre de la sesión ───────────────────────────────────── */}
       <section className="glass flex flex-wrap items-center justify-between gap-4 rounded-3xl p-6">
@@ -547,6 +656,89 @@ function SupportCard({ activity, missionCode }: { activity: Activity; missionCod
           Abrir
           <ArrowRight className="size-3.5" aria-hidden />
         </Link>
+      </div>
+    </SpotlightCard>
+  );
+}
+
+/* ── Tarjeta de misión complementaria (Sesión 1) ──────────────── */
+function ComplementaryMissionCard({
+  activity,
+  missionCode
+}: {
+  activity: Activity;
+  missionCode: string;
+}) {
+  const meta = ACTIVITY_META[activity.type];
+  const phase = PHASE_META[activity.phase];
+  const Icon = meta.icon;
+  const done = activity.status === 'completed';
+  const isQuiz = activity.type === 'quiz';
+  const isEvidence = activity.type === 'evidence';
+
+  return (
+    <SpotlightCard
+      spotlightColor={`${meta.color}20`}
+      borderColor={
+        done
+          ? 'rgba(88, 230, 197, 0.35)'
+          : isQuiz
+            ? 'rgba(251, 191, 36, 0.35)'
+            : 'rgba(255, 255, 255, 0.12)'
+      }
+      className="flex flex-col justify-between p-5 space-y-4 bg-ink-900/60 transition-all hover:border-white/20"
+    >
+      <div className="space-y-3">
+        <div className="flex items-start justify-between gap-2">
+          <span
+            className="grid size-11 shrink-0 place-items-center rounded-2xl"
+            style={{ background: `${meta.color}22`, color: meta.color }}
+          >
+            <Icon className="size-5" aria-hidden />
+          </span>
+          <div className="flex flex-wrap items-center justify-end gap-1.5">
+            <Chip tone="neutral">{phase.label}</Chip>
+            {isQuiz ? (
+              <Chip tone="gold">Reto final</Chip>
+            ) : isEvidence ? (
+              <Chip tone="sky">Bitácora</Chip>
+            ) : (
+              <Chip tone="mint">Complementaria</Chip>
+            )}
+            {done ? (
+              <Chip tone="mint">
+                <CheckCircle2 className="size-3" aria-hidden />
+                Completada
+              </Chip>
+            ) : null}
+          </div>
+        </div>
+
+        <div>
+          <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+            {meta.label} · +{activity.xp} XP
+          </span>
+          <h3 className="mt-1 font-display text-base font-bold text-white sm:text-lg">
+            {activity.title}
+          </h3>
+          <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-slate-300">
+            {activity.instructions}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between border-t border-white/8 pt-3">
+        <span className="text-xs font-bold text-slate-400">
+          {done ? '✨ Misión cumplida' : `+${activity.xp} XP`}
+        </span>
+        <LinkButton
+          to={activityUrl(missionCode, activity)}
+          variant={done ? 'secondary' : isQuiz ? 'gold' : 'primary'}
+          size="sm"
+        >
+          {done ? 'Repasar' : isQuiz ? 'Presentar' : 'Iniciar'}
+          <ArrowRight className="size-4" aria-hidden />
+        </LinkButton>
       </div>
     </SpotlightCard>
   );
