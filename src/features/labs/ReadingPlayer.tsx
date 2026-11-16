@@ -79,6 +79,7 @@ import {
   SchleidenSchwannGraphic2D,
   VirchowDivisionGraphic2D
 } from './CellGraphics2D';
+import { ReflectiveStructureCarousel } from './ReflectiveStructureCarousel';
 
 export interface Scientist {
   name?: string;
@@ -641,45 +642,15 @@ function VercelResponseSection({
         </div>
       ) : null}
 
-      {/* ── Cuadro de estructura celular (Obligatorio en Sesión 3) ── */}
+      {/* ── Cuadro de estructura celular con Cards Reflectivas (Obligatorio en Sesión 3) ── */}
       {structuresTable.length > 0 ? (
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <TableIcon className="size-4 text-amber-300" aria-hidden />
-            <label className="text-xs font-extrabold uppercase tracking-wider text-amber-200">
-              Paso 1: Completa el cuadro de la estructura celular (Estructura celular | Función principal)
-            </label>
-          </div>
-
-          <div className="overflow-hidden rounded-2xl border border-white/15 bg-white/3">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead>
-                <tr className="bg-white/6 text-xs font-extrabold uppercase tracking-wider text-slate-300">
-                  <th className="w-1/3 px-4 py-3 border-b border-white/10">Estructura celular</th>
-                  <th className="px-4 py-3 border-b border-white/10">Función principal</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {structuresTable.map((item) => (
-                  <tr key={item.id} className="hover:bg-white/4 transition">
-                    <td className="px-4 py-3 font-bold text-white whitespace-nowrap">
-                      {item.name}
-                    </td>
-                    <td className="px-4 py-2">
-                      <input
-                        type="text"
-                        disabled={isSubmitted && !isChangesRequested}
-                        value={tableAnswers[item.id] ?? ''}
-                        onChange={(e) => handleTableCellChange(item.id, e.target.value)}
-                        placeholder={item.placeholder ?? `Describe la función de ${item.name}...`}
-                        className="w-full rounded-xl border border-white/10 bg-ink-950/80 px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/20 outline-none"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ReflectiveStructureCarousel
+            structures={structuresTable}
+            answers={tableAnswers}
+            onAnswerChange={handleTableCellChange}
+            isReadOnly={isSubmitted && !isChangesRequested}
+          />
         </div>
       ) : null}
 

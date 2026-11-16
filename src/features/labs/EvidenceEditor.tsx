@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, ClipboardCheck, Cloud, Loader2, Send, ShieldCheck, Sparkles, Table } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ClipboardCheck, Cloud, Loader2, Send, ShieldCheck, Sparkles } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Card, Chip, EvidenceStatusBadge } from '../../components/ui';
 import { useToast } from '../../components/ui/Toast';
@@ -7,6 +7,7 @@ import { evidenceForActivity, useMyEvidence, useSaveEvidence, useSubmitEvidence 
 import type { Activity, Evidence, MissionDetail } from '../../lib/types';
 import { cn, timeAgo } from '../../lib/utils';
 import { AnimatedList, ClickSpark, SpotlightCard } from '../../components/reactbits';
+import { ReflectiveStructureCarousel } from './ReflectiveStructureCarousel';
 
 interface EvidenceEditorProps {
   activity: Activity;
@@ -294,39 +295,12 @@ export function EvidenceEditor({ activity, mission, onSubmitted }: EvidenceEdito
         <Card className="p-5">
           {structuresTable.length > 0 ? (
             <div className="space-y-4">
-              <div className="rounded-2xl border border-mint-400/25 bg-ink-950/70 p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/8 pb-2">
-                  <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-mint-300">
-                    <Table className="size-4 text-mint-400" aria-hidden />
-                    Cuadro de Estructura y Función Celular (Plataforma Vercel)
-                  </span>
-                  <span className="text-[11px] font-bold text-slate-400">
-                    {Object.values(tableAnswers).filter((v) => v.trim().length > 0).length} de {structuresTable.length} completados
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300">
-                  Completa la función principal de cada estructura celular para el metabolismo (puedes apoyarte en el Cubo Merge y las lecturas):
-                </p>
-
-                <div className="space-y-2.5">
-                  {structuresTable.map((item) => (
-                    <div key={item.id} className="grid sm:grid-cols-[11rem_1fr] items-center gap-2 rounded-xl bg-white/3 p-2.5 border border-white/6">
-                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <span className="size-2 rounded-full bg-mint-400 shrink-0" aria-hidden />
-                        {item.name}
-                      </span>
-                      <input
-                        type="text"
-                        value={tableAnswers[item.id] ?? ''}
-                        onChange={(e) => handleTableCellChange(item.id, e.target.value)}
-                        readOnly={locked}
-                        placeholder={item.placeholder}
-                        className="w-full rounded-lg border border-white/10 bg-ink-900/90 px-3 py-1.5 text-xs text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none disabled:opacity-60"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ReflectiveStructureCarousel
+                structures={structuresTable}
+                answers={tableAnswers}
+                onAnswerChange={handleTableCellChange}
+                isReadOnly={locked}
+              />
 
               <label className="block">
                 <span className="mb-2 flex items-center justify-between gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-400">

@@ -22,4 +22,9 @@ export {
   type AccordionCarouselProps,
   type AccordionCarouselItem
 } from './AccordionCarousel';
+export {
+  ReflectiveCard,
+  type ReflectiveCardProps
+} from './ReflectiveCard';
+
 
