@@ -67,7 +67,11 @@ import {
   ShinyText,
   SpotlightCard
 } from '../../components/reactbits';
-import { BodyLifeGraphic2D, CellActivityGraphic2D } from './InquiryGraphics2D';
+import {
+  BodyLifeGraphic2D,
+  CellActivityGraphic2D,
+  ParticipationGraphic2D
+} from './InquiryGraphics2D';
 import {
   CellWallGraphic2D,
   ChloroplastGraphic2D,
