@@ -565,7 +565,7 @@ function VercelResponseSection({
           </span>
           <div>
             <div className="flex items-center gap-2">
-              <Chip tone="gold">Espacio virtual de la plataforma Vercel</Chip>
+              <Chip tone="gold">Espacio de participación</Chip>
               {evidence?.status ? <EvidenceStatusBadge status={evidence.status} /> : null}
             </div>
             <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
@@ -898,7 +898,7 @@ export function Session1Subactivities({
             { tab: '1.1' as const, label: '1.1 Aportes y socialización', shortLabel: '1.1 Aportes' },
             { tab: '1.2' as const, label: '1.2 Aporte conceptual', shortLabel: '1.2 Concepto' },
             { tab: '1.3' as const, label: '1.3 Video: Historia celular', shortLabel: '1.3 Video' },
-            { tab: '1.4' as const, label: '1.4 Lectura y Espacio Vercel', shortLabel: '1.4 Lectura y Vercel' },
+            { tab: '1.4' as const, label: '1.4 Lectura y participación', shortLabel: '1.4 Lectura y participación' },
             { tab: '1.5' as const, label: '1.5 Reto Final de Evaluación', shortLabel: '1.5 Reto Final 🏆' },
             { tab: '1.6' as const, label: '1.6 Contenidos extras (Opcional)', shortLabel: '1.6 Extras' }
           ].map((item) => (
@@ -1312,7 +1312,7 @@ export function Session1Subactivities({
                   }
                 }}
               >
-                Siguiente: 1.4 Lectura y Espacio Vercel
+                Siguiente: 1.4 Lectura y participación
                 <ArrowRight className="size-4" aria-hidden />
               </Button>
             </div>
@@ -1321,7 +1321,7 @@ export function Session1Subactivities({
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          1.4 LECTURA ADAPTADA Y ESPACIO VIRTUAL DE VERCEL
+          1.4 LECTURA ADAPTADA Y ESPACIO DE PARTICIPACIÓN
           ══════════════════════════════════════════════════════════════ */}
       {(viewMode === 'all' || activeTab === '1.4') && (
         <section id="sub-1-4" className="scroll-mt-36 space-y-6 animate-in fade-in duration-300">
@@ -1337,10 +1337,10 @@ export function Session1Subactivities({
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <Chip tone="gold">Sub-actividad 1.4 · Lectura oficial y respuesta en plataforma</Chip>
+                    <Chip tone="gold">Sub-actividad 1.4 · Lectura y participación</Chip>
                   </div>
                   <h3 className="text-lg font-extrabold text-white sm:text-xl">
-                    Lectura adaptada y Espacio Virtual de Vercel
+                    Lectura adaptada y Espacio de participación
                   </h3>
                 </div>
               </div>
@@ -1362,7 +1362,7 @@ export function Session1Subactivities({
             <div className="rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-200 sm:text-sm space-y-2">
               <p className="font-bold text-white">Instrucción de la docente:</p>
               <p>
-                Realizar la lectura que se aloja en la plataforma (disponible abajo y en Google Docs) para dar respuesta a la siguiente pregunta en el espacio virtual de la plataforma Vercel:
+                Realizar la lectura que se aloja en la plataforma (disponible abajo y en Google Docs) para dar respuesta a la siguiente pregunta en el espacio de participación:
               </p>
               <p className="rounded-xl border border-amber-400/30 bg-amber-400/10 p-3 font-display text-sm font-bold text-amber-200 sm:text-base">
                 «{mandatoryQuestion}»
@@ -1431,7 +1431,7 @@ export function Session1Subactivities({
                   </div>
 
                   {historyCarouselLayout === 'circular' ? (
-                    <CircularCarousel items={historyCarouselItems} accentColor="#f59e0b" />
+                    <CircularCarousel items={historyCarouselItems} accentColor="#f59e0b" cardWidth={310} cardHeight={480} />
                   ) : (
                     <AccordionCarousel
                       items={historyTheoryAccordionItems}
@@ -1447,7 +1447,7 @@ export function Session1Subactivities({
               </div>
             </div>
 
-            {/* ── Espacio Virtual de Vercel (Formulario de Respuesta y Entrega) ── */}
+            {/* ── Espacio de participación (Formulario de Respuesta y Entrega) ── */}
             {mandatoryQuestion ? (
               <VercelResponseSection
                 activity={activity}
@@ -1617,7 +1617,7 @@ export function Session1Subactivities({
                 }}
               >
                 <ArrowLeft className="size-4 mr-1.5" />
-                Anterior: 1.4 Lectura y Vercel
+                Anterior: 1.4 Lectura y participación
               </Button>
               <Button
                 type="button"
@@ -2424,7 +2424,7 @@ export function Session2Subactivities({
             { tab: '2.2' as const, label: '2.2 Célula Vegetal', shortLabel: '2.2 Vegetal' },
             { tab: '2.3' as const, label: '2.3 Célula Animal', shortLabel: '2.3 Animal' },
             { tab: '2.4' as const, label: '2.4 Modelo 360 y Video', shortLabel: '2.4 360 y Video' },
-            { tab: '2.5' as const, label: '2.5 Pregunta y Vercel', shortLabel: '2.5 Vercel' },
+            { tab: '2.5' as const, label: '2.5 Participación', shortLabel: '2.5 Participación' },
             { tab: '2.6' as const, label: '2.6 Quiver y Comparación', shortLabel: '2.6 Quiver' },
             { tab: '2.7' as const, label: '2.7 Reto Final (Quiz)', shortLabel: '2.7 Reto Final 🏆' },
             { tab: '2.8' as const, label: '2.8 Actividades complementarias', shortLabel: '2.8 Extras' }
@@ -2882,7 +2882,7 @@ export function Session2Subactivities({
                 <li className="flex items-start gap-2">
                   <span className="font-bold text-sky-400 shrink-0">4.</span>
                   <span>
-                    <strong>Argumentar en la plataforma Vercel:</strong> Recopilar evidencias visuales para sustentar tu respuesta formal a la pregunta 2.5.
+                    <strong>Argumentar en la plataforma:</strong> Recopilar evidencias visuales para sustentar tu respuesta formal a la pregunta 2.5.
                   </span>
                 </li>
               </ul>
@@ -2954,7 +2954,7 @@ export function Session2Subactivities({
                 size="md"
                 onClick={() => handleSelectTab('2.5')}
               >
-                Siguiente: 2.5 Planteamiento y Vercel
+                Siguiente: 2.5 Participación
                 <ArrowRight className="size-4 ml-1.5" />
               </Button>
             </div>
@@ -2963,7 +2963,7 @@ export function Session2Subactivities({
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          2.5 PLANTEAMIENTO DE LA PREGUNTA Y ESPACIO VIRTUAL VERCEL
+          2.5 PARTICIPACIÓN
           ══════════════════════════════════════════════════════════════ */}
       {(viewMode === 'all' || activeTab === '2.5') && (
         <section id="sub-2-5" className="scroll-mt-36 space-y-6 animate-in fade-in duration-300">
@@ -2979,10 +2979,10 @@ export function Session2Subactivities({
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <Chip tone="gold">Sub-actividad 2.5 · Planteamiento e Indagación en Vercel</Chip>
+                    <Chip tone="gold">Sub-actividad 2.5 · Participación</Chip>
                   </div>
                   <h3 className="text-lg font-extrabold text-white sm:text-xl">
-                    Planteamiento de la pregunta y Espacio Virtual Vercel
+                    Participación
                   </h3>
                 </div>
               </div>
@@ -2999,11 +2999,11 @@ export function Session2Subactivities({
                 «{mandatoryQuestion}»
               </p>
               <p className="text-slate-300">
-                Para dar respuesta al planteamiento, la docente invita a los estudiantes a visualizar el modelo 360 de la célula y sus partes y el video interactivo. Los estudiantes dan respuesta al planteamiento en la plataforma Vercel.
+                Para dar respuesta al planteamiento, la docente invita a los estudiantes a visualizar el modelo 360 de la célula y sus partes y el video interactivo. Los estudiantes dan respuesta al planteamiento en la plataforma.
               </p>
             </div>
 
-            {/* ── Espacio Virtual de Vercel (Formulario de Respuesta y Entrega Persistida) ── */}
+            {/* ── Espacio de participación (Formulario de Respuesta y Entrega Persistida) ── */}
             <VercelResponseSection
               activity={activity}
               mission={mission}
@@ -3313,7 +3313,7 @@ export function Session2Subactivities({
                 onClick={() => handleSelectTab('2.5')}
               >
                 <ArrowLeft className="size-4 mr-1.5" />
-                Anterior: 2.5 Planteamiento y Vercel
+                Anterior: 2.5 Participación
               </Button>
               <Button
                 type="button"
@@ -3914,7 +3914,7 @@ export function Session3Subactivities({
     { key: '3.3', number: '3.3', label: 'Preguntas motivadoras' },
     { key: '3.4', number: '3.4', label: 'Video 360, Lectura y Canva' },
     { key: '3.5', number: '3.5', label: 'Cubo Merge' },
-    { key: '3.6', number: '3.6', label: 'Cuadro Estructuras Vercel', badge: 'Evaluado' },
+    { key: '3.6', number: '3.6', label: 'Cuadro de Estructuras', badge: 'Evaluado' },
     { key: '3.7', number: '3.7', label: 'Reto Final', badge: 'Examen' },
     { key: '3.8', number: '3.8', label: 'Actividades complementarias', badge: 'Opcional' }
   ];
@@ -4998,7 +4998,7 @@ export function Session3Subactivities({
                 onClick={() => handleSelectTab('3.6')}
                 className="font-bold shadow-lg shadow-purple-500/10"
               >
-                Siguiente: 3.6 Cuadro Estructuras Vercel
+                Siguiente: 3.6 Cuadro de Estructuras
                 <ArrowRight className="size-4 ml-1.5" />
               </Button>
             </div>
@@ -5007,7 +5007,7 @@ export function Session3Subactivities({
       )}
 
       {/* ══════════════════════════════════════════════════════════════════
-          3.6 CUADRO DE LA ESTRUCTURA CELULAR EN LA PLATAFORMA VERCEL
+          3.6 CUADRO DE LA ESTRUCTURA CELULAR EN LA PLATAFORMA
           ══════════════════════════════════════════════════════════════════ */}
       {(viewMode === 'all' || activeTab === '3.6') && (
         <section id="sub-3-6" className="scroll-mt-36 space-y-5">
@@ -5024,7 +5024,7 @@ export function Session3Subactivities({
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <Chip tone="mint">Espacio Virtual Vercel · Sesión 3</Chip>
+                    <Chip tone="mint">Espacio de participación · Sesión 3</Chip>
                     <span className="text-xs text-slate-400">Entrega formal calificada</span>
                   </div>
                   <h3 className="text-lg font-extrabold text-white sm:text-xl">
@@ -5049,13 +5049,13 @@ export function Session3Subactivities({
               </p>
             </div>
 
-            {/* Componente del Espacio Virtual de Vercel con autoguardado y envío */}
+            {/* Componente del Espacio de participación con autoguardado y envío */}
             <VercelResponseSection
               activity={activity}
               mission={mission}
               mandatoryQuestion={
                 mandatoryQuestion ??
-                'Los estudiantes completan el cuadro de la estructura celular en la plataforma Vercel con la función principal de cada organelo y responden cómo obtienen y utilizan energía las células.'
+                'Los estudiantes completan el cuadro de la estructura celular en la plataforma con la función principal de cada organelo y responden cómo obtienen y utilizan energía las células.'
               }
               structuresTable={effectiveStructures}
               onEvidenceSubmitted={onEvidenceSubmitted}
@@ -5129,7 +5129,7 @@ export function Session3Subactivities({
                   ¡Cito te acompaña a la Gran Evaluación Final!
                 </h4>
                 <p className="leading-relaxed">
-                  Has descubierto la analogía de la fábrica celular, cómo las mitocondrias generan ATP por respiración celular, cómo los cloroplastos capturan luz solar por fotosíntesis, el equilibrio osmótico y completado el cuadro en Vercel. ¡Es hora de demostrar tus aprendizajes y conquistar la insignia maestra de <strong className="text-amber-200">Científico 360</strong>!
+                  Has descubierto la analogía de la fábrica celular, cómo las mitocondrias generan ATP por respiración celular, cómo los cloroplastos capturan luz solar por fotosíntesis, el equilibrio osmótico y completado el cuadro en la plataforma. ¡Es hora de demostrar tus aprendizajes y conquistar la insignia maestra de <strong className="text-amber-200">Científico 360</strong>!
                 </p>
               </div>
             </div>
@@ -5208,7 +5208,7 @@ export function Session3Subactivities({
                 onClick={() => handleSelectTab('3.6')}
               >
                 <ArrowLeft className="size-4 mr-1.5" />
-                Anterior: 3.6 Cuadro Estructuras Vercel
+                Anterior: 3.6 Cuadro de Estructuras
               </Button>
               <div className="flex flex-wrap items-center gap-2">
                 <Button

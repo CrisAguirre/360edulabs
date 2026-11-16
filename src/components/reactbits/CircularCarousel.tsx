@@ -59,16 +59,24 @@ export function CircularCarousel({
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  // Compute responsive radius
+  // Compute responsive radius so cards stay fully visible inside the viewport
   const dynamicRadius =
     customRadius ??
-    (containerWidth < 480
-      ? 220
-      : containerWidth < 768
-      ? 280
-      : containerWidth < 1024
-      ? 350
-      : 400);
+    Math.round(
+      Math.max(
+        180,
+        Math.min(
+          total <= 5 ? 290 : 340,
+          containerWidth < 480
+            ? 180
+            : containerWidth < 768
+            ? 240
+            : containerWidth < 1024
+            ? 280
+            : 320
+        )
+      )
+    );
 
   // Update active index based on rotation
   const syncActiveIndex = useCallback(
@@ -226,8 +234,8 @@ export function CircularCarousel({
           <div
             className="relative mx-auto flex items-center justify-center touch-pan-y"
             style={{
-              height: cardHeight + 40,
-              perspective: '1200px',
+              height: cardHeight + 48,
+              perspective: '1400px',
               perspectiveOrigin: '50% 50%'
             }}
             onPointerDown={handlePointerDown}
@@ -240,7 +248,7 @@ export function CircularCarousel({
               className="relative size-full cursor-grab active:cursor-grabbing"
               style={{
                 transformStyle: 'preserve-3d',
-                transform: `rotateY(${rotation}deg)`,
+                transform: `translateZ(-${dynamicRadius}px) rotateY(${rotation}deg)`,
                 transition: isDragging ? 'none' : 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
               }}
             >
@@ -262,7 +270,7 @@ export function CircularCarousel({
                       isCenter ? 'z-30' : isBack ? 'z-10 opacity-30' : 'z-20 opacity-80'
                     )}
                     style={{
-                      width: cardWidth,
+                      width: Math.min(cardWidth, containerWidth - 32),
                       height: cardHeight,
                       transform: `rotateY(${cardAngle}deg) translateZ(${dynamicRadius}px)`,
                       transformStyle: 'preserve-3d'
@@ -270,7 +278,7 @@ export function CircularCarousel({
                   >
                     <div
                       className={cn(
-                        'flex size-full flex-col justify-between rounded-3xl border p-4 sm:p-5 backdrop-blur-xl transition-all duration-300',
+                        'flex size-full flex-col justify-between rounded-3xl border p-4 sm:p-5 backdrop-blur-xl transition-all duration-300 overflow-hidden',
                         isCenter
                           ? 'border-white/35 bg-ink-900/90 shadow-2xl ring-2'
                           : 'border-white/10 bg-ink-950/75 hover:border-white/25 hover:opacity-100'
@@ -314,15 +322,31 @@ export function CircularCarousel({
                       </div>
 
                       {/* Gráfico 2D interactivo / ilustrativo de la estructura */}
-                      <div className="my-2 overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-2 shadow-inner">
+                      <div className="my-2 flex h-36 sm:h-40 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-2 shadow-inner">
                         {item.graphic2D}
                       </div>
 
-                      {/* Explicación científica y código Quiver */}
-                      <div className="space-y-2 border-t border-white/8 pt-2.5">
+                      {/* Explicación científica y código Quiver o detalles */}
+                      <div className="space-y-2 border-t border-white/8 pt-2">
                         <p className="line-clamp-3 text-[11px] leading-relaxed text-slate-300">
                           {item.description}
                         </p>
+
+                        {item.details && item.details.length > 0 && (
+                          <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+                            {item.details.map((d, i) => (
+                              <div
+                                key={i}
+                                className="rounded-xl border border-white/8 bg-white/4 px-2 py-1 text-[10px]"
+                              >
+                                <span className="block font-bold text-slate-400">{d.label}</span>
+                                <span className="block font-semibold text-white truncate" title={d.value}>
+                                  {d.value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
 
                         {item.quiverColor && (
                           <div className="flex items-center justify-between rounded-xl border border-white/8 bg-white/4 px-2.5 py-1 text-[10px] font-bold text-slate-300">

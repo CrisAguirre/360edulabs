@@ -384,7 +384,7 @@ export function MissionDetailPage() {
           <SectionHeading
             eyebrow="Contenido General · Nivel Superior"
             title="La extraña historia de la teoría celular"
-            description="Eje central de indagación de la Sesión 1: recorre las 6 estaciones oficiales de forma dinámica (1.1 Aportes, 1.2 Aporte conceptual, 1.3 Video documental, 1.4 Lectura y Espacio Virtual Vercel, 1.5 Reto Final evaluativo y 1.6 Contenidos extras de apoyo)."
+            description="Eje central de indagación de la Sesión 1: recorre las 6 estaciones oficiales de forma dinámica (1.1 Aportes, 1.2 Aporte conceptual, 1.3 Video documental, 1.4 Lectura y participación, 1.5 Reto Final evaluativo y 1.6 Contenidos extras de apoyo)."
             action={
               <Chip tone="mint">
                 <Trophy className="size-3.5 text-mint-300" aria-hidden />
@@ -431,7 +431,7 @@ export function MissionDetailPage() {
           <SectionHeading
             eyebrow="Contenido General · Nivel Superior"
             title="Construyendo el concepto de célula"
-            description="Eje central de indagación de la Sesión 2: recorre las 8 estaciones oficiales de forma dinámica (2.1 Saberes previos, 2.2 Célula vegetal, 2.3 Célula animal, 2.4 Modelo 360 y video, 2.5 Pregunta e indagación Vercel, 2.6 Quiver y comparación, 2.7 Reto Final evaluativo, 2.8 Actividades complementarias)."
+            description="Eje central de indagación de la Sesión 2: recorre las 8 estaciones oficiales de forma dinámica (2.1 Saberes previos, 2.2 Célula vegetal, 2.3 Célula animal, 2.4 Modelo 360 y video, 2.5 Participación, 2.6 Quiver y comparación, 2.7 Reto Final evaluativo, 2.8 Actividades complementarias)."
             action={
               <Chip tone="sky">
                 <Trophy className="size-3.5 text-sky-300" aria-hidden />
@@ -518,7 +518,7 @@ export function MissionDetailPage() {
           <SectionHeading
             eyebrow="Contenido General · Nivel Superior"
             title="Procesos metabólicos de la célula"
-            description="Eje central de indagación de la Sesión 3: recorre las 8 estaciones oficiales de forma dinámica (3.1 Saberes previos, 3.2 Fábrica y video 360, 3.3 Preguntas motivadoras, 3.4 Video 360, lectura y Canva, 3.5 Cubo Merge, 3.6 Cuadro estructuras Vercel, 3.7 Reto Final evaluativo, 3.8 Actividades complementarias)."
+            description="Eje central de indagación de la Sesión 3: recorre las 8 estaciones oficiales de forma dinámica (3.1 Saberes previos, 3.2 Fábrica y video 360, 3.3 Preguntas motivadoras, 3.4 Video 360, lectura y Canva, 3.5 Cubo Merge, 3.6 Cuadro de estructuras, 3.7 Reto Final evaluativo, 3.8 Actividades complementarias)."
             action={
               <Chip tone="gold">
                 <Trophy className="size-3.5 text-amber-300" aria-hidden />
