@@ -49,11 +49,27 @@ import {
   AnimatedList,
   Aurora,
   BlurText,
+  CircularCarousel,
+  type CircularCarouselItem,
   ClickSpark,
   DecryptedText,
   ShinyText,
   SpotlightCard
 } from '../../components/reactbits';
+import {
+  CellWallGraphic2D,
+  ChloroplastGraphic2D,
+  CentralVacuoleGraphic2D,
+  PlasmaMembraneGraphic2D,
+  NucleusGraphic2D,
+  MitochondriaGraphic2D,
+  CytoplasmGraphic2D,
+  AnimalMembraneGraphic2D,
+  CentriolesGraphic2D,
+  GolgiGraphic2D,
+  LysosomeGraphic2D,
+  AnimalVacuolesGraphic2D
+} from './CellGraphics2D';
 
 export interface Scientist {
   name?: string;
@@ -770,6 +786,8 @@ export interface Session1SubactivitiesProps {
   onEvidenceSubmitted?: ReadingPlayerProps['onEvidenceSubmitted'];
 }
 
+export type Session1TabKey = '1.1' | '1.2' | '1.3' | '1.4' | '1.5' | '1.6';
+
 export function Session1Subactivities({
   activity,
   mission,
@@ -787,19 +805,20 @@ export function Session1Subactivities({
   const [revealedPostulates, setRevealedPostulates] = useState(0);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [activeTab, setActiveTab] = useState<'1.1' | '1.2' | '1.3' | '1.4' | '1.5'>('1.1');
+  const [activeTab, setActiveTab] = useState<Session1TabKey>('1.1');
   const [viewMode, setViewMode] = useState<'tabs' | 'all'>('tabs');
   const toast = useToast();
 
-  const handleSelectTab = (tab: '1.1' | '1.2' | '1.3' | '1.4' | '1.5') => {
+  const handleSelectTab = (tab: Session1TabKey) => {
     setActiveTab(tab);
     if (viewMode === 'all') {
-      const idMap = {
+      const idMap: Record<Session1TabKey, string> = {
         '1.1': 'sub-1-1',
         '1.2': 'sub-1-2',
         '1.3': 'sub-1-3',
         '1.4': 'sub-1-4',
-        '1.5': 'sub-1-5'
+        '1.5': 'sub-1-5',
+        '1.6': 'sub-1-6'
       };
       const el = document.getElementById(idMap[tab]);
       if (el) {
@@ -831,7 +850,7 @@ export function Session1Subactivities({
 
   return (
     <div className="space-y-6">
-      {/* ── Barra de navegación de nivel superior por 5 pestañas ── */}
+      {/* ── Barra de navegación de nivel superior por 6 pestañas ── */}
       <nav
         aria-label="Pestañas de la Sesión 1"
         className="sticky top-20 z-20 flex flex-wrap items-center justify-between gap-2.5 rounded-2xl border border-white/10 bg-ink-950/95 p-2.5 backdrop-blur-md shadow-xl"
@@ -851,7 +870,8 @@ export function Session1Subactivities({
             { tab: '1.2' as const, label: '1.2 Aporte conceptual', shortLabel: '1.2 Concepto' },
             { tab: '1.3' as const, label: '1.3 Video: Historia celular', shortLabel: '1.3 Video' },
             { tab: '1.4' as const, label: '1.4 Lectura y Espacio Vercel', shortLabel: '1.4 Lectura y Vercel' },
-            { tab: '1.5' as const, label: '1.5 Contenidos extras (Opcional)', shortLabel: '1.5 Extras' }
+            { tab: '1.5' as const, label: '1.5 Contenidos extras (Opcional)', shortLabel: '1.5 Extras' },
+            { tab: '1.6' as const, label: '1.6 Reto Final de Evaluación', shortLabel: '1.6 Reto Final 🏆' }
           ].map((item) => (
             <button
               key={item.tab}
@@ -1596,29 +1616,6 @@ export function Session1Subactivities({
                   ) : null}
                 </div>
               </div>
-
-              {/* Extra 6: Reto final (Quiz) - OBLIGATORIO */}
-              <div className="flex flex-col justify-between rounded-2xl border border-amber-400/40 bg-amber-400/12 p-4 space-y-3 transition hover:border-amber-400/60 shadow-lg shadow-amber-400/5">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-2xl">🏆</span>
-                    <Chip tone="gold">
-                      <Trophy className="size-3" aria-hidden />
-                      Reto final obligatorio · +30 XP
-                    </Chip>
-                  </div>
-                  <h5 className="text-sm font-extrabold text-white">Quiz de la Sesión 1</h5>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Examen interactivo de 6 preguntas con Cito como guía. <strong>Obligatorio:</strong> necesitas al menos el 70% para aprobar y conquistar la sesión.
-                  </p>
-                </div>
-                <Link
-                  to={`/misiones/${mission?.code ?? 'm1'}/quiz`}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-400 px-3 py-2 text-xs font-extrabold text-ink-950 transition hover:bg-amber-300 shadow-md shadow-amber-400/20"
-                >
-                  <Trophy className="size-3.5" /> Presentar Quiz Obligatorio
-                </Link>
-              </div>
             </div>
 
             {/* Vista desplegada de la Línea de tiempo si el estudiante la activa */}
@@ -1688,17 +1685,178 @@ export function Session1Subactivities({
                   }
                 }}
               >
-                <ArrowLeft className="size-4" aria-hidden />
+                <ArrowLeft className="size-4 mr-1.5" />
                 Anterior: 1.4 Lectura y Vercel
               </Button>
-              <a
-                href="#misiones-complementarias"
-                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-mint-400 to-sky-400 px-5 py-2.5 text-xs font-extrabold text-ink-950 shadow-lg shadow-mint-400/20 transition hover:brightness-110 sm:text-sm"
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="#misiones-complementarias"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                >
+                  <Sparkles className="size-3.5 text-mint-300" aria-hidden />
+                  Ver actividades complementarias
+                </a>
+                <Button
+                  type="button"
+                  variant="gold"
+                  size="md"
+                  onClick={() => {
+                    setActiveTab('1.6');
+                    if (viewMode === 'all') {
+                      document.getElementById('sub-1-6')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                >
+                  Siguiente: 1.6 Reto Final (Quiz)
+                  <ArrowRight className="size-4 ml-1.5" />
+                </Button>
+              </div>
+            </div>
+          </SpotlightCard>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          1.6 RETO FINAL DE EVALUACIÓN: TEORÍA CELULAR
+          ══════════════════════════════════════════════════════════════ */}
+      {(viewMode === 'all' || activeTab === '1.6') && (
+        <section id="sub-1-6" className="scroll-mt-36 space-y-4 animate-in fade-in duration-300">
+          <SpotlightCard
+            spotlightColor="rgba(251, 191, 36, 0.2)"
+            borderColor="rgba(251, 191, 36, 0.45)"
+            className="p-5 sm:p-7 space-y-6"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-400/25 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid size-11 place-items-center rounded-2xl bg-amber-400/20 text-amber-300 font-extrabold text-base">
+                  1.6
+                </span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Chip tone="gold">Sub-actividad 1.6 · Cierre y Reto Final Obligatorio</Chip>
+                    <span className="text-xs font-bold text-amber-200">+30 XP</span>
+                  </div>
+                  <h3 className="text-xl font-extrabold text-white sm:text-2xl">
+                    <ShinyText text="Reto final de evaluación: Teoría Celular" speed={4} className="font-extrabold text-amber-200" />
+                  </h3>
+                </div>
+              </div>
+              <Chip tone="gold">
+                <Trophy className="size-3.5 text-amber-300" aria-hidden />
+                Requisito para conquistar la Sesión 1
+              </Chip>
+            </div>
+
+            {/* Mensaje de orientación con Cito */}
+            <div className="flex items-start gap-4 rounded-2xl border border-amber-400/30 bg-amber-400/8 p-4 sm:p-5">
+              <div className="shrink-0">
+                <CitoMascot mood="celebrating" size={56} />
+              </div>
+              <div className="space-y-1.5 text-xs text-slate-200 sm:text-sm">
+                <h4 className="font-display font-extrabold text-amber-200 text-sm sm:text-base">
+                  ¡Cito te acompaña al Reto Evaluativo!
+                </h4>
+                <p className="leading-relaxed">
+                  Has recorrido los orígenes de la microscopía con Janssen y Leeuwenhoek, el descubrimiento de Hooke, los 4 postulados de Schleiden, Schwann y Virchow, y la exclusión de los virus acelulares. Es momento de comprobar tus conocimientos y conquistar tu insignia científica.
+                </p>
+              </div>
+            </div>
+
+            {/* Ficha técnica del reto evaluativo */}
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Preguntas oficiales</span>
+                <p className="font-display text-lg font-extrabold text-white">6 Preguntas</p>
+                <p className="text-[11px] text-slate-400">Opción múltiple con justificación</p>
+              </div>
+              <div className="rounded-2xl border border-amber-400/25 bg-amber-400/5 p-4 space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300">Puntaje para aprobar</span>
+                <p className="font-display text-lg font-extrabold text-amber-200">70% de aciertos</p>
+                <p className="text-[11px] text-slate-400">Mínimo para desbloquear la insignia</p>
+              </div>
+              <div className="rounded-2xl border border-mint-400/25 bg-mint-400/5 p-4 space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-mint-300">Intentos y progreso</span>
+                <p className="font-display text-lg font-extrabold text-mint-200">Intentos libres</p>
+                <p className="text-[11px] text-slate-400">Se conserva tu calificación más alta</p>
+              </div>
+            </div>
+
+            {/* Checklist interactivo de repaso de los 4 postulados antes del quiz */}
+            <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-3">
+              <h5 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                <CheckCircle2 className="size-4 text-mint-300" />
+                Checklist de conceptos clave para el Reto 1.6:
+              </h5>
+              <ul className="grid gap-2 text-xs text-slate-300 sm:grid-cols-2">
+                <li className="flex items-start gap-2 rounded-xl bg-white/4 p-2.5">
+                  <span className="text-mint-400 font-bold shrink-0">✓</span>
+                  <span><strong>Postulado 1:</strong> Todos los seres vivos están hechos de 1 o más células.</span>
+                </li>
+                <li className="flex items-start gap-2 rounded-xl bg-white/4 p-2.5">
+                  <span className="text-mint-400 font-bold shrink-0">✓</span>
+                  <span><strong>Postulado 2:</strong> Toda célula procede de otra preexistente por división.</span>
+                </li>
+                <li className="flex items-start gap-2 rounded-xl bg-white/4 p-2.5">
+                  <span className="text-mint-400 font-bold shrink-0">✓</span>
+                  <span><strong>Postulado 3:</strong> Todas comparten biomoléculas (agua, proteínas, ADN, lípidos).</span>
+                </li>
+                <li className="flex items-start gap-2 rounded-xl bg-white/4 p-2.5">
+                  <span className="text-mint-400 font-bold shrink-0">✓</span>
+                  <span><strong>Postulado 4:</strong> La célula es la unidad funcional donde ocurre el metabolismo.</span>
+                </li>
+                <li className="flex items-start gap-2 rounded-xl bg-rose-400/10 p-2.5 sm:col-span-2 text-rose-200 border border-rose-400/20">
+                  <span className="text-rose-400 font-bold shrink-0">⚠️</span>
+                  <span><strong>Exclusión biológica:</strong> Los virus son <em>acelulares</em>: no poseen estructura celular propia y necesitan parasitar a una célula viva.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Botón de acción principal al Reto Final */}
+            <div className="rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-400/10 via-amber-400/5 to-transparent p-5 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h4 className="text-base font-extrabold text-white">¿Listo para presentar tu Reto Final?</h4>
+                <p className="text-xs text-slate-300">Al aprobar con 70% conquistarás la Sesión 1 y habilitarás el paso a la Sesión 2.</p>
+              </div>
+              <Link
+                to={`/misiones/${mission?.code ?? 'm1'}/quiz`}
+                className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 px-6 text-sm font-extrabold text-ink-950 shadow-xl shadow-amber-400/25 transition hover:brightness-110"
               >
-                <Sparkles className="size-4" aria-hidden />
-                Explorar Misiones complementarias
-                <ArrowRight className="size-4" aria-hidden />
-              </a>
+                <Trophy className="size-5" />
+                Iniciar Reto Final de Evaluación (Quiz)
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+
+            {/* Pie de navegación de pestaña 1.6 */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => {
+                  setActiveTab('1.5');
+                  if (viewMode === 'all') {
+                    document.getElementById('sub-1-5')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              >
+                <ArrowLeft className="size-4 mr-1.5" />
+                Anterior: 1.5 Contenidos extras
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="md"
+                onClick={() => {
+                  setActiveTab('1.1');
+                  if (viewMode === 'all') {
+                    document.getElementById('sub-1-1')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              >
+                <RotateCcw className="size-4 mr-1.5" />
+                Repasar desde 1.1 Aportes
+              </Button>
             </div>
           </SpotlightCard>
         </section>
@@ -1706,6 +1864,181 @@ export function Session1Subactivities({
     </div>
   );
 }
+
+/* ── Elementos del Carrusel Circular 3D con Gráficos 2D (Sesión 2) ── */
+const plantCarouselItems: CircularCarouselItem[] = [
+  {
+    id: 'pared',
+    title: '1. Pared Celular de Celulosa',
+    subtitle: 'Armadura externa vegetal',
+    tag: 'Exclusivo vegetal',
+    tagTone: 'mint',
+    description: 'Capa rígida de celulosa que rodea la membrana plasmática. Brinda soporte mecánico a las plantas para crecer erguidas sin esqueleto y previene el estallamiento celular ante alta turgencia.',
+    color: '#b45309',
+    icon: '🧱',
+    quiverColor: { label: 'Café / Ocre', hex: '#b45309' },
+    graphic2D: <CellWallGraphic2D />
+  },
+  {
+    id: 'cloroplasto',
+    title: '2. Cloroplastos con Clorofila',
+    subtitle: 'Fábrica fotosintética',
+    tag: 'Exclusivo vegetal',
+    tagTone: 'mint',
+    description: 'Organelos ovalados verdes con tilacoides y clorofila. Absorben fotones de luz solar para transformar dióxido de carbono y agua en azúcares (glucosa) y oxígeno vital mediante la fotosíntesis.',
+    color: '#22c55e',
+    icon: '🌿',
+    quiverColor: { label: 'Verde intenso', hex: '#22c55e' },
+    graphic2D: <ChloroplastGraphic2D />
+  },
+  {
+    id: 'vacuola',
+    title: '3. Gran Vacuola Central',
+    subtitle: 'Depósito de turgencia',
+    tag: 'Exclusivo vegetal',
+    tagTone: 'sky',
+    description: 'Vesícula gigante que puede ocupar hasta el 90% del volumen celular. Almacena agua, minerales y azúcares; al llenarse empuja las paredes celulares dando firmeza (turgencia) a tallos y hojas.',
+    color: '#0ea5e9',
+    icon: '🫧',
+    quiverColor: { label: 'Celeste / Azul claro', hex: '#0ea5e9' },
+    graphic2D: <CentralVacuoleGraphic2D />
+  },
+  {
+    id: 'membrana',
+    title: '4. Membrana Plasmática',
+    subtitle: 'Barrera selectiva',
+    tag: 'Compartido',
+    tagTone: 'purple',
+    description: 'Bicapa de fosfolípidos con canales proteicos situada por dentro de la pared celular. Regula selectivamente el ingreso de agua, nutrientes esenciales y la salida de residuos metabólicos.',
+    color: '#a78bfa',
+    icon: '🛡️',
+    quiverColor: { label: 'Morado / Violeta', hex: '#a78bfa' },
+    graphic2D: <PlasmaMembraneGraphic2D />
+  },
+  {
+    id: 'nucleo',
+    title: '5. Núcleo Celular',
+    subtitle: 'Centro de control genético',
+    tag: 'Compartido',
+    tagTone: 'sky',
+    description: 'Resguarda el material genético (ADN) con las instrucciones para construir todas las proteínas de la planta. En la célula vegetal se encuentra desplazado a la periferia por la gran vacuola.',
+    color: '#3b82f6',
+    icon: '🧠',
+    quiverColor: { label: 'Azul', hex: '#3b82f6' },
+    graphic2D: <NucleusGraphic2D />
+  },
+  {
+    id: 'mitocondria',
+    title: '6. Mitocondrias Vegetales',
+    subtitle: 'Centrales de energía celular',
+    tag: 'Compartido',
+    tagTone: 'gold',
+    description: 'Queman la glucosa fabricada en los cloroplastos mediante la respiración celular diurna y nocturna para producir ATP utilizable por la planta para crecer, florecer y defenderse.',
+    color: '#f97316',
+    icon: '⚡',
+    quiverColor: { label: 'Naranja', hex: '#f97316' },
+    graphic2D: <MitochondriaGraphic2D />
+  },
+  {
+    id: 'citoplasma',
+    title: '7. Citoplasma y Citoesqueleto',
+    subtitle: 'Medio y corrientes de transporte',
+    tag: 'Compartido',
+    tagTone: 'mint',
+    description: 'Matriz fluida donde se suspenden los organelos. Su red de filamentos genera corrientes citoplasmáticas continuas (ciclosis) que movilizan cloroplastos hacia la luz solar.',
+    color: '#14b8a6',
+    icon: '💧',
+    quiverColor: { label: 'Verde menta', hex: '#14b8a6' },
+    graphic2D: <CytoplasmGraphic2D />
+  }
+];
+
+const animalCarouselItems: CircularCarouselItem[] = [
+  {
+    id: 'membrana-animal',
+    title: '1. Membrana Celular Elástica',
+    subtitle: 'Bicapa lipídica flexible',
+    tag: 'Gran flexibilidad',
+    tagTone: 'purple',
+    description: 'Bicapa lipídica fluida sin pared exterior rígida. Permite que las células animales cambien de forma, se deformen elásticamente y formen tejidos móviles (músculo, sangre, piel).',
+    color: '#a855f7',
+    icon: '🛡️',
+    quiverColor: { label: 'Morado / Púrpura', hex: '#a855f7' },
+    graphic2D: <AnimalMembraneGraphic2D />
+  },
+  {
+    id: 'nucleo-animal',
+    title: '2. Núcleo Central y Nucleolo',
+    subtitle: 'Carioteca central esférica',
+    tag: 'Posición central',
+    tagTone: 'sky',
+    description: 'Ubicado en el centro geométrico de la célula animal. Contiene la cromatina y nucleolo denso, dirigiendo la síntesis de proteínas, el metabolismo y la división celular.',
+    color: '#3b82f6',
+    icon: '🧠',
+    quiverColor: { label: 'Azul intenso', hex: '#3b82f6' },
+    graphic2D: <NucleusGraphic2D />
+  },
+  {
+    id: 'mitocondria-animal',
+    title: '3. Mitocondrias Activas',
+    subtitle: 'Alta producción de ATP',
+    tag: 'Alta densidad',
+    tagTone: 'gold',
+    description: 'Presentes en gran número para soportar la alta tasa metabólica y de locomoción de los animales. Oxidan nutrientes orgánicos ingeridos para liberar energía constante.',
+    color: '#f97316',
+    icon: '⚡',
+    quiverColor: { label: 'Naranja brillante', hex: '#f97316' },
+    graphic2D: <MitochondriaGraphic2D />
+  },
+  {
+    id: 'vacuolas-animal',
+    title: '4. Vacuolas Pequeñas y Vesículas',
+    subtitle: 'Dispersas y transitorias',
+    tag: 'Pequeñas y dispersas',
+    tagTone: 'gold',
+    description: 'A diferencia de la planta, las células animales poseen vacuolas diminutas que almacenan temporalmente agua o transportan nutrientes sin generar presión de turgencia.',
+    color: '#eab308',
+    icon: '🫧',
+    quiverColor: { label: 'Amarillo', hex: '#eab308' },
+    graphic2D: <AnimalVacuolesGraphic2D />
+  },
+  {
+    id: 'centriolos',
+    title: '5. Centríolos y Citosol Animal',
+    subtitle: 'Huso mitótico y división celular',
+    tag: 'Exclusivo animal',
+    tagTone: 'sky',
+    description: 'Par de cilindros de microtúbulos (organización 9x3) perpendiculares entre sí. Organizan el huso mitótico durante la división celular (mitosis y meiosis).',
+    color: '#06b6d4',
+    icon: '🎯',
+    quiverColor: { label: 'Celeste claro', hex: '#06b6d4' },
+    graphic2D: <CentriolesGraphic2D />
+  },
+  {
+    id: 'golgi',
+    title: '6. Complejo de Golgi',
+    subtitle: 'Empaquetador y distribuidor',
+    tag: 'Compartido',
+    tagTone: 'rose',
+    description: 'Pila de sacos membranosos que recibe proteínas del retículo endoplásmico, las modifica químicamente y las empaqueta en vesículas para secreción o uso celular.',
+    color: '#ec4899',
+    icon: '📦',
+    quiverColor: { label: 'Rosado', hex: '#ec4899' },
+    graphic2D: <GolgiGraphic2D />
+  },
+  {
+    id: 'lisosomas',
+    title: '7. Lisosomas Digestivos',
+    subtitle: 'Reciclaje y defensa celular',
+    tag: 'Digestor celular',
+    tagTone: 'rose',
+    description: 'Vesículas esféricas con enzimas digestivas ácidas (pH ~5.0). Descomponen bacterias invasoras, macromoléculas de desecho y organelos envejecidos.',
+    color: '#f43f5e',
+    icon: '🧪',
+    quiverColor: { label: 'Rojo / Magenta', hex: '#f43f5e' },
+    graphic2D: <LysosomeGraphic2D />
+  }
+];
 
 /* ── Subactivities layout specifically for Sesión 2 ────────────── */
 interface Session2SubactivitiesProps {
@@ -2082,87 +2415,16 @@ export function Session2Subactivities({
               La célula vegetal es la unidad básica del reino de las plantas. Su arquitectura está diseñada para sostener el cuerpo del vegetal, resistir cambios climáticos y producir su propio alimento a partir del sol:
             </p>
 
-            {/* Desglose de estructuras vegetales clave */}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/8 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🧱</span>
-                  <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
-                    Exclusivo vegetal
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">1. Pared Celular de Celulosa</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Capa rígida exterior que rodea la membrana. Da soporte mecánico, forma poliédrica fija y evita que la célula reviente con el exceso de agua.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-amber-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#b45309]" /> Color Quiver: Café / Ocre
-                </div>
+            {/* Carrusel Circular 3D de Estructuras Vegetales con Gráficos 2D (React Bits) */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+                  <RotateCcw className="size-3.5" />
+                  Carrusel Circular 3D · 7 Estructuras de la Célula Vegetal
+                </span>
+                <span className="text-[11px] text-slate-400 hidden sm:inline">Arrastra o gira para explorar cada organelo con su gráfico 2D</span>
               </div>
-
-              <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/8 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🌿</span>
-                  <span className="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
-                    Exclusivo vegetal
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">2. Cloroplastos con Clorofila</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Organelos ovalados verdes con tilacoides. Convierten la luz solar, agua y $CO_2$ en glucosa y oxígeno mediante la fotosíntesis.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-emerald-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#4ade80]" /> Color Quiver: Verde intenso
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🫧</span>
-                  <span className="rounded-full bg-sky-400/20 px-2 py-0.5 text-[10px] font-bold text-sky-200">
-                    Gran tamaño central
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">3. Gran Vacuola Central</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Ocupa hasta el 90 % del volumen celular. Almacena agua y sales; cuando está inflada ejerce presión de turgencia contra la pared, manteniendo la planta erguida.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-sky-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#38bdf8]" /> Color Quiver: Celeste / Azul claro
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🛡️</span>
-                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-slate-300">
-                    Compartido
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">4. Membrana Plasmática</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Lámina semipermeable ubicada justo por dentro de la pared celular. Regula selectivamente qué nutrientes entran y qué desechos salen.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#10b981]" /> Color Quiver: Verde menta
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-2 sm:col-span-2 lg:col-span-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🧠</span>
-                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-slate-300">
-                    Compartido
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">5. Núcleo, Mitocondrias y Citoplasma</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  El núcleo resguarda el ADN vegetal (desplazado a la orilla por la vacuola gigante); las mitocondrias queman glucosa para producir energía utilizable (ATP), y el citoplasma es el medio donde ocurren las reacciones biológicas.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#3b82f6]" /> Color Quiver: Azul (Núcleo) / Naranja (Mitocondrias)
-                </div>
-              </div>
+              <CircularCarousel items={plantCarouselItems} accentColor="#22c55e" />
             </div>
 
             {/* Pie de navegación de la sub-actividad */}
@@ -2230,87 +2492,16 @@ export function Session2Subactivities({
               La célula animal forma los tejidos de todos los animales y del cuerpo humano. Al no tener pared rígida, es extraordinariamente flexible y dinámica:
             </p>
 
-            {/* Desglose de estructuras animales clave */}
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-2xl border border-violet-400/30 bg-violet-400/8 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🛡️</span>
-                  <span className="rounded-full bg-violet-400/20 px-2 py-0.5 text-[10px] font-bold text-violet-200">
-                    Gran flexibilidad
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">1. Membrana Celular Elástica</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Bicapa lipídica exterior flexible sin pared rígida. Permite que la célula adopte formas variadas (neuronas estrelladas, glóbulos rojos redondos) y se desplace.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-violet-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#a78bfa]" /> Color Quiver: Morado / Púrpura
-                </div>
+            {/* Carrusel Circular 3D de Estructuras Animales con Gráficos 2D (React Bits) */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
+                  <RotateCcw className="size-3.5" />
+                  Carrusel Circular 3D · 7 Estructuras de la Célula Animal
+                </span>
+                <span className="text-[11px] text-slate-400 hidden sm:inline">Arrastra o gira para explorar cada organelo con su gráfico 2D</span>
               </div>
-
-              <div className="rounded-2xl border border-blue-400/30 bg-blue-400/8 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🧠</span>
-                  <span className="rounded-full bg-blue-400/20 px-2 py-0.5 text-[10px] font-bold text-blue-200">
-                    Posición central
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">2. Núcleo Central y Nucléolo</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Esférico y ubicado en el centro. Protegido por la envoltura nuclear, resguarda el ADN completo y coordina el metabolismo, crecimiento y reproducción.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-blue-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#60a5fa]" /> Color Quiver: Azul intenso
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-amber-400/30 bg-amber-400/8 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">⚡</span>
-                  <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-200">
-                    Alta densidad
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">3. Mitocondrias Activas</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Las «centrales energéticas». Presentes en gran cantidad para metabolizar los nutrientes ingeridos mediante respiración celular y producir ATP constante para movernos.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-amber-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#fb923c]" /> Color Quiver: Naranja brillante
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">🫧</span>
-                  <span className="rounded-full bg-sky-400/20 px-2 py-0.5 text-[10px] font-bold text-sky-200">
-                    Pequeñas y dispersas
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">4. Vacuolas Pequeñas</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  A diferencia de la planta, las células animales poseen vacuolas diminutas y transitorias destinadas al transporte de nutrientes o digestión celular de desechos.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-sky-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#fbbf24]" /> Color Quiver: Amarillo
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/4 p-4 space-y-2 sm:col-span-2 lg:col-span-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-2xl">💧</span>
-                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-slate-300">
-                    Soporte dinámico
-                  </span>
-                </div>
-                <h4 className="text-sm font-extrabold text-white">5. Citoplasma, Citoesqueleto y Centríolos</h4>
-                <p className="text-xs leading-relaxed text-slate-300">
-                  Matriz fluida surcada por microfilamentos que permiten el movimiento intracelular. Posee centríolos exclusivos que organizan los filamentos para dividir la célula durante la mitosis.
-                </p>
-                <div className="pt-1 text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
-                  <span className="size-2.5 rounded-full bg-[#7dd3fc]" /> Color Quiver: Celeste claro
-                </div>
-              </div>
+              <CircularCarousel items={animalCarouselItems} accentColor="#38bdf8" />
             </div>
 
             {/* Pie de navegación de la sub-actividad */}

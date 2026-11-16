@@ -12,3 +12,8 @@ export { SplashCursor, type SplashCursorProps } from './SplashCursor';
 export { ClickSpark, type ClickSparkProps } from './ClickSpark';
 export { ShinyText, type ShinyTextProps } from './ShinyText';
 export { Aurora, type AuroraProps } from './Aurora';
+export {
+  CircularCarousel,
+  type CircularCarouselProps,
+  type CircularCarouselItem
+} from './CircularCarousel';

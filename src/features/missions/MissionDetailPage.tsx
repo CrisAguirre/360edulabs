@@ -238,7 +238,7 @@ export function MissionDetailPage() {
               <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-1.5 text-xs font-bold text-amber-200">
                 <Target className="size-3.5 text-amber-300" aria-hidden />
                 {isSession1
-                  ? 'Estaciones 1.1 a 1.5 + Reto final obligatorio'
+                  ? 'Estaciones 1.1 a 1.6 (Reto final incluido)'
                   : isSession2
                     ? 'Estaciones 2.1 a 2.7 (Reto final incluido)'
                     : `${required.length} pasos obligatorios`}
@@ -263,11 +263,11 @@ export function MissionDetailPage() {
                     className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-gradient-to-r from-mint-400 to-sky-400 px-6 text-sm font-extrabold text-ink-950 shadow-lg shadow-mint-400/20 transition hover:brightness-110"
                   >
                     <Play className="size-5" aria-hidden />
-                    Explorar las 5 estaciones
+                    Explorar las 6 estaciones
                   </a>
                   <LinkButton to={`/misiones/${mission.code}/quiz`} variant="gold" size="lg">
                     <Trophy className="size-5" aria-hidden />
-                    Presentar Reto Final (Obligatorio)
+                    Presentar Reto Final (1.6)
                   </LinkButton>
                   <a
                     href="#misiones-complementarias"
@@ -382,7 +382,7 @@ export function MissionDetailPage() {
             <SectionHeading
               eyebrow="Contenido General · Nivel Superior"
               title="La extraña historia de la teoría celular"
-              description="Eje central de indagación de la Sesión 1: recorre las 5 estaciones oficiales (Aportes, Aporte conceptual, Video documental, Lectura con Espacio Virtual Vercel y Contenidos extras)."
+              description="Eje central de indagación de la Sesión 1: recorre las 6 estaciones oficiales de forma dinámica (1.1 Aportes, 1.2 Aporte conceptual, 1.3 Video documental, 1.4 Lectura y Espacio Virtual Vercel, 1.5 Contenidos extras y 1.6 Reto Final evaluativo)."
               action={
                 <a
                   href="#misiones-complementarias"
