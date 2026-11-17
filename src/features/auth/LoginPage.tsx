@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Eye, EyeOff, GraduationCap, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, EyeOff, GraduationCap, Hash, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CitoMascot, Logo } from '../../components/Cito';
@@ -7,18 +7,21 @@ import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { ApiError } from '../../lib/api';
 import { BlurText, ClickSpark, Particles } from '../../components/reactbits';
 
+type LoginMode = 'student' | 'staff';
+
 const demoAccounts = [
   {
     label: 'Estudiante',
-    username: 'estudiante01',
-    password: 'Cito2026*',
+    mode: 'student' as LoginMode,
+    value: 'SB',
     icon: UserRound,
-    hint: 'Sofía, 5.º A',
+    hint: 'Ej.: SB · Samuel Barcos',
     accent: '#58e6c5'
   },
   {
     label: 'Docente',
-    username: 'docente01',
+    mode: 'staff' as LoginMode,
+    value: 'docente01',
     password: 'Docente2026*',
     icon: GraduationCap,
     hint: 'Profe Camila',
@@ -26,7 +29,8 @@ const demoAccounts = [
   },
   {
     label: 'Admin',
-    username: 'admin',
+    mode: 'staff' as LoginMode,
+    value: 'admin',
     password: 'Admin2026*',
     icon: ShieldCheck,
     hint: 'Gestión',
@@ -38,8 +42,9 @@ export function LoginPage() {
   const { login, user, status } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [username, setUsername] = useState('estudiante01');
-  const [password, setPassword] = useState('Cito2026*');
+  const [mode, setMode] = useState<LoginMode>('student');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +60,7 @@ export function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      const logged = await login(username.trim(), password);
+      const logged = await login(username.trim(), mode === 'student' ? '' : password);
       const from = (location.state as { from?: string } | null)?.from;
       navigate(from && from !== '/login' ? from : roleHome(logged.role), { replace: true });
     } catch (loginError) {
@@ -67,6 +72,13 @@ export function LoginPage() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const switchMode = (nextMode: LoginMode) => {
+    setMode(nextMode);
+    setUsername('');
+    setPassword('');
+    setError(null);
   };
 
   return (
@@ -128,53 +140,112 @@ export function LoginPage() {
               <p className="eyebrow">Acceso al Laboratorio</p>
               <h1 className="mt-1 text-3xl font-bold text-white">Inicia tu sesión</h1>
               <p className="mt-1.5 text-sm text-slate-400">
-                Usa la cuenta que te entregó tu docente. Si estás explorando, prueba una cuenta demo.
+                {mode === 'student'
+                  ? 'Los estudiantes entran solo con su código de dos letras, sin contraseña.'
+                  : 'Docentes y administradores usan su usuario y contraseña.'}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <label className="block">
-                <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-400">
-                  Usuario
-                </span>
-                <span className="relative block">
-                  <UserRound className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-500" aria-hidden />
-                  <input
-                    value={username}
-                    onChange={(event) => setUsername(event.target.value)}
-                    required
-                    autoComplete="username"
-                    className="min-h-13 w-full rounded-2xl border border-white/12 bg-ink-950/55 pl-11 pr-4 text-sm font-semibold text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none"
-                    placeholder="estudiante01"
-                  />
-                </span>
-              </label>
+            {/* Selector de tipo de acceso */}
+            <div className="mb-5 grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-ink-950/50 p-1">
+              <button
+                type="button"
+                onClick={() => switchMode('student')}
+                className={
+                  mode === 'student'
+                    ? 'flex items-center justify-center gap-2 rounded-xl bg-mint-400/20 py-2.5 text-sm font-extrabold text-mint-200'
+                    : 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-slate-400 hover:text-white'
+                }
+              >
+                <UserRound className="size-4" aria-hidden />
+                Estudiante
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode('staff')}
+                className={
+                  mode === 'staff'
+                    ? 'flex items-center justify-center gap-2 rounded-xl bg-sky-400/20 py-2.5 text-sm font-extrabold text-sky-200'
+                    : 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-slate-400 hover:text-white'
+                }
+              >
+                <ShieldCheck className="size-4" aria-hidden />
+                Docente / Admin
+              </button>
+            </div>
 
-              <label className="block">
-                <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-400">
-                  Contraseña
-                </span>
-                <span className="relative block">
-                  <LockKeyhole className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-500" aria-hidden />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    required
-                    autoComplete="current-password"
-                    className="min-h-13 w-full rounded-2xl border border-white/12 bg-ink-950/55 pl-11 pr-12 text-sm font-semibold text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none"
-                    placeholder="Tu contraseña"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((current) => !current)}
-                    className="absolute right-2 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-xl text-slate-400 transition hover:bg-white/8 hover:text-white"
-                    aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                  >
-                    {showPassword ? <EyeOff className="size-5" aria-hidden /> : <Eye className="size-5" aria-hidden />}
-                  </button>
-                </span>
-              </label>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {mode === 'student' ? (
+                <label className="block">
+                  <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                    Tu código (2 letras)
+                  </span>
+                  <span className="relative block">
+                    <Hash className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-mint-400" aria-hidden />
+                    <input
+                      value={username}
+                      onChange={(event) =>
+                        setUsername(event.target.value.toUpperCase().replace(/[^A-ZÁÉÍÓÚÑ]/g, '').slice(0, 2))
+                      }
+                      required
+                      minLength={2}
+                      maxLength={2}
+                      autoCapitalize="characters"
+                      autoComplete="off"
+                      className="min-h-14 w-full rounded-2xl border border-white/12 bg-ink-950/55 pl-11 pr-4 text-center font-mono text-2xl font-black tracking-[0.4em] text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none"
+                      placeholder="SB"
+                    />
+                  </span>
+                  <span className="mt-2 block text-xs leading-relaxed text-slate-400">
+                    Es la inicial de tu nombre y la de tu apellido. Ej.: <strong className="text-mint-300">Samuel Barcos → SB</strong>.
+                  </span>
+                </label>
+              ) : (
+                <>
+                  <label className="block">
+                    <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                      Usuario
+                    </span>
+                    <span className="relative block">
+                      <UserRound className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-500" aria-hidden />
+                      <input
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)}
+                        required
+                        autoComplete="username"
+                        className="min-h-13 w-full rounded-2xl border border-white/12 bg-ink-950/55 pl-11 pr-4 text-sm font-semibold text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none"
+                        placeholder="docente01"
+                      />
+                    </span>
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                      Contraseña
+                    </span>
+                    <span className="relative block">
+                      <LockKeyhole className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-slate-500" aria-hidden />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        required
+                        autoComplete="current-password"
+                        className="min-h-13 w-full rounded-2xl border border-white/12 bg-ink-950/55 pl-11 pr-12 text-sm font-semibold text-white placeholder:text-slate-600 focus:border-mint-400/50 focus:outline-none"
+                        placeholder="Tu contraseña"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((current) => !current)}
+                        className="absolute right-2 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-xl text-slate-400 transition hover:bg-white/8 hover:text-white"
+                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                      >
+                        {showPassword ? <EyeOff className="size-5" aria-hidden /> : <Eye className="size-5" aria-hidden />}
+                      </button>
+                    </span>
+                  </label>
+                </>
+              )}
 
               {error ? (
                 <p role="alert" className="rounded-2xl border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm font-semibold text-rose-200">
@@ -194,7 +265,7 @@ export function LoginPage() {
               <div className="mb-3 flex items-center gap-3">
                 <span className="h-px flex-1 bg-white/10" aria-hidden />
                 <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-                  Cuentas de demostración
+                  Accesos de demostración
                 </span>
                 <span className="h-px flex-1 bg-white/10" aria-hidden />
               </div>
@@ -202,12 +273,13 @@ export function LoginPage() {
                 {demoAccounts.map((account) => {
                   const Icon = account.icon;
                   return (
-                    <ClickSpark key={account.username} sparkColor={account.accent} sparkCount={8}>
+                    <ClickSpark key={account.label} sparkColor={account.accent} sparkCount={8}>
                       <button
                         type="button"
                         onClick={() => {
-                          setUsername(account.username);
-                          setPassword(account.password);
+                          setMode(account.mode);
+                          setUsername(account.value);
+                          setPassword(account.password ?? '');
                           setError(null);
                         }}
                         className="group w-full rounded-2xl border border-white/10 bg-white/4 p-3 text-left transition hover:border-white/20 hover:bg-white/8"
@@ -226,7 +298,7 @@ export function LoginPage() {
                 })}
               </div>
               <p className="mt-3 text-center text-[11px] text-slate-500">
-                Al elegir una cuenta se completan usuario y contraseña. Luego pulsa “Entrar”.
+                El estudiante entra con su código; docente y admin se completan con su contraseña.
               </p>
             </div>
           </div>

@@ -343,11 +343,11 @@ Todos los endpoints están agrupados bajo el prefijo `/api/v1/`:
 |:---|:---|:---|:---|
 | **Admin** | `admin` | `Admin2026*` | Administrador Laboratorio 360 |
 | **Docente** | `docente01` | `Docente2026*` | Profe Camila Torres |
-| **Estudiante** | `estudiante01` | `Cito2026*` | Sofía Rojas (Aula `CITO5A`) |
-| **Estudiante** | `estudiante02` | `Cito2026*` | Mateo García |
-| **Estudiante** | `estudiante03` a `08` | `Cito2026*` | Valentina Díaz, Samuel Pérez, Isabella Mora, Tomás Jiménez, Lucía Fernández, etc. |
+| **Estudiante** | Código de 2 letras (ej. `SB`) | *(sin contraseña)* | 23 estudiantes del aula `CITO5A` |
 
-Aula semilla: **`5.º A - Exploradores`**, código **`CITO5A`**, grado «5.º de primaria», colegio «Colegio Horizonte», año 2026, con los 8 estudiantes matriculados.
+> **Acceso de estudiantes (2026-11-17)**: los estudiantes entran **solo con su código de dos letras** (inicial del 1.er nombre + inicial del apellido; si el código se repite, se usa la inicial del 2.º apellido), **sin contraseña**. Solo docente y admin usan contraseña. La validación vive en `auth.service.ts` (`login()` omite la verificación de contraseña cuando `user.role === 'student'`) y el login del frontend (`LoginPage.tsx`) ofrece un selector «Estudiante / Docente · Admin». El listado completo de códigos está en `src/seeds/users.ts` (`demoUsers`).
+
+Aula semilla: **`5.º A - Exploradores`**, código **`CITO5A`**, grado «5.º de primaria», colegio «Colegio Horizonte», año 2026, con los **23 estudiantes** matriculados.
 
 ### Catálogo de Insignias (`src/seeds/badges.ts`)
 | Código | Nombre | XP | Misión |
@@ -431,8 +431,8 @@ Aula semilla: **`5.º A - Exploradores`**, código **`CITO5A`**, grado «5.º de
 
 ### Contenido y datos semilla
 - **3 misiones** (`m1`, `m2`, `m3`), **28 actividades** sembradas (**8 / 9 / 11**), **3 quizzes** con **22 preguntas** (**6 / 8 / 8**), **5 insignias**.
-- **1 aula** `CITO5A` con **8 estudiantes** matriculados.
-- Escenarios de progreso variados por estudiante; `estudiante08` completó las tres misiones y la insignia maestra.
+- **1 aula** `CITO5A` con **23 estudiantes** matriculados (códigos de 2 letras, sin contraseña).
+- Sin escenarios de progreso de demostración: los 23 estudiantes del aula inician desde cero (`progressScenarios` vacío en `src/seeds/users.ts`).
 - XP por misión: 100 de actividades + 20 de evidencia + 30 de quiz + 50 de insignia = **150**; insignia maestra final +100.
 
 ### Comandos
