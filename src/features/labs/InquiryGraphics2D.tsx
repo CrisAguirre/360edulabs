@@ -1921,3 +1921,217 @@ export function WiltingCellGraphic2D() {
     </svg>
   );
 }
+
+/**
+ * 3.2 · Analogía fábrica → célula para explicar el metabolismo celular.
+ * Escena: una fábrica (materiales que entran, máquinas con energía y
+ * trabajadores) conectada por un flujo de partículas a una célula que
+ * recibe nutrientes, los transforma con sus mitocondrias y produce ATP.
+ */
+export function FactoryMetabolismGraphic2D() {
+  return (
+    <svg
+      viewBox="0 0 360 210"
+      className="h-auto w-full"
+      role="img"
+      aria-label="Fábrica conectada a una célula: los materiales y la energía de la fábrica equivalen a los nutrientes y el ATP de la célula"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="fm-bg" x1="0" y1="0" x2="360" y2="210">
+          <stop stopColor="#0c1a3a" />
+          <stop offset="0.5" stopColor="#042f2e" />
+          <stop offset="1" stopColor="#020617" />
+        </linearGradient>
+        <radialGradient id="fm-halo-fab" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#38bdf8" stopOpacity="0.28" />
+          <stop offset="1" stopColor="#38bdf8" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="fm-halo-cell" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#2dd4bf" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#2dd4bf" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="fm-wall" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#334155" />
+          <stop offset="1" stopColor="#0f172a" />
+        </linearGradient>
+        <radialGradient id="fm-cyto" cx="38%" cy="32%" r="74%">
+          <stop stopColor="#5eead4" stopOpacity="0.32" />
+          <stop offset="1" stopColor="#0f766e" stopOpacity="0.1" />
+        </radialGradient>
+        <radialGradient id="fm-nucleus" cx="38%" cy="34%" r="70%">
+          <stop stopColor="#ddd6fe" />
+          <stop offset="0.55" stopColor="#a78bfa" />
+          <stop offset="1" stopColor="#6d28d9" />
+        </radialGradient>
+        <radialGradient id="fm-mito" cx="40%" cy="36%" r="70%">
+          <stop stopColor="#fdba74" />
+          <stop offset="1" stopColor="#ea580c" />
+        </radialGradient>
+        <radialGradient id="fm-bolt" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#fde047" stopOpacity="0.85" />
+          <stop offset="1" stopColor="#f59e0b" stopOpacity="0.15" />
+        </radialGradient>
+        <radialGradient id="fm-atp" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#fef9c3" />
+          <stop offset="1" stopColor="#facc15" />
+        </radialGradient>
+        <filter id="fm-glow" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur stdDeviation="2.2" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="fm-soft" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="5" />
+        </filter>
+        <pattern id="fm-dots" width="18" height="18" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="#38bdf8" opacity="0.12" />
+        </pattern>
+        <style>
+          {`
+            @keyframes fmBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.014); } }
+            @keyframes fmGear { to { transform: rotate(360deg); } }
+            @keyframes fmBolt { 0%,100% { opacity: 0.55; transform: scale(0.97); } 50% { opacity: 1; transform: scale(1.06); } }
+            @keyframes fmSmoke { 0% { transform: translateY(0) scale(0.7); opacity: 0.4; } 60% { opacity: 0.16; } 100% { transform: translateY(-24px) scale(1.2); opacity: 0; } }
+            @keyframes fmMito { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.06); opacity: 0.92; } }
+            @keyframes fmNucleus { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+            .fm-breathe { animation: fmBreathe 6.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .fm-gear { animation: fmGear 8s linear infinite; transform-box: fill-box; transform-origin: center; }
+            .fm-bolt { animation: fmBolt 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .fm-smoke { animation: fmSmoke 4.4s ease-out infinite; }
+            .fm-smoke-2 { animation-delay: 1.6s; }
+            .fm-mito { animation: fmMito 3.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .fm-mito-2 { animation-delay: 1.1s; }
+            .fm-nucleus { animation: fmNucleus 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+          `}
+        </style>
+      </defs>
+
+      <rect width="360" height="210" fill="url(#fm-bg)" />
+      <rect width="360" height="210" fill="url(#fm-dots)" />
+
+      <ellipse cx="90" cy="100" rx="86" ry="84" fill="url(#fm-halo-fab)" opacity="0.7" />
+      <ellipse cx="270" cy="100" rx="86" ry="84" fill="url(#fm-halo-cell)" opacity="0.7" />
+
+      {/* ── Fábrica (izquierda) ── */}
+      <g>
+        <ellipse cx="90" cy="172" rx="62" ry="6" fill="#38bdf8" opacity="0.14" filter="url(#fm-soft)" />
+        {/* Chimenea y humo */}
+        <rect x="112" y="40" width="15" height="40" rx="3" fill="#1e293b" stroke="#334155" strokeWidth="1.1" />
+        <g fill="#94a3b8" filter="url(#fm-soft)">
+          <circle className="fm-smoke" cx="120" cy="34" r="6" />
+          <circle className="fm-smoke fm-smoke-2" cx="125" cy="30" r="4.5" />
+        </g>
+        {/* Cuerpo del edificio */}
+        <rect x="40" y="78" width="100" height="90" rx="8" fill="url(#fm-wall)" stroke="#475569" strokeWidth="1.3" />
+        <rect x="34" y="70" width="112" height="12" rx="3" fill="#334155" />
+        {/* Ventanas */}
+        <g fill="#7dd3fc" opacity="0.4">
+          <rect x="50" y="90" width="16" height="12" rx="2" />
+          <rect x="74" y="90" width="16" height="12" rx="2" />
+          <rect x="98" y="90" width="16" height="12" rx="2" />
+          <rect x="50" y="112" width="16" height="12" rx="2" />
+          <rect x="74" y="112" width="16" height="12" rx="2" />
+          <rect x="98" y="112" width="16" height="12" rx="2" />
+        </g>
+        {/* Puerta */}
+        <rect x="76" y="150" width="22" height="18" rx="2" fill="#0f172a" stroke="#475569" strokeWidth="1" />
+        {/* Engranaje */}
+        <g className="fm-gear" filter="url(#fm-glow)">
+          <circle cx="52" cy="60" r="9" fill="none" stroke="#fbbf24" strokeWidth="2.4" />
+          <g stroke="#fbbf24" strokeWidth="2.2" strokeLinecap="round">
+            <line x1="52" y1="47" x2="52" y2="51" />
+            <line x1="52" y1="69" x2="52" y2="73" />
+            <line x1="39" y1="60" x2="43" y2="60" />
+            <line x1="61" y1="60" x2="65" y2="60" />
+            <line x1="43" y1="51" x2="46" y2="54" />
+            <line x1="58" y1="66" x2="61" y2="69" />
+            <line x1="43" y1="69" x2="46" y2="66" />
+            <line x1="58" y1="54" x2="61" y2="51" />
+          </g>
+          <circle cx="52" cy="60" r="3" fill="#fbbf24" />
+        </g>
+        {/* Rayo de energía */}
+        <g className="fm-bolt" filter="url(#fm-glow)">
+          <path d="M148 46l-13 20h9l-4 18 18-26h-10Z" fill="url(#fm-bolt)" stroke="#fde68a" strokeOpacity="0.5" strokeWidth="0.8" />
+        </g>
+      </g>
+      <text x="90" y="192" textAnchor="middle" fill="#bae6fd" fontSize="9" fontWeight="900" letterSpacing="0.6">FÁBRICA</text>
+
+      {/* Flujo fábrica → célula */}
+      <g fill="none" stroke="#7dd3fc" strokeOpacity="0.35" strokeWidth="1.3" strokeDasharray="4 6">
+        <path d="M150 88c22 0 38 4 52 8" />
+        <path d="M150 112c22 0 38 -4 52 -8" />
+      </g>
+      <g filter="url(#fm-glow)">
+        <circle r="3" fill="#fde047" opacity="0.9">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M152 84c24 0 46 6 60 12" />
+        </circle>
+      </g>
+      <g filter="url(#fm-glow)">
+        <circle r="2.6" fill="#4ade80" opacity="0.85">
+          <animateMotion dur="5s" begin="1.4s" repeatCount="indefinite" path="M150 116c24 0 46 -6 60 -12" />
+        </circle>
+      </g>
+      <g filter="url(#fm-glow)">
+        <circle r="2.2" fill="#38bdf8" opacity="0.8">
+          <animateMotion dur="5.6s" begin="2.8s" repeatCount="indefinite" path="M152 100c24 0 46 0 60 0" />
+        </circle>
+      </g>
+
+      {/* ── Célula (derecha) ── */}
+      <g className="fm-breathe" filter="url(#fm-glow)">
+        <path
+          d="M270 24c42 0 72 32 72 76s-30 76-72 76-72-34-72-76 30-76 72-76Z"
+          fill="url(#fm-cyto)"
+          stroke="#2dd4bf"
+          strokeWidth="2.6"
+        />
+        <path
+          d="M270 33c36 0 63 29 63 67s-27 67-63 67-63-30-63-67 27-67 63-67Z"
+          fill="none"
+          stroke="#99f6e4"
+          strokeOpacity="0.3"
+          strokeWidth="1.1"
+          strokeDasharray="5 6"
+        />
+        {/* Núcleo */}
+        <g className="fm-nucleus">
+          <circle cx="256" cy="88" r="17" fill="url(#fm-nucleus)" />
+          <circle cx="256" cy="88" r="6" fill="#f5f3ff" opacity="0.95" />
+        </g>
+        {/* Mitocondrias */}
+        <g className="fm-mito">
+          <ellipse cx="308" cy="80" rx="16" ry="8" fill="url(#fm-mito)" stroke="#fed7aa" strokeWidth="1.2" transform="rotate(-14 308 80)" />
+          <path d="M298 78c3 4 6-3 9 1s6-3 9 1" stroke="#7c2d12" strokeWidth="1.1" fill="none" />
+        </g>
+        <g className="fm-mito fm-mito-2">
+          <ellipse cx="300" cy="112" rx="13" ry="7" fill="#fb923c" stroke="#fde68a" strokeWidth="1.1" transform="rotate(16 300 112)" />
+          <path d="M291 110c3 3 5-2 8 1s5-2 8 1" stroke="#7c2d12" strokeWidth="1" fill="none" />
+        </g>
+        {/* Vesículas */}
+        <circle cx="228" cy="116" r="6" fill="#fde68a" fillOpacity="0.5" stroke="#fef3c7" strokeOpacity="0.6" strokeWidth="1" />
+        <circle cx="240" cy="68" r="5" fill="#38bdf8" fillOpacity="0.5" stroke="#bae6fd" strokeOpacity="0.6" strokeWidth="1" />
+      </g>
+
+      {/* ATP producido */}
+      <g className="fm-mito" filter="url(#fm-glow)">
+        <rect x="286" y="20" width="40" height="15" rx="7.5" fill="#fbbf24" fillOpacity="0.16" stroke="#fbbf24" strokeOpacity="0.55" strokeWidth="1" />
+        <text x="306" y="31" textAnchor="middle" fill="#fde68a" fontSize="7.5" fontWeight="900" letterSpacing="0.6">ATP</text>
+      </g>
+      <g filter="url(#fm-glow)">
+        <circle r="2.2" fill="#fde047" opacity="0.9">
+          <animateMotion dur="4.4s" repeatCount="indefinite" path="M306 82c10-8 6-20 0-28" />
+        </circle>
+      </g>
+      <text x="270" y="192" textAnchor="middle" fill="#5eead4" fontSize="9" fontWeight="900" letterSpacing="0.6">CÉLULA</text>
+
+      <text x="180" y="206" textAnchor="middle" fill="#99f6e4" fontSize="7.5" fontWeight="900" letterSpacing="0.9">
+        LA CÉLULA ES UNA FÁBRICA QUE TRABAJA DÍA Y NOCHE
+      </text>
+    </svg>
+  );
+}

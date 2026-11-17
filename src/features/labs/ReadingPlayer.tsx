@@ -71,6 +71,7 @@ import {
   CellStructuresGraphic2D,
   CellularMotorGraphic2D,
   CinemaGraphic2D,
+  FactoryMetabolismGraphic2D,
   FactoryStoppedGraphic2D,
   ParticipationGraphic2D,
   PlantAnimalCellGraphic2D,
@@ -4317,6 +4318,24 @@ export function Session3Subactivities({
               </Chip>
             </div>
 
+            {/* Analogía fábrica → célula con figura 2D animada */}
+            <div className="rounded-2xl border border-sky-400/25 bg-sky-400/8 p-4 sm:p-5">
+              <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-sky-300 mb-1.5 flex items-center gap-1.5">
+                    <Factory className="size-3.5" /> La célula, una fábrica viva:
+                  </p>
+                  <p className="text-sm leading-relaxed text-slate-200 sm:text-base">
+                    En esta fábrica llamada célula llegan materiales que son transformados para elaborar productos, se utiliza energía para que las máquinas funcionen y cada trabajador cumple una tarea especial. De manera parecida, las células de nuestro cuerpo reciben nutrientes, los transforman, obtienen energía y producen sustancias necesarias para mantenerse vivas y realizar sus funciones. A todo este conjunto de procesos lo llamamos{' '}
+                    <strong className="text-white">metabolismo celular</strong>.
+                  </p>
+                </div>
+                <div className="mx-auto w-full max-w-[22rem] overflow-hidden rounded-xl border border-white/10">
+                  <FactoryMetabolismGraphic2D />
+                </div>
+              </div>
+            </div>
+
             {/* Dos modelos 3D para explorar antes del Quiz final */}
             <div className="space-y-4">
               <div className="rounded-2xl border border-sky-400/25 bg-sky-400/8 p-4 sm:p-5">
@@ -4330,18 +4349,18 @@ export function Session3Subactivities({
               </div>
 
               <div className="grid gap-5 lg:grid-cols-2">
-                {/* Modelo 1: leer y estudiar funciones */}
+                {/* Modelo 1: explorar la célula */}
                 <div className="space-y-3">
                   <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/3 p-4">
                     <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-sky-400/15 text-sky-300 text-base font-black">1</span>
                     <div>
-                      <h4 className="text-sm font-extrabold text-white">Lee y estudia las funciones</h4>
+                      <h4 className="text-sm font-extrabold text-white">Explora la célula en 3D</h4>
                       <p className="mt-0.5 text-xs leading-relaxed text-slate-300">
-                        Recorre la célula eucariota y lee con calma la función de cada estructura (núcleo, mitocondrias, retículo, Golgi…). Son clave para el quiz.
+                        Gira la célula, acércate y observa sus estructuras. Familiarízate con cada organelo antes del quiz.
                       </p>
                     </div>
                   </div>
-                  <SketchfabViewer embed={MODEL_EMBEDS['m3-celula-eucariota']} />
+                  <SketchfabViewer embed={MODEL_EMBEDS['m3-celula-test1']} />
                 </div>
 
                 {/* Modelo 2: observar movimiento */}
@@ -4714,14 +4733,20 @@ export function Session3Subactivities({
               </Chip>
             </div>
 
-            {/* Texto literal oficial */}
-            <div className="rounded-2xl border border-rose-400/25 bg-rose-400/8 p-4 sm:p-5">
-              <p className="text-xs font-bold uppercase tracking-wider text-rose-300 mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
-              </p>
-              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
-                «La docente presenta el video el video 360 y solicita a los estudiantes visualizarlo y dar respuesta al siguiente cuestionamiento: ¿De qué manera las células vegetales y animales llevan a cabo sus actividades para conservar la vida? ¿Cómo se llama el proceso mediante el cual las células adquieren energía y eliminan desechos?, se solicita los estudiantes apoyarse en el contenido del recurso multimedial como también en la lectura “El metabolismo celular: Lectura el metabolismo celular (maquetar lectura desde este enlace: https://docs.google.com/document/d/1RNF1OnvpUMINXE-p-D-T9ZF2B6ycDj3x/edit?usp=sharing&ouid=107395200434224073532&rtpof=true&sd=true), luego decir: ¿Cómo obtienen y utilizan la energía las células?” para dar respuesta a los cuestionamientos a través de la elaboración de una infografía en la herramienta Canva»
-              </p>
+            {/* Modelo 3D: Célula eucariota y sus funciones */}
+            <div className="space-y-3">
+              <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/3 p-4">
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-rose-400/15 text-rose-300 text-lg" aria-hidden>
+                  🔬
+                </span>
+                <div>
+                  <h4 className="text-sm font-extrabold text-white">Célula eucariota y sus funciones</h4>
+                  <p className="mt-0.5 text-xs leading-relaxed text-slate-300">
+                    Gira el modelo y lee con calma la función de cada estructura. Apóyate en él para responder los cuestionamientos y elaborar tu infografía en Canva.
+                  </p>
+                </div>
+              </div>
+              <SketchfabViewer embed={MODEL_EMBEDS['m3-celula-eucariota']} />
             </div>
 
             {/* Cuestionamientos clave a responder */}

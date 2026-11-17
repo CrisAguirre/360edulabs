@@ -88,6 +88,15 @@ export const MODEL_EMBEDS: Record<string, ModelEmbedConfig> = {
     embedUrl: 'https://sketchfab.com/models/fff5e5d8086b4de3880bb8bcfe5880ca/embed?autostart=1&ui_theme=dark',
     modelUrl: 'https://sketchfab.com/3d-models/parietal-cell-final-version-fff5e5d8086b4de3880bb8bcfe5880ca',
     description: 'Célula parietal que secreta ácido clorhídrico; observa el movimiento de sus partes y su gran número de mitocondrias.'
+  },
+  // M3 - Célula de apoyo (celula_test1)
+  'm3-celula-test1': {
+    id: 'm3-celula-test1',
+    title: 'Célula test 1',
+    author: 'foro3d',
+    embedUrl: 'https://sketchfab.com/models/886ad8f319034cd68b7bdac107cddc1c/embed?autostart=1&ui_theme=dark',
+    modelUrl: 'https://sketchfab.com/3d-models/celula-test1-886ad8f319034cd68b7bdac107cddc1c',
+    description: 'Modelo de célula para explorar y estudiar sus estructuras en 3D.'
   }
 };
 
