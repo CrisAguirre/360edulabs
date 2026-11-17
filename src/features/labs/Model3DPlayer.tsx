@@ -210,7 +210,7 @@ export function Model3DPlayer({
             >
               <span className="flex items-center gap-1.5">
                 <Sparkles className="size-3.5 text-amber-300" aria-hidden />
-                Visor Sketchfab (Célula Interactiva)
+                {showEnergyControls ? 'Visor Sketchfab (Célula Interactiva)' : 'Visor 360 Célula Vegetal'}
               </span>
             </button>
             <button
