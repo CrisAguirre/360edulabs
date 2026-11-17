@@ -69,8 +69,8 @@ export function Animation3DPlayer({ activity, mission }: ActivityRuntimeProps) {
             {isM3
               ? 'Animación 2D y 3D · Plasmólisis'
               : isM1
-                ? 'Animación 3D · Zoom Celular'
-                : 'Animación 3D · Comparación Celular'}
+                ? 'Modelo 3D · Zoom Celular'
+                : 'Modelo 3D · Comparación Celular'}
           </Chip>
           <h3 className="mt-2 font-display text-xl font-extrabold text-white">
             <ShinyText text={content.title ?? activity.title} speed={4} />
@@ -131,7 +131,7 @@ export function Animation3DPlayer({ activity, mission }: ActivityRuntimeProps) {
                     : 'text-slate-400 hover:text-slate-200'
                 )}
               >
-                Recorrido guiado paso a paso
+                Modelo 3D · Recorrido guiado
               </button>
             </div>
           )}

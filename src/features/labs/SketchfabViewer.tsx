@@ -35,7 +35,7 @@ export function SketchfabViewer({ embed, onSwitchToLocal, hasLocalModel = false 
         <div className="flex flex-wrap items-center gap-2">
           <Chip tone="grape">
             <Sparkles className="size-3.5" aria-hidden />
-            Visor 3D Sketchfab (Inmersivo)
+            Modelo 3D · Sketchfab
           </Chip>
           <span className="text-xs font-bold text-slate-300">{embed.title}</span>
         </div>
