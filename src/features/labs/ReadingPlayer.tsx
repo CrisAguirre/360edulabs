@@ -2269,11 +2269,11 @@ const animalCarouselItems: CircularCarouselItem[] = [
   },
   {
     id: 'nucleo-animal',
-    title: '2. Núcleo Central y Nucleolo',
+    title: '2. Núcleo Central y Nucléolo',
     subtitle: 'Carioteca central esférica',
     tag: 'Posición central',
     tagTone: 'sky',
-    description: 'Ubicado en el centro geométrico de la célula animal. Contiene la cromatina y nucleolo denso, dirigiendo la síntesis de proteínas, el metabolismo y la división celular.',
+    description: 'Ubicado en el centro geométrico de la célula animal. Contiene la cromatina y nucléolo denso, dirigiendo la síntesis de proteínas, el metabolismo y la división celular.',
     color: '#3b82f6',
     icon: '🧠',
     quiverColor: { label: 'Azul intenso', hex: '#3b82f6' },
@@ -2923,7 +2923,12 @@ export function Session2Subactivities({
 
             {/* Modelo 3D interactivo: Dos células para comparar */}
             <div className="overflow-hidden rounded-3xl border border-sky-400/25 bg-ink-950/60 p-4 sm:p-5">
-              <Model3DPlayer activity={CELL_COMPARE_ACTIVITY} initialView="local" />
+              <Model3DPlayer
+                activity={CELL_COMPARE_ACTIVITY}
+                initialView="local"
+                sketchfabLabel="Visor 360 Célula Animal"
+                organellesLabel="Núcleo y Nucléolo"
+              />
             </div>
 
             <p className="text-sm leading-relaxed text-slate-200 sm:text-base font-medium">

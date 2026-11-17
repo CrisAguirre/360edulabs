@@ -28,11 +28,17 @@ interface ModeContent {
 export function Model3DPlayer({
   activity,
   initialView,
-  showEnergyControls = true
+  showEnergyControls = true,
+  sketchfabLabel = 'Visor Sketchfab Inmersivo',
+  organellesLabel = 'Explorador de Organelos'
 }: Pick<ActivityRuntimeProps, 'activity'> & {
   initialView?: 'sketchfab' | 'local' | 'organelles' | 'simulator';
   /** Oculta los sliders de agua/luz/nutrientes cuando el objetivo es solo observar la célula. */
   showEnergyControls?: boolean;
+  /** Etiqueta personalizada para la pestaña del visor Sketchfab. */
+  sketchfabLabel?: string;
+  /** Etiqueta personalizada para la pestaña del explorador de organelos. */
+  organellesLabel?: string;
 }) {
   const content = activity.content as Record<string, any>;
   const model = String(content.model ?? 'microscope');
@@ -110,7 +116,10 @@ export function Model3DPlayer({
         </div>
 
         {/* Mode selector for cell-compare */}
-        {model === 'cell-compare' && modes.length > 0 && cellCompareView === 'local' ? (
+        {model === 'cell-compare' &&
+        modes.length > 0 &&
+        cellCompareView !== 'organelles' &&
+        !(cellCompareView === 'sketchfab' && typeof content.sketchfabEmbed === 'string') ? (
           <div className="flex rounded-2xl border border-white/10 bg-white/4 p-1" role="group" aria-label="Elegir tipo de célula">
             {modes.map((item, index) => (
               <button
@@ -150,7 +159,7 @@ export function Model3DPlayer({
             >
               <span className="flex items-center gap-1.5">
                 <Sparkles className="size-3.5 text-purple-300" aria-hidden />
-                Visor Sketchfab Inmersivo
+                {sketchfabLabel}
               </span>
             </button>
             <button
@@ -180,7 +189,7 @@ export function Model3DPlayer({
             >
               <span className="flex items-center gap-1.5">
                 <Layers className="size-3.5 text-sky-300" aria-hidden />
-                Explorador de Organelos
+                {organellesLabel}
               </span>
             </button>
           </div>
@@ -256,7 +265,7 @@ export function Model3DPlayer({
             embed={
               MODEL_EMBEDS[
                 (typeof content.sketchfabEmbed === 'string' ? content.sketchfabEmbed : '') ||
-                  'm2_comparacion_celular'
+                  (mode?.id === 'vegetal' ? 'cell-plant' : 'cell-animal')
               ]
             }
             onSwitchToLocal={() => setCellCompareView('local')}
@@ -397,7 +406,7 @@ export function Model3DPlayer({
               </div>
               <p className="mt-3 text-xs leading-relaxed text-slate-400">
                 El visor muestra las estructuras celulares tridimensionales. Utiliza el botón de pantalla completa o
-                pasa al Explorador de Organelos para ver cada uno en detalle.
+                pasa a {organellesLabel} para ver cada estructura en detalle.
               </p>
             </div>
           </SpotlightCard>

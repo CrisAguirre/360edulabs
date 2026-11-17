@@ -86,7 +86,7 @@ export const CELL_COMPARE_ACTIVITY = {
       }
     ],
     layers: ['Membrana', 'Citoplasma', 'Núcleo', 'Organelos'],
-    sketchfabEmbed: 'm2_comparacion_celular',
+    sketchfabEmbed: 'cell-animal',
     controls: ['Arrastrar para girar', 'Rueda para acercar', 'Botón de capas', 'Vista desarmada']
   },
   assetKeys: ['celula_animal_kids.glb', 'celula_vegetal_kids.glb'],

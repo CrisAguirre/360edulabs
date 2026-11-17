@@ -430,11 +430,11 @@ export function NucleusGraphic2D({ className }: GraphicProps) {
         />
       </g>
 
-      {/* Nucleolo denso central */}
+      {/* Nucléolo denso central */}
       <circle className="cg-pulse" cx="120" cy="74" r="18" fill="#1e3a8a" stroke="#93c5fd" strokeWidth="1.5" />
       <circle cx="120" cy="74" r="14" fill="#172554" />
       <text x="120" y="77" textAnchor="middle" fill="#dbeafe" fontSize="7.5" fontWeight="extrabold">
-        Nucleolo
+        Nucléolo
       </text>
 
       {/* Rótulos */}
