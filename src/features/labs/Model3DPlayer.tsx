@@ -27,8 +27,13 @@ interface ModeContent {
 
 export function Model3DPlayer({
   activity,
-  initialView
-}: Pick<ActivityRuntimeProps, 'activity'> & { initialView?: 'sketchfab' | 'local' | 'organelles' | 'simulator' }) {
+  initialView,
+  showEnergyControls = true
+}: Pick<ActivityRuntimeProps, 'activity'> & {
+  initialView?: 'sketchfab' | 'local' | 'organelles' | 'simulator';
+  /** Oculta los sliders de agua/luz/nutrientes cuando el objetivo es solo observar la célula. */
+  showEnergyControls?: boolean;
+}) {
   const content = activity.content as Record<string, any>;
   const model = String(content.model ?? 'microscope');
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
@@ -97,11 +102,15 @@ export function Model3DPlayer({
           <h3 className="mt-2 font-display text-xl font-extrabold text-white">
             <ShinyText text={content.title ?? activity.title} speed={4} />
           </h3>
-          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-400">{content.intro}</p>
+          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-400">
+            {model === 'energy-cell' && !showEnergyControls
+              ? 'Explora la célula vegetal en 3D: gira el modelo, acércate y descubre la pared celular, los cloroplastos, la vacuola central y las mitocondrias.'
+              : content.intro}
+          </p>
         </div>
 
         {/* Mode selector for cell-compare */}
-        {model === 'cell-compare' && modes.length > 0 && cellCompareView !== 'organelles' ? (
+        {model === 'cell-compare' && modes.length > 0 && cellCompareView === 'local' ? (
           <div className="flex rounded-2xl border border-white/10 bg-white/4 p-1" role="group" aria-label="Elegir tipo de célula">
             {modes.map((item, index) => (
               <button
@@ -216,12 +225,16 @@ export function Model3DPlayer({
             >
               <span className="flex items-center gap-1.5">
                 <Waves className="size-3.5 text-sky-300" aria-hidden />
-                Simulador de Fábrica Celular
+                {showEnergyControls ? 'Simulador de Fábrica Celular' : 'Célula Vegetal en 3D'}
               </span>
             </button>
           </div>
           <span className="text-[11px] text-slate-400">
-            {energyView === 'sketchfab' ? 'Modelo 3D metabólico' : 'Manipula agua, luz y nutrientes'}
+            {energyView === 'sketchfab'
+              ? 'Modelo 3D metabólico'
+              : showEnergyControls
+                ? 'Manipula agua, luz y nutrientes'
+                : 'Observa las estructuras de la célula vegetal'}
           </span>
         </div>
       ) : null}
@@ -240,7 +253,12 @@ export function Model3DPlayer({
       ) : model === 'cell-compare' ? (
         cellCompareView === 'sketchfab' ? (
           <SketchfabViewer
-            embed={mode?.id === 'vegetal' ? MODEL_EMBEDS['cell-plant'] : MODEL_EMBEDS['cell-animal']}
+            embed={
+              MODEL_EMBEDS[
+                (typeof content.sketchfabEmbed === 'string' ? content.sketchfabEmbed : '') ||
+                  'm2_comparacion_celular'
+              ]
+            }
             onSwitchToLocal={() => setCellCompareView('local')}
             hasLocalModel
           />
@@ -399,8 +417,8 @@ export function Model3DPlayer({
         </div>
       ) : null}
 
-      {/* Energy controls for energy-cell */}
-      {model === 'energy-cell' ? (
+      {/* Energy controls for energy-cell (opcionales: se ocultan cuando solo se observan estructuras) */}
+      {model === 'energy-cell' && showEnergyControls ? (
         <SpotlightCard spotlightColor="rgba(251, 191, 36, 0.15)">
           <div className="p-5">
             <div className="flex items-center gap-2">
@@ -446,7 +464,7 @@ export function Model3DPlayer({
         </SpotlightCard>
       ) : null}
 
-      {Array.isArray(content.controls) && content.controls.length > 0 ? (
+      {showEnergyControls && Array.isArray(content.controls) && content.controls.length > 0 ? (
         <p className="text-xs text-slate-500">
           Controles: {content.controls.join(' · ')}
         </p>

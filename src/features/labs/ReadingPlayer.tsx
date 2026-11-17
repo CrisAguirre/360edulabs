@@ -2841,7 +2841,7 @@ export function Session2Subactivities({
 
             {/* Modelo 3D interactivo: Célula de la energía */}
             <div className="overflow-hidden rounded-3xl border border-emerald-400/25 bg-ink-950/60 p-4 sm:p-5">
-              <Model3DPlayer activity={ENERGY_CELL_ACTIVITY} initialView="simulator" />
+              <Model3DPlayer activity={ENERGY_CELL_ACTIVITY} initialView="simulator" showEnergyControls={false} />
             </div>
 
             <p className="text-sm leading-relaxed text-slate-200 sm:text-base font-medium">
