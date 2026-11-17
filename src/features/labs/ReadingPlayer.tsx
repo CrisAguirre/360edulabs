@@ -95,6 +95,7 @@ import {
   VirchowDivisionGraphic2D
 } from './CellGraphics2D';
 import { ReflectiveStructureCarousel } from './ReflectiveStructureCarousel';
+import { MergeCubeActivities } from './MergeCubeActivities';
 import { Model3DPlayer } from './Model3DPlayer';
 import { Animation3DPlayer } from './Animation3DPlayer';
 import {
@@ -3688,80 +3689,6 @@ const FACTORY_HOTSPOTS: FactoryHotspot[] = [
   }
 ];
 
-interface MergeCubeFace {
-  id: string;
-  name: string;
-  organelle: string;
-  icon: string;
-  color: string;
-  metabolicFunction: string;
-  plantRole: string;
-  faceLabel: string;
-}
-
-const MERGE_CUBE_FACES: MergeCubeFace[] = [
-  {
-    id: 'face-mitocondria',
-    name: 'Mitocondria',
-    organelle: 'Generador de ATP',
-    icon: '⚡',
-    color: '#fbbf24',
-    faceLabel: 'Cara 1 · Frente',
-    metabolicFunction: 'Respiración celular catabólica: oxida nutrientes con O2 para recargar ATP continuo.',
-    plantRole: 'Proporciona la energía nocturna y de crecimiento celular a partir de la glucosa almacenada.'
-  },
-  {
-    id: 'face-cloroplasto',
-    name: 'Cloroplasto',
-    organelle: 'Planta de fotosíntesis',
-    icon: '🌞',
-    color: '#4ade80',
-    faceLabel: 'Cara 2 · Derecha',
-    metabolicFunction: 'Fotosíntesis anabólica: transforma fotones solares en glucosa y libera O2.',
-    plantRole: 'Permite la nutrición autótrofa exclusiva del reino vegetal y algas fotosintéticas.'
-  },
-  {
-    id: 'face-vacuola',
-    name: 'Gran Vacuola Central',
-    organelle: 'Depósito osmótico',
-    icon: '🛢️',
-    color: '#38bdf8',
-    faceLabel: 'Cara 3 · Atrás',
-    metabolicFunction: 'Almacenamiento de agua y turgencia hidrostática mediante ósmosis.',
-    plantRole: 'Empuja la membrana contra la pared de celulosa para sostener tallos y hojas erguidas.'
-  },
-  {
-    id: 'face-nucleo',
-    name: 'Núcleo Celular',
-    organelle: 'Centro de control genético',
-    icon: '🗂️',
-    color: '#a78bfa',
-    faceLabel: 'Cara 4 · Izquierda',
-    metabolicFunction: 'Regulación de la expresión genética y replicación del ADN celular.',
-    plantRole: 'Ordena la producción de enzimas fotosintéticas y proteínas de crecimiento.'
-  },
-  {
-    id: 'face-membrana',
-    name: 'Membrana Celular',
-    organelle: 'Filtro selectivo semipermeable',
-    icon: '🚪',
-    color: '#7dd3fc',
-    faceLabel: 'Cara 5 · Arriba',
-    metabolicFunction: 'Transporte de solutos, paso de agua por ósmosis y expulsión de CO2/desechos.',
-    plantRole: 'Comunica a las células vecinas a través de túneles microscópicos de plasmodesmos.'
-  },
-  {
-    id: 'face-citoplasma',
-    name: 'Citoplasma',
-    organelle: 'Medio de reacción metabólica',
-    icon: '🏭',
-    color: '#58e6c5',
-    faceLabel: 'Cara 6 · Abajo',
-    metabolicFunction: 'Glicólisis y ciclosis citoplasmática que transporta vesículas y metabolitos.',
-    plantRole: 'Distribuye los cloroplastos hacia la luz mediante corrientes internas del citosol.'
-  }
-];
-
 const READING_CHAPTERS_M3 = [
   {
     number: '1',
@@ -3887,8 +3814,6 @@ export function Session3Subactivities({
   const [questionShared, setQuestionShared] = useState(false);
   const [activeFactoryHotspot, setActiveFactoryHotspot] = useState<string>('membrana');
   const [panAngle, setPanAngle] = useState(0);
-  const [activeCubeFaceIndex, setActiveCubeFaceIndex] = useState(0);
-  const [exploredCubeFaces, setExploredCubeFaces] = useState<Set<number>>(new Set([0]));
   const [canvaUrlInput, setCanvaUrlInput] = useState('');
   const [activeChapterIndex, setActiveChapterIndex] = useState<number>(0);
   const [selectedProcessComparison, setSelectedProcessComparison] = useState<'both' | 'fotosintesis' | 'respiracion'>('both');
@@ -3934,18 +3859,6 @@ export function Session3Subactivities({
     toast.success('¡Respuesta registrada en la plataforma!');
   };
 
-  const handleRotateCube = (index: number) => {
-    setActiveCubeFaceIndex(index);
-    setExploredCubeFaces((prev) => {
-      const next = new Set(prev);
-      next.add(index);
-      if (next.size === 6 && prev.size < 6) {
-        toast.success('¡Felicitaciones! Has explorado las 6 estructuras metabólicas del Cubo Merge.');
-      }
-      return next;
-    });
-  };
-
   const handleSaveCanvaUrl = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canvaUrlInput.trim()) {
@@ -3960,12 +3873,10 @@ export function Session3Subactivities({
     }
   };
 
-  // Extra activities from mission to link in 3.2/3.5
+  // Extra activities from mission to link in 3.2
   const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
-  const extraArCube = mission?.activities.find((a) => a.type === 'ar_cube');
   const effectiveStructures = structuresTable && structuresTable.length > 0 ? structuresTable : DEFAULT_M3_STRUCTURES;
   const currentHotspot = FACTORY_HOTSPOTS.find((h) => h.id === activeFactoryHotspot) ?? FACTORY_HOTSPOTS[0];
-  const currentCubeFace = MERGE_CUBE_FACES[activeCubeFaceIndex] ?? MERGE_CUBE_FACES[0];
 
   const TAB_DEFS_S3: { key: Session3TabKey; number: string; label: string; badge?: string }[] = [
     { key: '3.1', number: '3.1', label: 'Saberes previos' },
@@ -5024,7 +4935,7 @@ export function Session3Subactivities({
                 onClick={() => handleSelectTab('3.5')}
                 className="font-bold shadow-lg shadow-rose-500/10"
               >
-                Siguiente: 3.5 Cubo Merge y Estructuras
+                Siguiente: 3.5 Cubo Merge
                 <ArrowRight className="size-4 ml-1.5" />
               </Button>
             </div>
@@ -5033,7 +4944,7 @@ export function Session3Subactivities({
       )}
 
       {/* ══════════════════════════════════════════════════════════════════
-          3.5 CUBO MERGE: ESTRUCTURAS CELULARES Y METABOLISMO
+          3.5 CUBO MERGE: DOS EXPERIENCIAS DE REALIDAD AUMENTADA
           ══════════════════════════════════════════════════════════════════ */}
       {(viewMode === 'all' || activeTab === '3.5') && (
         <section id="sub-3-5" className="scroll-mt-36 space-y-5">
@@ -5051,119 +4962,20 @@ export function Session3Subactivities({
                 <div>
                   <div className="flex items-center gap-2">
                     <Chip tone="grape">Realidad Aumentada · Sesión 3</Chip>
-                    <span className="text-xs text-slate-400">Célula Vegetal y Metabolismo</span>
+                    <span className="text-xs text-slate-400">Célula Vegetal y Organismos Unicelulares</span>
                   </div>
                   <h3 className="text-lg font-extrabold text-white sm:text-xl">
-                    <ShinyText text="Cubo Merge: Identificación de Estructuras Metabólicas" speed={3.5} className="font-extrabold text-purple-200" />
+                    <ShinyText text="Cubo Merge: dos experiencias para explorar la vida" speed={3.5} className="font-extrabold text-purple-200" />
                   </h3>
                 </div>
               </div>
               <Chip tone="neutral">
                 <Box className="size-3.5 text-purple-300" aria-hidden />
-                6 Caras Celulares
+                2 Actividades 3D
               </Chip>
             </div>
 
-            {/* Texto literal oficial */}
-            <div className="rounded-2xl border border-purple-400/25 bg-purple-400/8 p-4 sm:p-5">
-              <p className="text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
-              </p>
-              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
-                «A partir de la visualización, la docente, presenta y proporciona a los estudiantes un cubo Merge e indica las funcionalidades de la herramienta y propone hacer uso del cubo superponiendo la imagen de la célula vegetal con el propósito de identificar las estructuras celulares para llevar a cabo el metabolismo celular»
-              </p>
-            </div>
-
-            {/* Simulador Interactivo 3D del Cubo Merge */}
-            <div className="rounded-3xl border border-purple-400/30 bg-ink-950/90 p-5 space-y-5 shadow-2xl">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="grid size-7 place-items-center rounded-lg bg-purple-400/20 text-purple-300 text-xs font-bold">
-                    🧊
-                  </span>
-                  <span className="text-xs font-bold text-white uppercase tracking-wider">
-                    Simulador Interactivo del Cubo Merge en 3D
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <Chip tone="grape">
-                    {exploredCubeFaces.size} de 6 caras exploradas
-                  </Chip>
-                  {extraArCube && mission ? (
-                    <Link
-                      to={activityUrl(mission.code, extraArCube)}
-                      className="rounded-lg border border-purple-400/30 bg-purple-400/10 px-2.5 py-1 text-xs font-bold text-purple-200 hover:bg-purple-400/20"
-                    >
-                      Pantalla completa ↗
-                    </Link>
-                  ) : null}
-                </div>
-              </div>
-
-              {/* Tarjetas selectoras de caras del cubo */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-                {MERGE_CUBE_FACES.map((face, idx) => {
-                  const isSelected = activeCubeFaceIndex === idx;
-                  const isExplored = exploredCubeFaces.has(idx);
-                  return (
-                    <button
-                      key={face.id}
-                      type="button"
-                      onClick={() => handleRotateCube(idx)}
-                      className={cn(
-                        'flex flex-col items-center gap-1.5 rounded-2xl border p-3 text-center transition',
-                        isSelected
-                          ? 'border-purple-400 bg-purple-500/20 shadow-lg shadow-purple-500/20'
-                          : 'border-white/10 bg-white/3 hover:border-white/20 hover:bg-white/6'
-                      )}
-                    >
-                      <div className="relative">
-                        <span className="text-2xl">{face.icon}</span>
-                        {isExplored && (
-                          <CheckCircle2 className="size-3.5 text-emerald-400 absolute -top-1 -right-2" />
-                        )}
-                      </div>
-                      <span className="text-xs font-bold text-white truncate max-w-full">{face.name}</span>
-                      <span className="text-[10px] text-slate-400 font-mono truncate max-w-full">{face.faceLabel}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Ficha de la cara activa del Cubo Merge */}
-              <div className="rounded-2xl border border-white/10 bg-white/4 p-5 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="grid size-12 place-items-center rounded-2xl text-2xl shadow"
-                      style={{ backgroundColor: `${currentCubeFace.color}20`, color: currentCubeFace.color }}
-                    >
-                      {currentCubeFace.icon}
-                    </span>
-                    <div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-purple-300">
-                        {currentCubeFace.faceLabel} · {currentCubeFace.organelle}
-                      </span>
-                      <h4 className="text-base font-extrabold text-white sm:text-lg">
-                        {currentCubeFace.name}
-                      </h4>
-                    </div>
-                  </div>
-                  <Chip tone="gold">{currentCubeFace.organelle}</Chip>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2 text-xs">
-                  <div className="rounded-xl border border-white/10 bg-ink-950/60 p-3 space-y-1">
-                    <strong className="text-purple-300 font-bold block">Función en el metabolismo celular:</strong>
-                    <p className="text-slate-200 leading-relaxed">{currentCubeFace.metabolicFunction}</p>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-ink-950/60 p-3 space-y-1">
-                    <strong className="text-emerald-300 font-bold block">Importancia en la célula vegetal:</strong>
-                    <p className="text-slate-200 leading-relaxed">{currentCubeFace.plantRole}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <MergeCubeActivities />
 
             {/* Pie de navegación */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
