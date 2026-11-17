@@ -1,4 +1,4 @@
-import { ExternalLink, Eye, Maximize2, Minimize2, Sparkles } from 'lucide-react';
+import { Eye, Maximize2, Minimize2, Sparkles } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Button, Chip } from '../../components/ui';
 import type { ModelEmbedConfig } from './embedCatalog';
@@ -79,15 +79,6 @@ export function SketchfabViewer({ embed, onSwitchToLocal, hasLocalModel = false 
         <span>
           Modelo: <strong className="text-slate-200">{embed.title}</strong> por <span className="text-mint-300">{embed.author}</span>
         </span>
-        <a
-          href={embed.modelUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 font-bold text-sky-400 hover:text-sky-300"
-        >
-          Ver original en Sketchfab
-          <ExternalLink className="size-3" aria-hidden />
-        </a>
       </div>
     </div>
   );
