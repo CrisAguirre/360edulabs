@@ -74,3 +74,15 @@ export function activityUrl(missionCode: string, activity: Pick<Activity, '_id' 
     ? `/misiones/${missionCode}/quiz`
     : `/misiones/${missionCode}/actividades/${activity._id}`;
 }
+
+/**
+ * Recursos complementarios de una misión: todas las actividades que no son la
+ * lectura principal ni el reto evaluativo. Equivale a lo que mostraban las
+ * antiguas pestañas 1.6 / 2.8 / 3.8 (modelos 3D, videos 360, cubo AR,
+ * animaciones, laboratorios, infografía y la bitácora).
+ */
+export function complementaryActivities(mission: Pick<MissionDetail, 'activities'>): Activity[] {
+  return sortByRoute(
+    mission.activities.filter((activity) => activity.type !== 'reading' && activity.type !== 'quiz')
+  );
+}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Aurora, AnimatedList } from '../../components/reactbits';
 import { Chip, ErrorBlock, LoadingBlock, SectionHeading } from '../../components/ui';
 import { roleHome, useAuth } from '../../contexts/AuthContext';
-import { sessionInfo, splitActivities } from '../../lib/curriculum';
+import { complementaryActivities, sessionInfo } from '../../lib/curriculum';
 import { useMission } from '../../lib/queries';
 import type { MissionDetail } from '../../lib/types';
 import { ComplementaryMissionCard } from './ComplementaryMissionCard';
@@ -11,10 +11,10 @@ import { ComplementaryMissionCard } from './ComplementaryMissionCard';
 /**
  * Sesión 4 «Actividades Complementarias».
  *
- * Reúne las actividades opcionales (de apoyo) de las tres sesiones en una
- * única vista, a la que se accede desde el mapa de sesiones. No modifica el
- * backend: las actividades siguen perteneciendo a m1/m2/m3 y conservan su
- * estado de completado, solo se agrupan visualmente aquí.
+ * Reúne los recursos complementarios de las tres sesiones en una única vista,
+ * a la que se accede desde el mapa de sesiones. No modifica el backend: las
+ * actividades siguen perteneciendo a m1/m2/m3 y conservan su estado de
+ * completado, solo se agrupan visualmente aquí.
  */
 export function ComplementaryActivitiesPage() {
   const { user } = useAuth();
@@ -28,7 +28,7 @@ export function ComplementaryActivitiesPage() {
   const missions = queries.map((q) => q.data).filter((m): m is MissionDetail => Boolean(m));
 
   const totalOptional = missions.reduce(
-    (sum, mission) => sum + splitActivities(mission).support.length,
+    (sum, mission) => sum + complementaryActivities(mission).length,
     0
   );
 
@@ -91,18 +91,18 @@ export function ComplementaryActivitiesPage() {
       ) : (
         <>
           {missions.map((mission) => {
-            const { support } = splitActivities(mission);
+            const extras = complementaryActivities(mission);
             const info = sessionInfo(mission.code);
-            if (support.length === 0) return null;
+            if (extras.length === 0) return null;
             return (
               <section key={mission.code} className="space-y-4">
                 <SectionHeading
                   eyebrow={`Sesión ${info?.session ?? mission.order}`}
                   title={info?.theme ?? mission.title}
-                  action={<Chip tone="neutral">{support.length} actividades</Chip>}
+                  action={<Chip tone="neutral">{extras.length} actividades</Chip>}
                 />
                 <AnimatedList className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.04}>
-                  {support.map((activity) => (
+                  {extras.map((activity) => (
                     <ComplementaryMissionCard
                       key={activity._id}
                       activity={activity}
