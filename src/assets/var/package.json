@@ -1,0 +1,19 @@
+{
+  "name": "laboratorio360-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Laboratorio 360 - Aplicación web educativa para 5.º de primaria",
+  "scripts": {
+    "dev:backend": "npm --prefix 360edulabsbknd run dev",
+    "dev:frontend": "npm --prefix 360edulabs run dev",
+    "build:backend": "npm --prefix 360edulabsbknd run build",
+    "build:frontend": "npm --prefix 360edulabs run build",
+    "seed": "npm --prefix 360edulabsbknd run seed"
+  },
+  "config": {
+    "mongodbMemoryServer": {
+      "version": "7.0.14"
+    }
+  }
+}
+

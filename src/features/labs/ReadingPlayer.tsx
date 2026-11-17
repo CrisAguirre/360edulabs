@@ -38,7 +38,6 @@ import { Button, Card, Chip, EvidenceStatusBadge, LinkButton } from '../../compo
 import { CitoMascot } from '../../components/Cito';
 import { useToast } from '../../components/ui/Toast';
 import { ApiError } from '../../lib/api';
-import { activityUrl } from '../../lib/curriculum';
 import {
   evidenceForActivity,
   useMyEvidence,
@@ -72,8 +71,10 @@ import {
   CellStructuresGraphic2D,
   CellularMotorGraphic2D,
   CinemaGraphic2D,
+  FactoryStoppedGraphic2D,
   ParticipationGraphic2D,
-  PlantAnimalCellGraphic2D
+  PlantAnimalCellGraphic2D,
+  WiltingCellGraphic2D
 } from './InquiryGraphics2D';
 import {
   CellWallGraphic2D,
@@ -98,6 +99,8 @@ import { ReflectiveStructureCarousel } from './ReflectiveStructureCarousel';
 import { MergeCubeActivities } from './MergeCubeActivities';
 import { Model3DPlayer } from './Model3DPlayer';
 import { Animation3DPlayer } from './Animation3DPlayer';
+import { SketchfabViewer } from './SketchfabViewer';
+import { MODEL_EMBEDS } from './embedCatalog';
 import {
   CELL_COMPARE_ACTIVITY,
   ENERGY_CELL_ACTIVITY,
@@ -3873,8 +3876,6 @@ export function Session3Subactivities({
     }
   };
 
-  // Extra activities from mission to link in 3.2
-  const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
   const effectiveStructures = structuresTable && structuresTable.length > 0 ? structuresTable : DEFAULT_M3_STRUCTURES;
   const currentHotspot = FACTORY_HOTSPOTS.find((h) => h.id === activeFactoryHotspot) ?? FACTORY_HOTSPOTS[0];
 
@@ -4316,14 +4317,47 @@ export function Session3Subactivities({
               </Chip>
             </div>
 
-            {/* Texto literal oficial */}
-            <div className="rounded-2xl border border-sky-400/25 bg-sky-400/8 p-4 sm:p-5">
-              <p className="text-xs font-bold uppercase tracking-wider text-sky-300 mb-1.5 flex items-center gap-1.5">
-                <Sparkles className="size-3.5" /> Texto de la actividad pedagógica:
-              </p>
-              <p className="text-sm leading-relaxed text-slate-200 sm:text-base italic">
-                «presenta el video 360 de una fábrica de producción, comparando a la célula con una pequeña fábrica que trabaja día y noche. En esta fábrica llegan materiales que son transformados para elaborar productos, se utiliza energía para que las máquinas funcionen y cada trabajador cumple una tarea especial, de manera parecida, las células de nuestro cuerpo reciben nutrientes, los transforman, obtienen energía y producen sustancias necesarias para mantenerse vivas y realizar sus funciones. A todo este conjunto de procesos lo llamamos metabolismo celular”.»
-              </p>
+            {/* Dos modelos 3D para explorar antes del Quiz final */}
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-sky-400/25 bg-sky-400/8 p-4 sm:p-5">
+                <p className="text-xs font-bold uppercase tracking-wider text-sky-300 mb-1.5 flex items-center gap-1.5">
+                  <Sparkles className="size-3.5" /> Explora estos dos modelos 3D:
+                </p>
+                <p className="text-sm leading-relaxed text-slate-200 sm:text-base">
+                  Gira cada modelo, haz clic en sus etiquetas y estudia sus estructuras. Esta exploración te preparará para el{' '}
+                  <strong className="text-white">Reto Final</strong> de la misión.
+                </p>
+              </div>
+
+              <div className="grid gap-5 lg:grid-cols-2">
+                {/* Modelo 1: leer y estudiar funciones */}
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/3 p-4">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-sky-400/15 text-sky-300 text-base font-black">1</span>
+                    <div>
+                      <h4 className="text-sm font-extrabold text-white">Lee y estudia las funciones</h4>
+                      <p className="mt-0.5 text-xs leading-relaxed text-slate-300">
+                        Recorre la célula eucariota y lee con calma la función de cada estructura (núcleo, mitocondrias, retículo, Golgi…). Son clave para el quiz.
+                      </p>
+                    </div>
+                  </div>
+                  <SketchfabViewer embed={MODEL_EMBEDS['m3-celula-eucariota']} />
+                </div>
+
+                {/* Modelo 2: observar movimiento */}
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/3 p-4">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-mint-400/15 text-mint-300 text-base font-black">2</span>
+                    <div>
+                      <h4 className="text-sm font-extrabold text-white">Observa el movimiento de las partes</h4>
+                      <p className="mt-0.5 text-xs leading-relaxed text-slate-300">
+                        Mira cómo se mueven los componentes de la célula parietal y fíjate en sus muchas mitocondrias: es una célula que gasta muchísima energía.
+                      </p>
+                    </div>
+                  </div>
+                  <SketchfabViewer embed={MODEL_EMBEDS['m3-celula-parietal']} />
+                </div>
+              </div>
             </div>
 
             {/* Simulador Interactivo de Video 360: La Fábrica Celular */}
@@ -4384,19 +4418,6 @@ export function Session3Subactivities({
                   <p className="text-xs text-slate-300 sm:text-sm leading-relaxed max-w-lg mx-auto">
                     {currentHotspot.description}
                   </p>
-                  <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
-                    {extraVideo360 && mission ? (
-                      <LinkButton
-                        to={activityUrl(mission.code, extraVideo360)}
-                        variant="primary"
-                        size="sm"
-                        className="font-bold text-xs shadow-lg"
-                      >
-                        <Play className="size-3.5 mr-1" />
-                        Abrir experiencia 360 completa
-                      </LinkButton>
-                    ) : null}
-                  </div>
                 </div>
               </div>
 
@@ -4536,17 +4557,23 @@ export function Session3Subactivities({
               </p>
             </div>
 
-            {/* Las 2 Grandes Preguntas en Tarjetas con Resplandor */}
+            {/* Las 2 Grandes Preguntas en Tarjetas con Figuras Animadas */}
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-sky-400/30 bg-sky-400/10 p-4 space-y-1.5">
+              <div className="rounded-2xl border border-sky-400/30 bg-sky-400/10 p-4 space-y-3">
                 <span className="text-xs font-black uppercase tracking-wider text-sky-300">Pregunta 1</span>
+                <div className="mx-auto w-full max-w-[20rem] overflow-hidden rounded-xl border border-white/10">
+                  <FactoryStoppedGraphic2D />
+                </div>
                 <p className="font-display font-extrabold text-white text-base">
                   ¿Qué creen que sucedería si una fábrica dejara de recibir materiales o energía para funcionar?
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 space-y-1.5">
+              <div className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 space-y-3">
                 <span className="text-xs font-black uppercase tracking-wider text-amber-300">Pregunta 2</span>
+                <div className="mx-auto w-full max-w-[20rem] overflow-hidden rounded-xl border border-white/10">
+                  <WiltingCellGraphic2D />
+                </div>
                 <p className="font-display font-extrabold text-white text-base">
                   ¿Pasaría algo parecido en nuestras células si no recibieran los nutrientes que necesitan?
                 </p>

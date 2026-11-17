@@ -1597,3 +1597,327 @@ export function CellularMotorGraphic2D() {
     </svg>
   );
 }
+
+/**
+ * 3.3 · Pregunta 1: ¿qué pasaría si una fábrica dejara de recibir materiales
+ * o energía para funcionar? Escena: una fábrica detenida: la alarma parpadea,
+ * el rayo de energía se apaga, la banda transportadora está quieta y los
+ * camiones ya no llegan con insumos.
+ */
+export function FactoryStoppedGraphic2D() {
+  return (
+    <svg
+      viewBox="0 0 360 210"
+      className="h-auto w-full"
+      role="img"
+      aria-label="Fábrica detenida sin materiales ni energía: la alarma parpadea, la banda transportadora está quieta y el rayo de energía se apaga"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="fs-bg" x1="0" y1="0" x2="360" y2="210">
+          <stop stopColor="#241505" />
+          <stop offset="0.5" stopColor="#0b1222" />
+          <stop offset="1" stopColor="#020617" />
+        </linearGradient>
+        <linearGradient id="fs-wall" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#334155" />
+          <stop offset="1" stopColor="#0f172a" />
+        </linearGradient>
+        <linearGradient id="fs-belt" x1="0" y1="0" x2="1" y2="0">
+          <stop stopColor="#475569" />
+          <stop offset="1" stopColor="#1e293b" />
+        </linearGradient>
+        <radialGradient id="fs-alarm" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#f87171" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#dc2626" stopOpacity="0.1" />
+        </radialGradient>
+        <radialGradient id="fs-bolt" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#fde047" stopOpacity="0.85" />
+          <stop offset="1" stopColor="#f59e0b" stopOpacity="0.15" />
+        </radialGradient>
+        <filter id="fs-glow" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur stdDeviation="2.2" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="fs-soft" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="5" />
+        </filter>
+        <pattern id="fs-dots" width="18" height="18" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="#fbbf24" opacity="0.1" />
+        </pattern>
+        <style>
+          {`
+            @keyframes fsBlink {
+              0%, 100% { opacity: 0.35; }
+              12% { opacity: 1; }
+              24% { opacity: 0.35; }
+              36% { opacity: 0.85; }
+              48% { opacity: 0.3; }
+            }
+            @keyframes fsBolt {
+              0%, 100% { opacity: 0.18; transform: scale(0.96); }
+              50% { opacity: 0.55; transform: scale(1.05); }
+            }
+            @keyframes fsSmoke {
+              0% { transform: translateY(0px) scale(0.7); opacity: 0.4; }
+              60% { opacity: 0.18; }
+              100% { transform: translateY(-26px) scale(1.25); opacity: 0; }
+            }
+            @keyframes fsFall {
+              0% { transform: translate(0, 0); opacity: 0; }
+              30% { opacity: 0.7; }
+              100% { transform: translate(14px, 34px); opacity: 0; }
+            }
+            @keyframes fsJitter {
+              0%, 100% { transform: translateX(0); }
+              50% { transform: translateX(1.4px); }
+            }
+            .fs-blink { animation: fsBlink 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .fs-bolt { animation: fsBolt 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .fs-smoke { animation: fsSmoke 5s ease-out infinite; }
+            .fs-smoke-2 { animation-delay: 1.7s; }
+            .fs-smoke-3 { animation-delay: 3.3s; }
+            .fs-fall { animation: fsFall 4.2s linear infinite; }
+            .fs-fall-2 { animation-delay: 1.4s; }
+            .fs-fall-3 { animation-delay: 2.8s; }
+            .fs-jitter { animation: fsJitter 2.8s ease-in-out infinite; }
+          `}
+        </style>
+      </defs>
+
+      <rect width="360" height="210" fill="url(#fs-bg)" />
+      <rect width="360" height="210" fill="url(#fs-dots)" />
+
+      {/* Alarma en el techo */}
+      <g className="fs-blink" filter="url(#fs-glow)">
+        <circle cx="120" cy="52" r="14" fill="url(#fs-alarm)" />
+        <circle cx="120" cy="52" r="6" fill="#fecaca" />
+      </g>
+
+      {/* Rayo de energía apagándose */}
+      <g className="fs-bolt" filter="url(#fs-glow)">
+        <path d="M296 40l-22 34h15l-7 30 30-44h-16Z" fill="url(#fs-bolt)" stroke="#fde68a" strokeOpacity="0.5" strokeWidth="1" />
+      </g>
+
+      {/* Fábrica */}
+      <g>
+        <ellipse cx="120" cy="168" rx="90" ry="8" fill="#fbbf24" opacity="0.1" filter="url(#fs-soft)" />
+        {/* Chimenea */}
+        <rect x="152" y="34" width="20" height="46" rx="3" fill="#1e293b" stroke="#334155" strokeWidth="1.2" />
+        {/* Humo débil que se desvanece */}
+        <g fill="#94a3b8" filter="url(#fs-soft)">
+          <circle className="fs-smoke" cx="162" cy="28" r="7" />
+          <circle className="fs-smoke fs-smoke-2" cx="168" cy="24" r="5.5" />
+          <circle className="fs-smoke fs-smoke-3" cx="158" cy="26" r="6" />
+        </g>
+        {/* Cuerpo del edificio */}
+        <rect x="52" y="74" width="140" height="92" rx="8" fill="url(#fs-wall)" stroke="#475569" strokeWidth="1.4" />
+        {/* Techo */}
+        <rect x="44" y="66" width="156" height="12" rx="3" fill="#334155" />
+        {/* Ventanas con luz tenue */}
+        <g fill="#7dd3fc" opacity="0.35">
+          <rect x="66" y="88" width="22" height="16" rx="3" />
+          <rect x="100" y="88" width="22" height="16" rx="3" />
+          <rect x="134" y="88" width="22" height="16" rx="3" />
+          <rect x="66" y="118" width="22" height="16" rx="3" />
+          <rect x="100" y="118" width="22" height="16" rx="3" />
+          <rect x="134" y="118" width="22" height="16" rx="3" />
+        </g>
+        {/* Puerta */}
+        <rect x="108" y="148" width="28" height="18" rx="2" fill="#0f172a" stroke="#475569" strokeWidth="1" />
+      </g>
+
+      {/* Banda transportadora detenida */}
+      <g>
+        <line x1="40" y1="182" x2="250" y2="182" stroke="url(#fs-belt)" strokeWidth="7" strokeLinecap="round" />
+        <circle cx="44" cy="182" r="9" fill="#1e293b" stroke="#475569" strokeWidth="1.6" />
+        <circle cx="246" cy="182" r="9" fill="#1e293b" stroke="#475569" strokeWidth="1.6" />
+        {/* Cajas detenidas */}
+        <g className="fs-jitter">
+          <rect x="72" y="162" width="26" height="20" rx="3" fill="#b45309" stroke="#fbbf24" strokeOpacity="0.5" strokeWidth="1.2" />
+          <path d="M78 162v20M90 162v20" stroke="#fbbf24" strokeOpacity="0.4" strokeWidth="1" />
+          <rect x="112" y="162" width="26" height="20" rx="3" fill="#92400e" stroke="#fbbf24" strokeOpacity="0.4" strokeWidth="1.2" />
+          <text x="125" y="176" textAnchor="middle" fill="#fde68a" fontSize="12" fontWeight="900">!</text>
+          <rect x="152" y="162" width="26" height="20" rx="3" fill="#78350f" stroke="#fbbf24" strokeOpacity="0.35" strokeWidth="1.2" />
+        </g>
+      </g>
+
+      {/* Partículas que caen (materiales que ya no llegan) */}
+      <g fill="#fbbf24" filter="url(#fs-glow)">
+        <circle className="fs-fall" cx="286" cy="120" r="2" />
+        <circle className="fs-fall fs-fall-2" cx="306" cy="100" r="1.6" />
+        <circle className="fs-fall fs-fall-3" cx="272" cy="132" r="1.4" />
+      </g>
+
+      <text x="180" y="204" textAnchor="middle" fill="#fcd34d" fontSize="8" fontWeight="900" letterSpacing="0.9">
+        SIN MATERIALES NI ENERGÍA, LA FÁBRICA SE DETIENE
+      </text>
+    </svg>
+  );
+}
+
+/**
+ * 3.3 · Pregunta 2: ¿pasaría algo parecido en nuestras células si no
+ * recibieran los nutrientes que necesitan? Escena: comparación entre una
+ * célula nutrida y energizada (mitocondrias activas, ATP) y una célula
+ * marchita sin nutrientes (membrana arrugada, mitocondrias apagadas y agua
+ * que escapa).
+ */
+export function WiltingCellGraphic2D() {
+  return (
+    <svg
+      viewBox="0 0 360 210"
+      className="h-auto w-full"
+      role="img"
+      aria-label="Comparación entre una célula nutrida con mitocondrias activas y una célula marchita que pierde agua y energía"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="wc-bg" x1="0" y1="0" x2="360" y2="210">
+          <stop stopColor="#042f2e" />
+          <stop offset="0.5" stopColor="#04182f" />
+          <stop offset="1" stopColor="#020617" />
+        </linearGradient>
+        <radialGradient id="wc-halo-live" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#2dd4bf" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#2dd4bf" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="wc-halo-wilt" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#94a3b8" stopOpacity="0.2" />
+          <stop offset="1" stopColor="#94a3b8" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="wc-cyto-live" cx="38%" cy="32%" r="74%">
+          <stop stopColor="#5eead4" stopOpacity="0.34" />
+          <stop offset="1" stopColor="#0f766e" stopOpacity="0.12" />
+        </radialGradient>
+        <radialGradient id="wc-cyto-wilt" cx="38%" cy="32%" r="74%">
+          <stop stopColor="#cbd5e1" stopOpacity="0.22" />
+          <stop offset="1" stopColor="#475569" stopOpacity="0.12" />
+        </radialGradient>
+        <radialGradient id="wc-nucleus-live" cx="38%" cy="34%" r="70%">
+          <stop stopColor="#ddd6fe" />
+          <stop offset="0.55" stopColor="#a78bfa" />
+          <stop offset="1" stopColor="#6d28d9" />
+        </radialGradient>
+        <radialGradient id="wc-nucleus-wilt" cx="38%" cy="34%" r="70%">
+          <stop stopColor="#e2e8f0" />
+          <stop offset="0.6" stopColor="#94a3b8" />
+          <stop offset="1" stopColor="#64748b" />
+        </radialGradient>
+        <radialGradient id="wc-mito-live" cx="40%" cy="36%" r="70%">
+          <stop stopColor="#fdba74" />
+          <stop offset="1" stopColor="#ea580c" />
+        </radialGradient>
+        <radialGradient id="wc-mito-wilt" cx="40%" cy="36%" r="70%">
+          <stop stopColor="#94a3b8" />
+          <stop offset="1" stopColor="#475569" />
+        </radialGradient>
+        <radialGradient id="wc-atp" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#fef9c3" />
+          <stop offset="1" stopColor="#facc15" />
+        </radialGradient>
+        <filter id="wc-glow" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur stdDeviation="2.4" result="b" />
+          <feMerge>
+            <feMergeNode in="b" />
+            <feMergeNode in="b" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <pattern id="wc-dots" width="18" height="18" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="#5eead4" opacity="0.12" />
+        </pattern>
+        <style>
+          {`
+            @keyframes wcBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.012); } }
+            @keyframes wcWilt { 0%,100% { transform: scale(1); } 50% { transform: scale(0.985); } }
+            @keyframes wcMitoLive { 0%,100% { transform: scale(1) rotate(0deg); opacity: 1; } 50% { transform: scale(1.05) rotate(-2deg); } }
+            @keyframes wcMitoWilt { 0%,100% { transform: scale(1); opacity: 0.55; } 50% { transform: scale(0.97); opacity: 0.38; } }
+            @keyframes wcDrop { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 0.9; } 100% { transform: translateY(26px); opacity: 0; } }
+            @keyframes wcAtp { 0%,100% { opacity: 0.8; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
+            @keyframes wcDoubt { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2.4px) scale(1.04); } }
+            .wc-breathe { animation: wcBreathe 6.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .wc-wilt { animation: wcWilt 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .wc-mito-live { animation: wcMitoLive 4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .wc-mito-wilt { animation: wcMitoWilt 4.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .wc-drop { animation: wcDrop 3.4s linear infinite; }
+            .wc-drop-2 { animation-delay: 1.1s; }
+            .wc-drop-3 { animation-delay: 2.2s; }
+            .wc-atp { animation: wcAtp 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .wc-doubt { animation: wcDoubt 4.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+          `}
+        </style>
+      </defs>
+
+      <rect width="360" height="210" fill="url(#wc-bg)" />
+      <rect width="360" height="210" fill="url(#wc-dots)" />
+
+      {/* ── Célula nutrida (izquierda) ── */}
+      <ellipse cx="100" cy="100" rx="84" ry="82" fill="url(#wc-halo-live)" opacity="0.65" />
+      <g className="wc-breathe" filter="url(#wc-glow)">
+        <path d="M100 24c42 0 72 32 72 76s-30 76-72 76-72-34-72-76 30-76 72-76Z" fill="url(#wc-cyto-live)" stroke="#2dd4bf" strokeWidth="2.6" />
+        {/* Núcleo */}
+        <circle cx="86" cy="88" r="17" fill="url(#wc-nucleus-live)" />
+        <circle cx="86" cy="88" r="6" fill="#f5f3ff" opacity="0.95" />
+        {/* Mitocondrias activas */}
+        <g className="wc-mito-live">
+          <ellipse cx="138" cy="76" rx="16" ry="8" fill="url(#wc-mito-live)" stroke="#fed7aa" strokeWidth="1.2" transform="rotate(-14 138 76)" />
+          <path d="M128 74c3 4 6-3 9 1s6-3 9 1" stroke="#7c2d12" strokeWidth="1.1" fill="none" />
+        </g>
+        <g className="wc-mito-live" style={{ animationDelay: '0.9s' }}>
+          <ellipse cx="130" cy="112" rx="13" ry="7" fill="#fb923c" stroke="#fde68a" strokeWidth="1.1" transform="rotate(16 130 112)" />
+          <path d="M121 110c3 3 5-2 8 1s5-2 8 1" stroke="#7c2d12" strokeWidth="1" fill="none" />
+        </g>
+      </g>
+      {/* ATP */}
+      <g className="wc-atp" filter="url(#wc-glow)">
+        <rect x="56" y="150" width="40" height="15" rx="7.5" fill="#fbbf24" fillOpacity="0.16" stroke="#fbbf24" strokeOpacity="0.55" strokeWidth="1" />
+        <text x="76" y="161" textAnchor="middle" fill="#fde68a" fontSize="7.5" fontWeight="900" letterSpacing="0.6">ATP</text>
+      </g>
+      <text x="100" y="194" textAnchor="middle" fill="#5eead4" fontSize="9" fontWeight="900" letterSpacing="0.6">CON NUTRIENTES</text>
+
+      {/* ── Célula marchita (derecha) ── */}
+      <ellipse cx="262" cy="100" rx="84" ry="82" fill="url(#wc-halo-wilt)" opacity="0.6" />
+      <g className="wc-wilt" filter="url(#wc-glow)">
+        {/* Membrana arrugada */}
+        <path
+          d="M262 34c-24 2-40 14-48 28-10 18-9 38 0 54 8 15 20 22 34 20 20-3 36-18 40-36 4-19-2-42-14-54-8-8-8-14-12-12Z"
+          fill="url(#wc-cyto-wilt)"
+          stroke="#94a3b8"
+          strokeWidth="2.4"
+        />
+        {/* Núcleo apagado */}
+        <circle cx="252" cy="92" r="15" fill="url(#wc-nucleus-wilt)" />
+        <circle cx="252" cy="92" r="5" fill="#e2e8f0" opacity="0.8" />
+        {/* Mitocondrias apagadas */}
+        <g className="wc-mito-wilt">
+          <ellipse cx="286" cy="82" rx="15" ry="7.5" fill="url(#wc-mito-wilt)" stroke="#64748b" strokeWidth="1.1" transform="rotate(-12 286 82)" />
+        </g>
+        <g className="wc-mito-wilt" style={{ animationDelay: '1.2s' }}>
+          <ellipse cx="282" cy="116" rx="12" ry="6.5" fill="url(#wc-mito-wilt)" stroke="#64748b" strokeWidth="1.1" transform="rotate(14 282 116)" />
+        </g>
+      </g>
+      {/* Gotas de agua que escapan */}
+      <g fill="#7dd3fc" filter="url(#wc-glow)">
+        <path className="wc-drop" d="M250 150c-2 3-2 7 0 9 2 2 4-2 4-5s-1-5-4-4Z" />
+        <path className="wc-drop wc-drop-2" d="M276 156c-2 3-2 7 0 9 2 2 4-2 4-5s-1-5-4-4Z" />
+        <path className="wc-drop wc-drop-3" d="M264 152c-2 3-2 7 0 9 2 2 4-2 4-5s-1-5-4-4Z" />
+      </g>
+      <text x="262" y="194" textAnchor="middle" fill="#cbd5e1" fontSize="9" fontWeight="900" letterSpacing="0.6">SIN NUTRIENTES</text>
+
+      {/* Insignia "¿?" central */}
+      <g className="wc-doubt" filter="url(#wc-glow)">
+        <circle cx="181" cy="100" r="16" fill="#0f172a" stroke="#94a3b8" strokeWidth="2" />
+        <text x="181" y="106" textAnchor="middle" fill="#cbd5e1" fontSize="16" fontWeight="900">?</text>
+      </g>
+
+      <text x="181" y="204" textAnchor="middle" fill="#99f6e4" fontSize="7.5" fontWeight="900" letterSpacing="0.9">
+        ¿Y NUESTRAS CÉLULAS?
+      </text>
+    </svg>
+  );
+}

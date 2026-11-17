@@ -1,0 +1,11 @@
+esta estrategia de Indagacion  con videos 360 es de gamificacion, por tanto, llevan insignias y retos Sesión 1: «¡Misión microscópica! Exploradores en busca de los secretos de la célula» 
+Reto de la misión: Descubrir qué tienen en común todos los seres vivos, explorar el fascinante mundo de las células y conocer las pistas que dieron origen a la teoría celular.
+Insignia por conquistar: 🏅 Explorador Celular.
+Sesión 2: «¡Misión celular! Descifrando el secreto de la unidad de la vida» 
+Reto de la misión: Explorar, descubrir y reunir pistas para construir el concepto de célula, reconociendo su importancia como unidad básica de todos los seres vivos.
+Insignia por conquistar: Constructor del Conocimiento Celular.
+Sesión 3: «¡Misión energía! Descubriendo la fábrica de la vida celular» 
+Reto de la misión: Convertirse en pequeños científicos para descubrir cómo las células obtienen, transforman y utilizan los nutrientes y la energía para mantenerse vivas, crecer y realizar sus funciones vitales.
+Insignia por conquistar: Guardián de la Energía Celular.
+
+opencode -s ses_e37446d6cffeUZW9bqMjFAKM2P

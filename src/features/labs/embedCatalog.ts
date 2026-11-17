@@ -70,6 +70,24 @@ export const MODEL_EMBEDS: Record<string, ModelEmbedConfig> = {
     embedUrl: 'https://sketchfab.com/models/e1b1e04ccfe34caf9e59ee39ebe547cc/embed?autostart=1&ui_theme=dark',
     modelUrl: 'https://sketchfab.com/3d-models/mitocondria-e1b1e04ccfe34caf9e59ee39ebe547cc',
     description: 'Central energética celular donde se sintetiza el ATP mediante respiración celular.'
+  },
+  // M3 - Célula eucariota con funciones (RA-t05-pmc)
+  'm3-celula-eucariota': {
+    id: 'm3-celula-eucariota',
+    title: 'Célula eucariota y sus funciones',
+    author: 'CNCI_VIRTUAL',
+    embedUrl: 'https://sketchfab.com/models/ac569925866e49f99a9774f70112b896/embed?autostart=1&ui_theme=dark',
+    modelUrl: 'https://sketchfab.com/3d-models/ra-t05-pmc-ac569925866e49f99a9774f70112b896',
+    description: 'Célula eucariota con estructuras etiquetadas para estudiar la función de cada organelo.'
+  },
+  // M3 - Célula parietal en movimiento (Parietal Cell final version)
+  'm3-celula-parietal': {
+    id: 'm3-celula-parietal',
+    title: 'Célula parietal del estómago',
+    author: 'Wenrong',
+    embedUrl: 'https://sketchfab.com/models/fff5e5d8086b4de3880bb8bcfe5880ca/embed?autostart=1&ui_theme=dark',
+    modelUrl: 'https://sketchfab.com/3d-models/parietal-cell-final-version-fff5e5d8086b4de3880bb8bcfe5880ca',
+    description: 'Célula parietal que secreta ácido clorhídrico; observa el movimiento de sus partes y su gran número de mitocondrias.'
   }
 };
 
