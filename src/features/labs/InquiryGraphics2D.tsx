@@ -72,7 +72,7 @@ export function BodyLifeGraphic2D() {
           {`
             @keyframes blLensFloat {
               0%, 100% { transform: translate(0px, 0px) scale(1); }
-              50% { transform: translate(3px, -6px) scale(1.02); }
+              50% { transform: translate(1.5px, -3px) scale(1.008); }
             }
             @keyframes blGlare {
               0% { transform: translate(-80px, -60px) rotate(18deg); opacity: 0; }
@@ -81,47 +81,47 @@ export function BodyLifeGraphic2D() {
               100% { transform: translate(80px, 60px) rotate(18deg); opacity: 0; }
             }
             @keyframes blCellPulse {
-              0%, 100% { transform: scale(1); opacity: 0.85; }
-              50% { transform: scale(1.14); opacity: 1; }
+              0%, 100% { transform: scale(1); opacity: 0.9; }
+              50% { transform: scale(1.07); opacity: 1; }
             }
             @keyframes blDivide {
               0%, 12% { transform: scale(1); }
-              55% { transform: scale(1.22); }
+              55% { transform: scale(1.08); }
               100% { transform: scale(1); }
             }
             @keyframes blDash {
               to { stroke-dashoffset: -60; }
             }
             @keyframes blSway {
-              0%, 100% { transform: rotate(-2.2deg); }
-              50% { transform: rotate(2.2deg); }
+              0%, 100% { transform: rotate(-1.4deg); }
+              50% { transform: rotate(1.4deg); }
             }
             @keyframes blTail {
-              0%, 100% { transform: rotate(-9deg); }
-              50% { transform: rotate(11deg); }
+              0%, 100% { transform: rotate(-5deg); }
+              50% { transform: rotate(6deg); }
             }
             @keyframes blTwinkle {
-              0%, 100% { opacity: 0.15; transform: scale(0.8); }
-              50% { opacity: 0.95; transform: scale(1.15); }
+              0%, 100% { opacity: 0.2; transform: scale(0.85); }
+              50% { opacity: 0.9; transform: scale(1.08); }
             }
             @keyframes blBob {
               0%, 100% { transform: translateY(0px); }
-              50% { transform: translateY(-3px); }
+              50% { transform: translateY(-1.5px); }
             }
-            .bl-lens { animation: blLensFloat 6s ease-in-out infinite; transform-origin: 182px 72px; }
+            .bl-lens { animation: blLensFloat 7s ease-in-out infinite; transform-origin: 182px 72px; }
             .bl-glare { animation: blGlare 7s ease-in-out infinite; }
-            .bl-cell { animation: blCellPulse 3.2s ease-in-out infinite; }
-            .bl-cell-2 { animation-delay: 0.55s; }
-            .bl-cell-3 { animation-delay: 1.1s; }
-            .bl-cell-4 { animation-delay: 1.65s; }
-            .bl-divide { animation: blDivide 5.5s ease-in-out infinite; transform-origin: 204px 96px; }
+            .bl-cell { animation: blCellPulse 4s ease-in-out infinite; }
+            .bl-cell-2 { animation-delay: 0.6s; }
+            .bl-cell-3 { animation-delay: 1.2s; }
+            .bl-cell-4 { animation-delay: 1.8s; }
+            .bl-divide { animation: blDivide 6s ease-in-out infinite; transform-origin: 204px 96px; }
             .bl-connector { stroke-dasharray: 4 6; animation: blDash 3.4s linear infinite; }
-            .bl-plant { animation: blSway 5.5s ease-in-out infinite; transform-origin: 180px 176px; }
-            .bl-tail { animation: blTail 2.6s ease-in-out infinite; transform-origin: 316px 152px; }
-            .bl-twinkle { animation: blTwinkle 2.8s ease-in-out infinite; }
-            .bl-twinkle-2 { animation-delay: 0.9s; }
-            .bl-twinkle-3 { animation-delay: 1.7s; }
-            .bl-bob { animation: blBob 4.4s ease-in-out infinite; }
+            .bl-plant { animation: blSway 6.5s ease-in-out infinite; transform-origin: 180px 176px; }
+            .bl-tail { animation: blTail 3.2s ease-in-out infinite; transform-origin: 316px 152px; }
+            .bl-twinkle { animation: blTwinkle 3.4s ease-in-out infinite; }
+            .bl-twinkle-2 { animation-delay: 1s; }
+            .bl-twinkle-3 { animation-delay: 1.9s; }
+            .bl-bob { animation: blBob 5s ease-in-out infinite; }
           `}
         </style>
       </defs>
@@ -134,7 +134,7 @@ export function BodyLifeGraphic2D() {
       <g fill="none" stroke="#38bdf8" strokeOpacity="0.5" strokeWidth="1.2">
         <path className="bl-connector" d="M150 104C120 122 92 128 74 132" />
         <path className="bl-connector" d="M182 118V146" />
-        <path className="bl-connector" d="M214 104c30 18 58 24 76 28" />
+        <path className="bl-connector" d="M214 104c30 18 56 26 74 42" />
       </g>
 
       {/* Formas de vida */}
@@ -306,48 +306,48 @@ export function CellActivityGraphic2D() {
           {`
             @keyframes caBreathe {
               0%, 100% { transform: scale(1); }
-              50% { transform: scale(1.025); }
+              50% { transform: scale(1.012); }
             }
             @keyframes caNucleus {
-              0%, 100% { transform: scale(1); opacity: 0.96; }
-              50% { transform: scale(1.055); opacity: 1; }
+              0%, 100% { transform: scale(1); opacity: 0.97; }
+              50% { transform: scale(1.025); opacity: 1; }
             }
             @keyframes caMito {
               0%, 100% { transform: scale(1) rotate(0deg); }
-              50% { transform: scale(1.09) rotate(-3deg); }
+              50% { transform: scale(1.04) rotate(-1.5deg); }
             }
             @keyframes caMito2 {
               0%, 100% { transform: scale(1) rotate(0deg); }
-              50% { transform: scale(1.08) rotate(3deg); }
+              50% { transform: scale(1.035) rotate(1.5deg); }
             }
             @keyframes caWobble {
               0%, 100% { transform: translate(0px, 0px); }
-              33% { transform: translate(2.5px, -2px); }
-              66% { transform: translate(-2px, 2px); }
+              33% { transform: translate(1.2px, -1px); }
+              66% { transform: translate(-1px, 1px); }
             }
             @keyframes caGolgi {
-              0%, 100% { transform: translateX(0px); opacity: 0.9; }
-              50% { transform: translateX(2.5px); opacity: 1; }
+              0%, 100% { transform: translateX(0px); opacity: 0.92; }
+              50% { transform: translateX(1.2px); opacity: 1; }
             }
             @keyframes caMembrane {
-              0%, 100% { opacity: 0.85; }
+              0%, 100% { opacity: 0.9; }
               50% { opacity: 1; }
             }
             @keyframes caTwinkle {
-              0%, 100% { opacity: 0.2; transform: scale(0.85); }
-              50% { opacity: 1; transform: scale(1.2); }
+              0%, 100% { opacity: 0.25; transform: scale(0.9); }
+              50% { opacity: 0.95; transform: scale(1.08); }
             }
-            .ca-breathe { animation: caBreathe 6s ease-in-out infinite; transform-origin: 180px 104px; }
-            .ca-nucleus { animation: caNucleus 3.4s ease-in-out infinite; transform-origin: 156px 88px; }
-            .ca-mito { animation: caMito 2.8s ease-in-out infinite; transform-origin: 118px 134px; }
-            .ca-mito-2 { animation: caMito2 3.4s ease-in-out infinite; transform-origin: 254px 78px; }
-            .ca-wobble { animation: caWobble 5s ease-in-out infinite; }
-            .ca-wobble-2 { animation-delay: 0.8s; }
-            .ca-golgi { animation: caGolgi 3.6s ease-in-out infinite; }
-            .ca-membrane { animation: caMembrane 4.4s ease-in-out infinite; }
-            .ca-twinkle { animation: caTwinkle 2.6s ease-in-out infinite; }
-            .ca-twinkle-2 { animation-delay: 0.7s; }
-            .ca-twinkle-3 { animation-delay: 1.4s; }
+            .ca-breathe { animation: caBreathe 7s ease-in-out infinite; transform-origin: 180px 104px; }
+            .ca-nucleus { animation: caNucleus 4s ease-in-out infinite; transform-origin: 156px 88px; }
+            .ca-mito { animation: caMito 3.6s ease-in-out infinite; transform-origin: 118px 134px; }
+            .ca-mito-2 { animation: caMito2 4.2s ease-in-out infinite; transform-origin: 254px 78px; }
+            .ca-wobble { animation: caWobble 6s ease-in-out infinite; }
+            .ca-wobble-2 { animation-delay: 0.9s; }
+            .ca-golgi { animation: caGolgi 4.4s ease-in-out infinite; }
+            .ca-membrane { animation: caMembrane 5.4s ease-in-out infinite; }
+            .ca-twinkle { animation: caTwinkle 3.2s ease-in-out infinite; }
+            .ca-twinkle-2 { animation-delay: 0.8s; }
+            .ca-twinkle-3 { animation-delay: 1.6s; }
           `}
         </style>
       </defs>
@@ -833,18 +833,18 @@ export function PlantAnimalCellGraphic2D() {
         </pattern>
         <style>
           {`
-            @keyframes paChloro { 0%,100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } }
-            @keyframes paVacuole { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-            @keyframes paMito { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(-4deg); } }
-            @keyframes paNucleus { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
-            @keyframes paQuestion { 0%,100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-6px) scale(1.08); } }
-            .pa-chloro { animation: paChloro 3.4s ease-in-out infinite; transform-origin: 108px 92px; }
-            .pa-chloro-2 { animation-delay: 0.6s; transform-origin: 76px 66px; }
-            .pa-vacuole { animation: paVacuole 5s ease-in-out infinite; transform-origin: 108px 104px; }
-            .pa-mito { animation: paMito 3s ease-in-out infinite; transform-origin: 262px 88px; }
-            .pa-mito-2 { animation-delay: 0.7s; transform-origin: 282px 120px; }
-            .pa-nucleus { animation: paNucleus 3.8s ease-in-out infinite; transform-origin: 256px 100px; }
-            .pa-question { animation: paQuestion 3s ease-in-out infinite; transform-origin: 180px 104px; }
+            @keyframes paChloro { 0%,100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.045); opacity: 1; } }
+            @keyframes paVacuole { 0%,100% { transform: scale(1); } 50% { transform: scale(1.018); } }
+            @keyframes paMito { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.05) rotate(-2deg); } }
+            @keyframes paNucleus { 0%,100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+            @keyframes paQuestion { 0%,100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-2.5px) scale(1.03); } }
+            .pa-chloro { animation: paChloro 5s ease-in-out infinite; transform-origin: 108px 92px; }
+            .pa-chloro-2 { animation-delay: 0.9s; transform-origin: 76px 66px; }
+            .pa-vacuole { animation: paVacuole 7s ease-in-out infinite; transform-origin: 108px 104px; }
+            .pa-mito { animation: paMito 4.6s ease-in-out infinite; transform-origin: 262px 88px; }
+            .pa-mito-2 { animation-delay: 1s; transform-origin: 282px 120px; }
+            .pa-nucleus { animation: paNucleus 5.4s ease-in-out infinite; transform-origin: 256px 100px; }
+            .pa-question { animation: paQuestion 5s ease-in-out infinite; transform-origin: 180px 104px; }
           `}
         </style>
       </defs>
@@ -868,12 +868,22 @@ export function PlantAnimalCellGraphic2D() {
         {/* Cloroplastos */}
         <g className="pa-chloro">
           <ellipse cx="108" cy="74" rx="18" ry="10" fill="#16a34a" opacity="0.9" stroke="#86efac" strokeWidth="1.4" transform="rotate(-18 108 74)" />
-          <line x1="96" y1="74" x2="120" y2="74" stroke="#14532d" strokeWidth="1.3" />
-          <line x1="100" y1="70" x2="100" y2="78" stroke="#14532d" strokeWidth="1.1" />
+          <g transform="rotate(-18 108 74)" stroke="#14532d" strokeWidth="1.1" strokeLinecap="round" opacity="0.85">
+            <line x1="98" y1="70" x2="98" y2="78" />
+            <line x1="102" y1="69.5" x2="102" y2="78.5" />
+            <line x1="106" y1="70" x2="106" y2="78" />
+            <line x1="112" y1="70" x2="112" y2="78" />
+            <line x1="116" y1="69.5" x2="116" y2="78.5" />
+          </g>
         </g>
         <g className="pa-chloro pa-chloro-2">
           <ellipse cx="76" cy="66" rx="14" ry="8" fill="#22c55e" opacity="0.9" stroke="#bbf7d0" strokeWidth="1.3" transform="rotate(12 76 66)" />
-          <line x1="68" y1="66" x2="84" y2="66" stroke="#14532d" strokeWidth="1.1" />
+          <g transform="rotate(12 76 66)" stroke="#14532d" strokeWidth="1" strokeLinecap="round" opacity="0.85">
+            <line x1="70" y1="63" x2="70" y2="69" />
+            <line x1="74" y1="62.5" x2="74" y2="69.5" />
+            <line x1="78" y1="63" x2="78" y2="69" />
+            <line x1="82" y1="62.5" x2="82" y2="69.5" />
+          </g>
         </g>
         {/* Núcleo vegetal */}
         <circle cx="82" cy="118" r="13" fill="url(#pa-nucleus)" opacity="0.85" />
@@ -974,17 +984,17 @@ export function CellStructuresGraphic2D() {
         </pattern>
         <style>
           {`
-            @keyframes csNucleus { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
-            @keyframes csMito { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(-4deg); } }
-            @keyframes csGolgi { 0%,100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
-            @keyframes csWobble { 0%,100% { transform: translate(0,0); } 33% { transform: translate(2px,-2px); } 66% { transform: translate(-2px,2px); } }
-            @keyframes csLabel { 0%,100% { opacity: 0.75; } 50% { opacity: 1; } }
-            .cs-nucleus { animation: csNucleus 3.6s ease-in-out infinite; transform-origin: 180px 88px; }
-            .cs-mito { animation: csMito 3s ease-in-out infinite; transform-origin: 122px 138px; }
-            .cs-mito-2 { animation-delay: 0.6s; transform-origin: 242px 70px; }
-            .cs-golgi { animation: csGolgi 3.8s ease-in-out infinite; }
-            .cs-wobble { animation: csWobble 5s ease-in-out infinite; }
-            .cs-label { animation: csLabel 2.6s ease-in-out infinite; }
+            @keyframes csNucleus { 0%,100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+            @keyframes csMito { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.05) rotate(-2deg); } }
+            @keyframes csGolgi { 0%,100% { transform: translateX(0); } 50% { transform: translateX(1.2px); } }
+            @keyframes csWobble { 0%,100% { transform: translate(0,0); } 33% { transform: translate(1px,-1px); } 66% { transform: translate(-1px,1px); } }
+            @keyframes csLabel { 0%,100% { opacity: 0.8; } 50% { opacity: 1; } }
+            .cs-nucleus { animation: csNucleus 5.2s ease-in-out infinite; transform-origin: 180px 88px; }
+            .cs-mito { animation: csMito 4.4s ease-in-out infinite; transform-origin: 122px 138px; }
+            .cs-mito-2 { animation-delay: 0.9s; transform-origin: 242px 70px; }
+            .cs-golgi { animation: csGolgi 5.6s ease-in-out infinite; }
+            .cs-wobble { animation: csWobble 7s ease-in-out infinite; }
+            .cs-label { animation: csLabel 4s ease-in-out infinite; }
           `}
         </style>
       </defs>
@@ -1048,19 +1058,19 @@ export function CellStructuresGraphic2D() {
       <g className="cs-label" fontFamily="Nunito, sans-serif">
         <g>
           <line x1="180" y1="88" x2="96" y2="26" stroke="#c4b5fd" strokeWidth="1" strokeOpacity="0.5" />
-          <text x="66" y="22" fill="#ddd6fe" fontSize="8" fontWeight="900">NÚCLEO · ADN</text>
+          <text x="92" y="22" textAnchor="end" fill="#ddd6fe" fontSize="8" fontWeight="900">NÚCLEO · ADN</text>
         </g>
         <g>
           <line x1="122" y1="138" x2="56" y2="170" stroke="#fdba74" strokeWidth="1" strokeOpacity="0.5" />
           <text x="20" y="184" fill="#fed7aa" fontSize="8" fontWeight="900">MITOCONDRIA · ENERGÍA</text>
         </g>
         <g>
-          <line x1="226" y1="128" x2="300" y2="152" stroke="#f9a8d4" strokeWidth="1" strokeOpacity="0.5" />
-          <text x="270" y="168" fill="#fbcfe8" fontSize="8" fontWeight="900">LISOSOMAS · LIMPIEZA</text>
+          <line x1="226" y1="128" x2="298" y2="152" stroke="#f9a8d4" strokeWidth="1" strokeOpacity="0.5" />
+          <text x="262" y="170" fill="#fbcfe8" fontSize="8" fontWeight="900">LISOSOMAS · LIMPIEZA</text>
         </g>
         <g>
-          <line x1="212" y1="155" x2="302" y2="72" stroke="#fda4af" strokeWidth="1" strokeOpacity="0.5" />
-          <text x="288" y="60" fill="#fecdd3" fontSize="8" fontWeight="900">GOLGI · EMPAQUE</text>
+          <line x1="212" y1="155" x2="292" y2="74" stroke="#fda4af" strokeWidth="1" strokeOpacity="0.5" />
+          <text x="272" y="60" fill="#fecdd3" fontSize="8" fontWeight="900">GOLGI · EMPAQUE</text>
         </g>
       </g>
 

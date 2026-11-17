@@ -1084,12 +1084,10 @@ export function Session1Subactivities({
                   borderColor="rgba(56, 189, 248, 0.32)"
                 >
                   <div className="flex h-full flex-col">
-                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
-                      <BodyLifeGraphic2D />
-                      <div
-                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
-                        aria-hidden
-                      />
+                    <div className="relative flex justify-center overflow-hidden border-b border-white/10 bg-ink-950/60 py-1">
+                      <div className="w-full max-w-[20rem]">
+                        <BodyLifeGraphic2D />
+                      </div>
                     </div>
                     <div className="flex flex-1 flex-col p-4 sm:p-5">
                       <div className="flex flex-wrap items-center gap-2">
@@ -1114,12 +1112,10 @@ export function Session1Subactivities({
                   borderColor="rgba(88, 230, 197, 0.32)"
                 >
                   <div className="flex h-full flex-col">
-                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
-                      <CellActivityGraphic2D />
-                      <div
-                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
-                        aria-hidden
-                      />
+                    <div className="relative flex justify-center overflow-hidden border-b border-white/10 bg-ink-950/60 py-1">
+                      <div className="w-full max-w-[20rem]">
+                        <CellActivityGraphic2D />
+                      </div>
                     </div>
                     <div className="flex flex-1 flex-col p-4 sm:p-5">
                       <div className="flex flex-wrap items-center gap-2">
@@ -2574,12 +2570,10 @@ export function Session2Subactivities({
                   borderColor="rgba(56, 189, 248, 0.32)"
                 >
                   <div className="flex h-full flex-col">
-                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
-                      <PlantAnimalCellGraphic2D />
-                      <div
-                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
-                        aria-hidden
-                      />
+                    <div className="relative flex justify-center overflow-hidden border-b border-white/10 bg-ink-950/60 py-1">
+                      <div className="w-full max-w-[20rem]">
+                        <PlantAnimalCellGraphic2D />
+                      </div>
                     </div>
                     <div className="flex flex-1 flex-col p-4 sm:p-5">
                       <div className="flex flex-wrap items-center gap-2">
@@ -2603,12 +2597,10 @@ export function Session2Subactivities({
                   borderColor="rgba(52, 211, 153, 0.32)"
                 >
                   <div className="flex h-full flex-col">
-                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
-                      <CellStructuresGraphic2D />
-                      <div
-                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
-                        aria-hidden
-                      />
+                    <div className="relative flex justify-center overflow-hidden border-b border-white/10 bg-ink-950/60 py-1">
+                      <div className="w-full max-w-[20rem]">
+                        <CellStructuresGraphic2D />
+                      </div>
                     </div>
                     <div className="flex flex-1 flex-col p-4 sm:p-5">
                       <div className="flex flex-wrap items-center gap-2">
