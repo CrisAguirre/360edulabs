@@ -406,7 +406,6 @@ export function CircularCarousel({
                 if (onItemSelect) onItemSelect(item, idx);
               }}
               className="flex flex-col justify-between rounded-3xl border border-white/10 bg-ink-950/70 p-5 shadow-xl transition-all hover:border-white/25 hover:bg-ink-900/80"
-              style={{ borderLeft: `4px solid ${item.color}` }}
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">

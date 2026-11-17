@@ -4896,7 +4896,7 @@ export function Session3Subactivities({
             </div>
 
             {/* Taller de Infografía en Canva */}
-            <div className="rounded-2xl border border-rose-400/30 bg-gradient-to-br from-rose-500/10 via-purple-500/5 to-transparent p-5 space-y-4 border-t-2">
+            <div className="rounded-2xl border border-rose-400/30 bg-gradient-to-br from-rose-500/10 via-purple-500/5 to-transparent p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="grid size-10 place-items-center rounded-2xl bg-rose-500/20 text-rose-300 text-xl">

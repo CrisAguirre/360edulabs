@@ -5,6 +5,7 @@ import { CitoMascot, Logo } from '../../components/Cito';
 import { Button } from '../../components/ui';
 import { roleHome, useAuth } from '../../contexts/AuthContext';
 import { ApiError } from '../../lib/api';
+import { cn } from '../../lib/utils';
 import { BlurText, ClickSpark, Particles } from '../../components/reactbits';
 
 type LoginMode = 'student' | 'staff';
@@ -99,9 +100,8 @@ export function LoginPage() {
           <div className="space-y-6">
             <CitoMascot size={210} mood="happy" className="animate-float" />
             <div>
-              <p className="eyebrow">Bienvenido de vuelta</p>
-              <h1 className="mt-2 max-w-lg font-display text-5xl font-extrabold leading-[1.05] text-white">
-                Tu próxima{' '}
+              <h1 className="font-display text-5xl font-extrabold leading-[1.05] text-white">
+                Bienvenido de vuelta: tu próxima{' '}
                 <span className="text-gradient inline-block">
                   <BlurText text="misión" delay={0.2} animateBy="letters" />
                 </span>{' '}
@@ -119,7 +119,7 @@ export function LoginPage() {
               ))}
             </div>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             El Laboratorio no publica datos personales de menores. Tu progreso solo lo ves tú y tu docente.
           </p>
         </div>
@@ -137,8 +137,7 @@ export function LoginPage() {
 
           <div className="glass rounded-[2rem] p-5 sm:p-8">
             <div className="mb-6">
-              <p className="eyebrow">Acceso al Laboratorio</p>
-              <h1 className="mt-1 text-3xl font-bold text-white">Inicia tu sesión</h1>
+              <h1 className="text-3xl font-bold text-white">Inicia tu sesión en el Laboratorio</h1>
               <p className="mt-1.5 text-sm text-slate-400">
                 {mode === 'student'
                   ? 'Los estudiantes entran solo con su código de dos letras, sin contraseña.'
@@ -147,13 +146,13 @@ export function LoginPage() {
             </div>
 
             {/* Selector de tipo de acceso */}
-            <div className="mb-5 grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-ink-950/50 p-1">
+            <div className="mb-5 grid grid-cols-2 gap-1 border-b border-white/10 pb-3">
               <button
                 type="button"
                 onClick={() => switchMode('student')}
                 className={
                   mode === 'student'
-                    ? 'flex items-center justify-center gap-2 rounded-xl bg-mint-400/20 py-2.5 text-sm font-extrabold text-mint-200'
+                    ? 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-extrabold text-mint-200'
                     : 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-slate-400 hover:text-white'
                 }
               >
@@ -165,7 +164,7 @@ export function LoginPage() {
                 onClick={() => switchMode('staff')}
                 className={
                   mode === 'staff'
-                    ? 'flex items-center justify-center gap-2 rounded-xl bg-sky-400/20 py-2.5 text-sm font-extrabold text-sky-200'
+                    ? 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-extrabold text-sky-200'
                     : 'flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-slate-400 hover:text-white'
                 }
               >
@@ -270,7 +269,7 @@ export function LoginPage() {
                 <span className="h-px flex-1 bg-white/10" aria-hidden />
               </div>
               <div className="grid gap-2 sm:grid-cols-3">
-                {demoAccounts.map((account) => {
+                {demoAccounts.map((account, idx) => {
                   const Icon = account.icon;
                   return (
                     <ClickSpark key={account.label} sparkColor={account.accent} sparkCount={8}>
@@ -282,7 +281,10 @@ export function LoginPage() {
                           setPassword(account.password ?? '');
                           setError(null);
                         }}
-                        className="group w-full rounded-2xl border border-white/10 bg-white/4 p-3 text-left transition hover:border-white/20 hover:bg-white/8"
+                        className={cn(
+                          'group w-full rounded-2xl px-3 py-2 text-left transition hover:bg-white/8',
+                          idx > 0 && 'sm:border-l sm:border-white/10'
+                        )}
                       >
                         <span
                           className="grid size-8 place-items-center rounded-lg"
@@ -291,13 +293,13 @@ export function LoginPage() {
                           <Icon className="size-4" aria-hidden />
                         </span>
                         <span className="mt-2 block text-xs font-extrabold text-white">{account.label}</span>
-                        <span className="block text-[10px] text-slate-500">{account.hint}</span>
+                        <span className="block text-[11px] text-slate-400">{account.hint}</span>
                       </button>
                     </ClickSpark>
                   );
                 })}
               </div>
-              <p className="mt-3 text-center text-[11px] text-slate-500">
+              <p className="mt-3 text-center text-xs text-slate-400">
                 El estudiante entra con su código; docente y admin se completan con su contraseña.
               </p>
             </div>

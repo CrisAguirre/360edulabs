@@ -230,6 +230,9 @@ Para los modelos que no cuentan con GLB descargado, se emplean iframes de Sketch
 - `m2_comparacion_celular`: `https://sketchfab.com/models/cbdf7e677572492dacbb5834081592e7/embed` (AVRcontent)
 - `organelo_nucleo`: `https://sketchfab.com/models/de89ce1324504883877b24df4c989853/embed` (Laboratorio Virtual)
 - `organelo_mitocondria`: `https://sketchfab.com/models/e1b1e04ccfe34caf9e59ee39ebe547cc/embed` ((MEDPIXEL))
+- `m3-celula-eucariota`: `https://sketchfab.com/models/ac569925866e49f99a9774f70112b896/embed` (CNCI_VIRTUAL · RA-t05-pmc, «Célula eucariota y sus funciones»; mostrada en 3.4)
+- `m3-celula-parietal`: `https://sketchfab.com/models/fff5e5d8086b4de3880bb8bcfe5880ca/embed` (Wenrong · Parietal Cell final version; mostrada en 3.2)
+- `m3-celula-test1`: `https://sketchfab.com/models/886ad8f319034cd68b7bdac107cddc1c/embed` (foro3d · celula_test1; mostrada en 3.2)
 
 ### C. Explorador de Organelos (`OrganelleExplorer.tsx`)
 Permite navegar uno a uno por 6 organelos clave:
@@ -337,6 +340,7 @@ Todos los endpoints están agrupados bajo el prefijo `/api/v1/`:
 - **Refresh Token**: JWT con duración de **7 días**, almacenado en una cookie segura `httpOnly` llamada `cito_refresh`.
   - En producción (`NODE_ENV=production`): `sameSite: 'none'`, `secure: true`.
   - En desarrollo: `sameSite: 'lax'`, `secure: false`.
+- **Login sin contraseña para estudiantes (2026-11-17)**: `login()` en `auth.service.ts` omite `verifyPassword` cuando `user.role === 'student'` (entran solo con su código de 2 letras); docente y admin sí validan contraseña. `loginSchema` acepta usuario desde 2 caracteres y contraseña opcional (`default('')`). El frontend `LoginPage.tsx` presenta un selector «Estudiante / Docente · Admin»; en modo estudiante solo se pide el código. Nota de despliegue: Render debe tener `0.0.0.0/0` en la allowlist de Atlas porque sus IPs son dinámicas; el seed de producción se corre con `npm run seed` apuntando `MONGODB_URI` a Atlas.
 
 ### Usuarios Semilla Preconfigurados (`src/seeds/users.ts`)
 | Rol | Username | Password | Nombre Completo |
@@ -423,7 +427,7 @@ Aula semilla: **`5.º A - Exploradores`**, código **`CITO5A`**, grado «5.º de
 
 ---
 
-## 8. Estado Actual Verificado (2026-11-16)
+## 8. Estado Actual Verificado (2026-11-17)
 
 ### Compilación
 - `360edulabs`: `npm run build` (`tsc -b && vite build`) pasa sin errores; solo advierte chunks > 500 kB (`Cell3DViewer` ≈ 1.0 MB y bundle principal ≈ 1.19 MB).
@@ -444,6 +448,8 @@ Aula semilla: **`5.º A - Exploradores`**, código **`CITO5A`**, grado «5.º de
 1. **Desalineación de actividades obligatorias**: la regla pedagógica espera M1=3, M2=5 y M3=7 (incluyendo quiz), pero el seed actual marca `required: true` en **2 actividades de m1, 2 de m2 y 7 de m3**; sumando el quiz daría 3/3/8. Conviene revisar las banderas `required` de M2 (Quiver) y M1 antes de congelar métricas de avance.
 2. **`AdminPage.tsx` vs `/users`**: la página llama `GET /users` esperando un arreglo o `{ users: [...] }`, pero el backend responde `{ items, total, page, limit }`; los contadores del panel admin pueden quedar en 0 hasta adaptar la respuesta.
 3. `360edulabs/package.json` conserva el nombre `frontend-scaffold`; no afecta la build, pero conviene renombrarlo.
-4. El repositorio raíz **aún no tiene commits** (`master` sin historial); todo el contenido está sin versionar. Hacer el primer commit antes de nuevos cambios grandes.
+4. **Versionado**: los dos subrepositorios ya tienen commits y remoto configurado (`360edulabs` y `360edulabsbknd` → GitHub `CrisAguirre`). El repo raíz `Desktop\360` no es un repo git; los documentos maestros (`AGENTS.md`, `guia.md`, `Estrategia Indagación.docx`, etc.) viven duplicados en `360edulabs/src/assets/var/`.
 5. Los archivos de semillas y `AGENTS.md` son UTF-8 válidos; la consola de PowerShell puede mostrar acentos/emoji como mojibake sin que el contenido esté corrupto.
+6. **Despliegue activo (2026-11-17)**: frontend en Vercel y backend en Render (`three60edulabsbknd.onrender.com`) sobre MongoDB Atlas (`edulab360`). La allowlist de Atlas debe incluir `0.0.0.0/0` porque las IPs de Render son dinámicas; sin eso el backend queda `database: disconnected` y los logins dan 500. Para poblar/actualizar producción: `npm run seed` con `MONGODB_URI` apuntando a Atlas. Nota: al sembrar se borran progreso/evidencias y se restablecen las contraseñas de admin/docente.
+7. **Auditoría de calidad (2026-11-17)**: frontend auditado con `impeccable` (`npx impeccable detect src/` y `npx impeccable detect http://localhost:5173/login`), backend con ESLint (`npm run lint`). Se corrigieron todos los hallazgos: `side-tab` en `CircularCarousel.tsx` (borde lateral → eliminado), `border-accent-on-rounded` en `ReadingPlayer.tsx` (`border-t-2` → eliminado), `ai-color-palette` en `ProfilePage.tsx` (violeta → sky), `bounce-easing` en `InquiryGraphics2D.tsx` (keyframes `caWobble`/`csWobble` renombrados a `caDrift`/`csDrift` con `cubic-bezier`), y en `LoginPage.tsx` los eyebrows/kickers sobre los H1 integrados en los títulos, textos de 10–11 px subidos a 11–12 px, contraste del pie legal mejorado (`slate-500` → `slate-400`) y el anidamiento de tarjetas aplanado. Estado final: detector de código `[]`, detector de `/login` `[]`, ESLint exit 0, build limpio.
 

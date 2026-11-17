@@ -460,13 +460,13 @@ export function ProfilePage() {
 
                 <Link
                   to="/docente/reportes"
-                  className="flex flex-col gap-2 rounded-xl border border-white/8 bg-white/4 p-4 transition hover:border-violet-400/40 hover:bg-violet-400/8 group"
+                  className="flex flex-col gap-2 rounded-xl border border-white/8 bg-white/4 p-4 transition hover:border-sky-400/40 hover:bg-sky-400/8 group"
                 >
-                  <div className="grid size-9 place-items-center rounded-lg bg-violet-400/15 text-violet-300">
+                  <div className="grid size-9 place-items-center rounded-lg bg-sky-400/15 text-sky-300">
                     <BookOpenCheck className="size-4.5" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-white group-hover:text-violet-300">Reportes</h3>
+                    <h3 className="text-xs font-bold text-white group-hover:text-sky-300">Reportes</h3>
                     <p className="text-[11px] text-slate-400">Métricas y exportación de notas</p>
                   </div>
                 </Link>

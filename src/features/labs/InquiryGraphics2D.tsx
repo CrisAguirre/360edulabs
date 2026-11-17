@@ -320,7 +320,7 @@ export function CellActivityGraphic2D() {
               0%, 100% { transform: scale(1) rotate(0deg); }
               50% { transform: scale(1.035) rotate(1.5deg); }
             }
-            @keyframes caWobble {
+            @keyframes caDrift {
               0%, 100% { transform: translate(0px, 0px); }
               33% { transform: translate(1.2px, -1px); }
               66% { transform: translate(-1px, 1px); }
@@ -341,8 +341,8 @@ export function CellActivityGraphic2D() {
             .ca-nucleus { animation: caNucleus 4s ease-in-out infinite; transform-origin: 156px 88px; }
             .ca-mito { animation: caMito 3.6s ease-in-out infinite; transform-origin: 118px 134px; }
             .ca-mito-2 { animation: caMito2 4.2s ease-in-out infinite; transform-origin: 254px 78px; }
-            .ca-wobble { animation: caWobble 6s ease-in-out infinite; }
-            .ca-wobble-2 { animation-delay: 0.9s; }
+            .ca-drift { animation: caDrift 6s cubic-bezier(0.25, 1, 0.5, 1) infinite; }
+            .ca-drift-2 { animation-delay: 0.9s; }
             .ca-golgi { animation: caGolgi 4.4s ease-in-out infinite; }
             .ca-membrane { animation: caMembrane 5.4s ease-in-out infinite; }
             .ca-twinkle { animation: caTwinkle 3.2s ease-in-out infinite; }
@@ -389,7 +389,7 @@ export function CellActivityGraphic2D() {
         </g>
 
         {/* Retículo endoplasmático */}
-        <g className="ca-wobble" fill="none" stroke="#7dd3fc" strokeWidth="2" strokeLinecap="round" opacity="0.55">
+        <g className="ca-drift" fill="none" stroke="#7dd3fc" strokeWidth="2" strokeLinecap="round" opacity="0.55">
           <path d="M132 68c-8 4-8 12-1 15s7 11-1 14" />
           <path d="M124 66c-9 5-9 15-1 18s8 13-1 17" />
         </g>
@@ -433,11 +433,11 @@ export function CellActivityGraphic2D() {
         </g>
 
         {/* Lisosomas y vesículas */}
-        <g className="ca-wobble">
+        <g className="ca-drift">
           <circle cx="222" cy="128" r="7" fill="#f472b6" opacity="0.55" stroke="#fbcfe8" strokeWidth="1.2" />
           <circle cx="196" cy="60" r="6" fill="#38bdf8" opacity="0.5" stroke="#bae6fd" strokeWidth="1.2" />
         </g>
-        <g className="ca-wobble ca-wobble-2">
+        <g className="ca-drift ca-drift-2">
           <circle cx="132" cy="158" r="5.5" fill="#5eead4" opacity="0.5" stroke="#ccfbf1" strokeWidth="1.1" />
           <circle cx="238" cy="158" r="4.5" fill="#a7f3d0" opacity="0.5" stroke="#d1fae5" strokeWidth="1.1" />
         </g>
@@ -987,13 +987,13 @@ export function CellStructuresGraphic2D() {
             @keyframes csNucleus { 0%,100% { transform: scale(1); } 50% { transform: scale(1.025); } }
             @keyframes csMito { 0%,100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.05) rotate(-2deg); } }
             @keyframes csGolgi { 0%,100% { transform: translateX(0); } 50% { transform: translateX(1.2px); } }
-            @keyframes csWobble { 0%,100% { transform: translate(0,0); } 33% { transform: translate(1px,-1px); } 66% { transform: translate(-1px,1px); } }
+            @keyframes csDrift { 0%,100% { transform: translate(0,0); } 33% { transform: translate(1px,-1px); } 66% { transform: translate(-1px,1px); } }
             @keyframes csLabel { 0%,100% { opacity: 0.8; } 50% { opacity: 1; } }
             .cs-nucleus { animation: csNucleus 5.2s ease-in-out infinite; transform-origin: 180px 88px; }
             .cs-mito { animation: csMito 4.4s ease-in-out infinite; transform-origin: 122px 138px; }
             .cs-mito-2 { animation-delay: 0.9s; transform-origin: 242px 70px; }
             .cs-golgi { animation: csGolgi 5.6s ease-in-out infinite; }
-            .cs-wobble { animation: csWobble 7s ease-in-out infinite; }
+            .cs-drift { animation: csDrift 7s cubic-bezier(0.25, 1, 0.5, 1) infinite; }
             .cs-label { animation: csLabel 4s ease-in-out infinite; }
           `}
         </style>
@@ -1009,7 +1009,7 @@ export function CellStructuresGraphic2D() {
         <path d="M180 25c48 0 90 33 90 79s-36 84-90 84-90-38-90-84 42-79 90-79Z" fill="none" stroke="#bae6fd" strokeOpacity="0.3" strokeWidth="1.2" strokeDasharray="5 6" />
 
         {/* Retículo endoplasmático */}
-        <g className="cs-wobble" fill="none" stroke="#7dd3fc" strokeWidth="2" strokeLinecap="round" opacity="0.55">
+        <g className="cs-drift" fill="none" stroke="#7dd3fc" strokeWidth="2" strokeLinecap="round" opacity="0.55">
           <path d="M120 64c-9 4-9 14-1 17s8 13-1 16" />
           <path d="M110 62c-10 5-10 16-1 19s8 14-1 18" />
         </g>
@@ -1039,7 +1039,7 @@ export function CellStructuresGraphic2D() {
         </g>
 
         {/* Lisosomas y vesículas */}
-        <g className="cs-wobble">
+        <g className="cs-drift">
           <circle cx="226" cy="128" r="7" fill="#f472b6" opacity="0.6" stroke="#fbcfe8" strokeWidth="1.2" />
           <circle cx="140" cy="60" r="6" fill="#38bdf8" opacity="0.55" stroke="#bae6fd" strokeWidth="1.2" />
         </g>
