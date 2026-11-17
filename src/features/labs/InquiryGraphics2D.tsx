@@ -1083,8 +1083,10 @@ export function CellStructuresGraphic2D() {
 
 /**
  * 3.1 · Pregunta 1: ¿cómo convierten los alimentos en energía?
- * Escena: manzana y pan que se descomponen en nutrientes que viajan hasta una
- * célula, donde las mitocondrias liberan energía (ATP).
+ * Escena en tres tiempos: manzana y pan → nutrientes en tránsito → célula que
+ * respira y libera ATP. Rediseño 2026-11-17: geometría válida para la manzana,
+ * el pan y las mitocondrias (elipse + crestas), flujo continuo de partículas
+ * con línea guía punteada y movimiento sereno (escalas 1.01–1.06, 3–7 s).
  */
 export function CellFuelGraphic2D() {
   return (
@@ -1092,33 +1094,37 @@ export function CellFuelGraphic2D() {
       viewBox="0 0 360 210"
       className="h-auto w-full"
       role="img"
-      aria-label="Manzana y pan que se transforman en nutrientes que viajan a una célula y se convierten en energía ATP"
+      aria-label="Manzana y pan que se transforman en nutrientes que viajan hasta una célula, donde las mitocondrias producen energía ATP"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
         <linearGradient id="cf-bg" x1="0" y1="0" x2="360" y2="210">
-          <stop stopColor="#1c1204" />
-          <stop offset="0.5" stopColor="#0c1a3a" />
+          <stop stopColor="#1f1405" />
+          <stop offset="0.48" stopColor="#0b1730" />
           <stop offset="1" stopColor="#020617" />
         </linearGradient>
         <radialGradient id="cf-halo" cx="50%" cy="50%" r="50%">
-          <stop stopColor="#facc15" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#facc15" stopOpacity="0" />
+          <stop stopColor="#fbbf24" stopOpacity="0.24" />
+          <stop offset="1" stopColor="#fbbf24" stopOpacity="0" />
         </radialGradient>
-        <radialGradient id="cf-cell" cx="38%" cy="32%" r="74%">
-          <stop stopColor="#fde68a" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#b45309" stopOpacity="0.16" />
+        <radialGradient id="cf-cyto" cx="34%" cy="28%" r="78%">
+          <stop stopColor="#fde68a" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#b45309" stopOpacity="0.13" />
         </radialGradient>
-        <radialGradient id="cf-apple" cx="36%" cy="32%" r="72%">
-          <stop stopColor="#f87171" />
+        <linearGradient id="cf-apple" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#fb7185" />
           <stop offset="1" stopColor="#b91c1c" />
-        </radialGradient>
-        <radialGradient id="cf-mito" cx="40%" cy="36%" r="70%">
+        </linearGradient>
+        <linearGradient id="cf-bread" x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#fde8bf" />
+          <stop offset="1" stopColor="#e9b46b" />
+        </linearGradient>
+        <radialGradient id="cf-mito" cx="38%" cy="32%" r="72%">
           <stop stopColor="#fdba74" />
           <stop offset="1" stopColor="#ea580c" />
         </radialGradient>
-        <filter id="cf-glow" x="-70%" y="-70%" width="240%" height="240%">
-          <feGaussianBlur stdDeviation="2.4" result="b" />
+        <filter id="cf-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="2.2" result="b" />
           <feMerge>
             <feMergeNode in="b" />
             <feMergeNode in="b" />
@@ -1126,83 +1132,187 @@ export function CellFuelGraphic2D() {
           </feMerge>
         </filter>
         <pattern id="cf-dots" width="18" height="18" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1" fill="#facc15" opacity="0.13" />
+          <circle cx="2" cy="2" r="1" fill="#fcd34d" opacity="0.12" />
         </pattern>
         <style>
           {`
-            @keyframes cfMito { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
-            @keyframes cfNutrient { 0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
-            @keyframes cfTwinkle { 0%,100% { opacity: 0.2; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.2); } }
-            .cf-mito { animation: cfMito 2.8s ease-in-out infinite; transform-origin: 266px 104px; }
-            .cf-twinkle { animation: cfTwinkle 2.4s ease-in-out infinite; }
-            .cf-twinkle-2 { animation-delay: 0.7s; }
-            .cf-twinkle-3 { animation-delay: 1.3s; }
+            @keyframes cfBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+            @keyframes cfBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.012); } }
+            @keyframes cfMitoPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+            @keyframes cfSpark { 0%,100% { opacity: 0.35; } 50% { opacity: 1; } }
+            @keyframes cfDash { to { stroke-dashoffset: -30; } }
+            @keyframes cfAtp { 0%,100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.04); } }
+            .cf-bob { animation: cfBob 5.5s ease-in-out infinite; }
+            .cf-breathe { animation: cfBreathe 7s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .cf-mito { animation: cfMitoPulse 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .cf-mito-2 { animation-delay: 1.1s; }
+            .cf-spark { animation: cfSpark 3s ease-in-out infinite; }
+            .cf-dash { animation: cfDash 2.6s linear infinite; }
+            .cf-atp { animation: cfAtp 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
           `}
         </style>
       </defs>
 
       <rect width="360" height="210" fill="url(#cf-bg)" />
       <rect width="360" height="210" fill="url(#cf-dots)" />
-      <ellipse cx="258" cy="104" rx="110" ry="92" fill="url(#cf-halo)" opacity="0.7" />
+      <ellipse cx="256" cy="100" rx="120" ry="96" fill="url(#cf-halo)" opacity="0.65" />
 
-      {/* Alimentos */}
-      <g filter="url(#cf-glow)">
+      {/* Alimentos: manzana y tostada */}
+      <g className="cf-bob" filter="url(#cf-glow)">
         <g>
-          <circle cx="70" cy="86" r="26" fill="url(#cf-apple)" />
-          <path d="M70 66c-4-12 6-18 12-14" stroke="#4ade80" strokeWidth="4" strokeLinecap="round" fill="none" />
-          <path d="M62 74c-8 2-8 12-2 16" stroke="#65a30d" strokeWidth="4" strokeLinecap="round" fill="none" />
-          <ellipse cx="60" cy="98" rx="10" ry="6" fill="#fca5a5" opacity="0.7" />
+          <path
+            d="M64 61c-4-3-9-4-13-2-9 4-13 14-11 24 2 12 11 24 24 24s22-12 24-24c2-10-2-20-11-24-4-2-9-1-13 2Z"
+            fill="url(#cf-apple)"
+            stroke="#fecdd3"
+            strokeOpacity="0.35"
+            strokeWidth="1"
+          />
+          <path d="M64 61c-1-8 3-13 9-14" stroke="#65a30d" strokeWidth="3" strokeLinecap="round" fill="none" />
+          <path d="M73 52c5-6 13-6 17-1-4 7-12 9-17 1Z" fill="#4ade80" stroke="#166534" strokeWidth="0.6" />
+          <ellipse cx="54" cy="76" rx="5.5" ry="8.5" fill="#fecdd3" opacity="0.32" transform="rotate(-26 54 76)" />
+          <ellipse cx="64" cy="68" rx="10" ry="5" fill="#fecdd3" opacity="0.18" />
         </g>
-        <g transform="translate(58 130)">
-          <path d="M6 4h40a8 8 0 0 1 8 8c0 16-14 22-28 22S-2 26-2 12a8 8 0 0 1 8-8Z" fill="#f59e0b" />
-          <path d="M12 4c4-2 12-2 16 0" stroke="#92400e" strokeWidth="2" fill="none" strokeLinecap="round" />
-          <path d="M8 4c3-4 9-4 12 0" stroke="#92400e" strokeWidth="2" fill="none" strokeLinecap="round" />
+        <g>
+          <path
+            d="M38 134c0-11 8-20 18-20h12c10 0 18 9 18 20v16a6 6 0 0 1-6 6H44a6 6 0 0 1-6-6Z"
+            fill="#92400e"
+          />
+          <path
+            d="M42 135c0-8 6-15 14-15h12c8 0 14 7 14 15v12a3 3 0 0 1-3 3H45a3 3 0 0 1-3-3Z"
+            fill="url(#cf-bread)"
+          />
+          <path
+            d="M47 130c4-6 10-8 16-8"
+            stroke="#fef3c7"
+            strokeWidth="2"
+            strokeLinecap="round"
+            fill="none"
+            opacity="0.4"
+          />
+          <circle cx="54" cy="141" r="1.4" fill="#92400e" opacity="0.3" />
+          <circle cx="67" cy="146" r="1.2" fill="#92400e" opacity="0.3" />
+          <circle cx="61" cy="133" r="1.1" fill="#92400e" opacity="0.26" />
+          <circle cx="75" cy="140" r="1.2" fill="#92400e" opacity="0.26" />
         </g>
       </g>
-      <text x="68" y="184" textAnchor="middle" fill="#fde68a" fontSize="9" fontWeight="900" letterSpacing="0.5">ALIMENTOS</text>
+      <text x="62" y="182" textAnchor="middle" fill="#fde68a" fontSize="8" fontWeight="900" letterSpacing="1">
+        ALIMENTOS
+      </text>
 
       {/* Flujo de nutrientes hacia la célula */}
+      <path
+        className="cf-dash"
+        d="M100 104C134 100 166 100 196 102"
+        fill="none"
+        stroke="#fbbf24"
+        strokeOpacity="0.3"
+        strokeWidth="1.4"
+        strokeDasharray="4 6"
+        strokeLinecap="round"
+      />
+      <text x="150" y="72" textAnchor="middle" fill="#fde68a" fontSize="7.5" fontWeight="900" letterSpacing="1.1" opacity="0.9">
+        NUTRIENTES
+      </text>
       <g filter="url(#cf-glow)">
-        <circle r="4" fill="#facc15" opacity="0.9" stroke="#fef9c3" strokeWidth="0.8" />
-        <animateMotion dur="5s" repeatCount="indefinite" path="M120 96C150 96 180 88 204 92" />
+        <circle r="3.6" fill="#fde047" opacity="0.9" stroke="#fef9c3" strokeWidth="0.7">
+          <animateMotion dur="4.8s" repeatCount="indefinite" path="M104 96C136 92 168 96 198 100" />
+        </circle>
       </g>
       <g filter="url(#cf-glow)">
-        <circle r="3.4" fill="#4ade80" opacity="0.85" stroke="#bbf7d0" strokeWidth="0.8" />
-        <animateMotion dur="6s" repeatCount="indefinite" begin="1s" path="M118 110C150 112 182 106 206 100" />
+        <circle r="3.2" fill="#4ade80" opacity="0.85" stroke="#bbf7d0" strokeWidth="0.7">
+          <animateMotion dur="6s" begin="1.2s" repeatCount="indefinite" path="M100 112C134 108 166 104 196 104" />
+        </circle>
       </g>
       <g filter="url(#cf-glow)">
-        <circle r="3" fill="#38bdf8" opacity="0.85" stroke="#bae6fd" strokeWidth="0.8" />
-        <animateMotion dur="5.6s" repeatCount="indefinite" begin="2s" path="M116 84C148 80 178 86 202 96" />
+        <circle r="2.8" fill="#38bdf8" opacity="0.85" stroke="#bae6fd" strokeWidth="0.7">
+          <animateMotion dur="5.4s" begin="2.4s" repeatCount="indefinite" path="M104 128C136 122 168 112 196 108" />
+        </circle>
       </g>
 
       {/* Célula destino */}
-      <g filter="url(#cf-glow)">
-        <path d="M258 24c40 0 72 30 72 80s-32 82-72 82-72-32-72-82 32-80 72-80Z" fill="url(#cf-cell)" stroke="#facc15" strokeWidth="2.8" />
-        <path d="M258 33c34 0 64 28 64 71s-28 76-64 76-64-33-64-76 30-71 64-71Z" fill="none" stroke="#fef9c3" strokeOpacity="0.3" strokeWidth="1.1" strokeDasharray="5 6" />
-        {/* Mitocondrias (los "quemadores") */}
+      <g className="cf-breathe" filter="url(#cf-glow)">
+        <path
+          d="M262 32c34 0 62 30 62 68s-28 68-62 68-62-30-62-68 28-68 62-68Z"
+          fill="url(#cf-cyto)"
+          stroke="#fbbf24"
+          strokeWidth="2.4"
+        />
+        <path
+          d="M262 40c29 0 53 26 53 60s-24 60-53 60-53-26-53-60 24-60 53-60Z"
+          fill="none"
+          stroke="#fef3c7"
+          strokeOpacity="0.28"
+          strokeWidth="1.1"
+          strokeDasharray="5 6"
+        />
+
+        {/* Retículo endoplasmático */}
+        <path d="M232 78c-8 4-10 12-6 20" fill="none" stroke="#fcd34d" strokeOpacity="0.45" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M244 70c-10 6-12 16-8 26" fill="none" stroke="#fcd34d" strokeOpacity="0.28" strokeWidth="1.8" strokeLinecap="round" />
+
+        {/* Núcleo con nucléolo */}
+        <circle cx="238" cy="90" r="17" fill="#c084fc" fillOpacity="0.45" stroke="#ede9fe" strokeOpacity="0.75" strokeWidth="1.4" />
+        <circle cx="241" cy="87" r="6.5" fill="#f5f3ff" fillOpacity="0.92" />
+
+        {/* Mitocondrias con crestas */}
         <g className="cf-mito">
-          <ellipse cx="258" cy="92" rx="22" ry="11" fill="url(#cf-mito)" stroke="#fed7aa" strokeWidth="1.4" transform="rotate(-16 258 92)" />
-          <path d="M244 88c4 5 8-4 12 1s8-4 12 1" stroke="#7c2d12" strokeWidth="1.3" fill="none" />
+          <ellipse cx="290" cy="86" rx="19" ry="9" fill="url(#cf-mito)" stroke="#fed7aa" strokeWidth="1.3" transform="rotate(-16 290 86)" />
+          <ellipse cx="290" cy="86" rx="13" ry="5.6" fill="#7c2d12" fillOpacity="0.18" transform="rotate(-16 290 86)" />
+          <path
+            d="M279 84c3 4 6-3 9 1s6-3 9 1"
+            fill="none"
+            stroke="#7c2d12"
+            strokeWidth="1.2"
+            strokeOpacity="0.9"
+            strokeLinecap="round"
+            transform="rotate(-16 290 86)"
+          />
+          <ellipse cx="284" cy="81" rx="6" ry="2.4" fill="#fff7ed" fillOpacity="0.3" transform="rotate(-16 284 81)" />
         </g>
-        <circle cx="292" cy="128" rx="16" ry="9" fill="#f59e0b" opacity="0.85" stroke="#fde68a" strokeWidth="1.2" transform="rotate(14 292 128)" />
-        <circle cx="222" cy="122" r="12" fill="#c084fc" opacity="0.55" stroke="#ede9fe" strokeWidth="1.1" />
-        <circle cx="258" cy="126" r="7" fill="#f5f3ff" opacity="0.9" />
+        <g className="cf-mito cf-mito-2">
+          <ellipse cx="278" cy="134" rx="15" ry="7.5" fill="#fb923c" stroke="#fed7aa" strokeWidth="1.2" transform="rotate(14 278 134)" />
+          <ellipse cx="278" cy="134" rx="10" ry="4.6" fill="#7c2d12" fillOpacity="0.16" transform="rotate(14 278 134)" />
+          <path
+            d="M269 132c3 3 6-3 9 1s6-3 9 1"
+            fill="none"
+            stroke="#7c2d12"
+            strokeWidth="1.1"
+            strokeOpacity="0.9"
+            strokeLinecap="round"
+            transform="rotate(14 278 134)"
+          />
+        </g>
+
+        {/* Vesículas y ribosomas */}
+        <circle cx="222" cy="132" r="6" fill="#fde68a" fillOpacity="0.5" stroke="#fef3c7" strokeOpacity="0.6" strokeWidth="1" />
+        <circle cx="252" cy="120" r="4" fill="#fde68a" fillOpacity="0.45" />
+        <circle cx="230" cy="112" r="1.6" fill="#fef3c7" opacity="0.75" />
+        <circle cx="216" cy="96" r="1.4" fill="#fef3c7" opacity="0.6" />
+        <circle cx="256" cy="68" r="1.5" fill="#fef3c7" opacity="0.7" />
+        <circle cx="300" cy="112" r="1.4" fill="#fef3c7" opacity="0.6" />
+        <circle className="cf-spark" cx="256" cy="146" r="2.4" fill="#fde047" />
       </g>
 
-      {/* Energía ATP liberada */}
-      <g filter="url(#cf-glow)">
-        <circle className="cf-twinkle" cx="250" cy="56" r="4" fill="#fde047" stroke="#fefce8" strokeWidth="0.9" />
-        <text x="250" y="59" textAnchor="middle" fill="#713f12" fontSize="4.4" fontWeight="900">ATP</text>
+      {/* ATP producido */}
+      <g className="cf-atp" filter="url(#cf-glow)">
+        <rect x="276" y="12" width="60" height="18" rx="9" fill="#fbbf24" fillOpacity="0.16" stroke="#fbbf24" strokeOpacity="0.55" strokeWidth="1.1" />
+        <path d="M289 16l-4.4 8h3.1l-1.5 5.4 5-8h-3.2Z" fill="#fde047" />
+        <text x="315" y="25" textAnchor="middle" fill="#fde68a" fontSize="8" fontWeight="900" letterSpacing="1">
+          ATP
+        </text>
       </g>
       <g filter="url(#cf-glow)">
-        <circle className="cf-twinkle cf-twinkle-2" cx="312" cy="64" r="3.6" fill="#fde047" stroke="#fefce8" strokeWidth="0.8" />
-        <text x="312" y="67" textAnchor="middle" fill="#713f12" fontSize="4" fontWeight="900">ATP</text>
+        <circle r="2.6" fill="#fde047" opacity="0.9">
+          <animateMotion dur="4.4s" repeatCount="indefinite" path="M300 88C316 74 306 50 302 34" />
+        </circle>
       </g>
       <g filter="url(#cf-glow)">
-        <circle className="cf-twinkle cf-twinkle-3" cx="286" cy="40" r="3.2" fill="#fde047" stroke="#fefce8" strokeWidth="0.8" />
+        <circle r="2.2" fill="#fef9c3" opacity="0.85">
+          <animateMotion dur="5.6s" begin="1.4s" repeatCount="indefinite" path="M284 128C306 116 318 84 312 36" />
+        </circle>
       </g>
 
-      <text x="258" y="202" textAnchor="middle" fill="#fde68a" fontSize="8.5" fontWeight="900" letterSpacing="1">
+      <text x="180" y="200" textAnchor="middle" fill="#fde68a" fontSize="8" fontWeight="900" letterSpacing="0.9">
         DE LOS ALIMENTOS A LA ENERGÍA
       </text>
     </svg>
@@ -1211,8 +1321,11 @@ export function CellFuelGraphic2D() {
 
 /**
  * 3.1 · Pregunta 2: ¿por qué la célula trabaja incluso mientras duermes?
- * Escena: una célula con su "motor" (mitocondrias) en marcha constante, con
- * sol y luna para representar el ciclo de día y noche sin detenerse.
+ * Escena: la célula como motor vivo (engranajes que encajan y giran en sentidos
+ * opuestos, mitocondrias activas y ATP constante) enmarcada por el arco del día
+ * y la noche. Rediseño 2026-11-17: engranajes con dientes reales, luna creciente
+ * recortada con máscara, sol de ocho rayos, respiración celular sutil y pulsos
+ * de ATP lentos para una composición más armónica con la pregunta 1.
  */
 export function CellularMotorGraphic2D() {
   return (
@@ -1220,29 +1333,49 @@ export function CellularMotorGraphic2D() {
       viewBox="0 0 360 210"
       className="h-auto w-full"
       role="img"
-      aria-label="Célula con mitocondrias que producen energía de forma continua entre el sol y la luna"
+      aria-label="Célula con engranajes y mitocondrias que producen energía sin parar, entre el sol del día y la luna de la noche"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
         <linearGradient id="cm-bg" x1="0" y1="0" x2="360" y2="210">
-          <stop stopColor="#3b0a1e" />
-          <stop offset="0.5" stopColor="#1c0a3a" />
+          <stop stopColor="#2a0a1c" />
+          <stop offset="0.5" stopColor="#150a34" />
           <stop offset="1" stopColor="#020617" />
         </linearGradient>
         <radialGradient id="cm-halo" cx="50%" cy="50%" r="50%">
-          <stop stopColor="#fb7185" stopOpacity="0.3" />
+          <stop stopColor="#fb7185" stopOpacity="0.24" />
           <stop offset="1" stopColor="#fb7185" stopOpacity="0" />
         </radialGradient>
-        <radialGradient id="cm-cyto" cx="38%" cy="32%" r="74%">
-          <stop stopColor="#fda4af" stopOpacity="0.32" />
-          <stop offset="1" stopColor="#9f1239" stopOpacity="0.14" />
+        <radialGradient id="cm-cyto" cx="34%" cy="28%" r="78%">
+          <stop stopColor="#fda4af" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#9f1239" stopOpacity="0.13" />
         </radialGradient>
-        <radialGradient id="cm-mito" cx="40%" cy="36%" r="70%">
+        <radialGradient id="cm-mito" cx="38%" cy="32%" r="72%">
           <stop stopColor="#fdba74" />
           <stop offset="1" stopColor="#ea580c" />
         </radialGradient>
-        <filter id="cm-glow" x="-70%" y="-70%" width="240%" height="240%">
-          <feGaussianBlur stdDeviation="2.4" result="b" />
+        <radialGradient id="cm-sun" cx="36%" cy="32%" r="70%">
+          <stop stopColor="#fef08a" />
+          <stop offset="1" stopColor="#f59e0b" />
+        </radialGradient>
+        <radialGradient id="cm-sun-halo" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#fbbf24" stopOpacity="0.32" />
+          <stop offset="1" stopColor="#fbbf24" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="cm-moon" cx="36%" cy="30%" r="72%">
+          <stop stopColor="#f8fafc" />
+          <stop offset="1" stopColor="#cbd5e1" />
+        </radialGradient>
+        <radialGradient id="cm-moon-halo" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#7dd3fc" stopOpacity="0.28" />
+          <stop offset="1" stopColor="#7dd3fc" stopOpacity="0" />
+        </radialGradient>
+        <mask id="cm-moon-mask">
+          <rect width="360" height="210" fill="#ffffff" />
+          <circle cx="319" cy="41" r="12" fill="#000000" />
+        </mask>
+        <filter id="cm-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="2.2" result="b" />
           <feMerge>
             <feMergeNode in="b" />
             <feMergeNode in="b" />
@@ -1250,96 +1383,215 @@ export function CellularMotorGraphic2D() {
           </feMerge>
         </filter>
         <pattern id="cm-dots" width="18" height="18" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1" fill="#fbbf24" opacity="0.13" />
+          <circle cx="2" cy="2" r="1" fill="#fbbf24" opacity="0.12" />
         </pattern>
         <style>
           {`
-            @keyframes cmMito { 0%,100% { transform: scale(1); } 50% { transform: scale(1.14); } }
             @keyframes cmGear { to { transform: rotate(360deg); } }
-            @keyframes cmSun { 0%,100% { transform: scale(1); opacity: 0.95; } 50% { transform: scale(1.12); opacity: 1; } }
-            @keyframes cmMoon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-            @keyframes cmPump { 0%,100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.18); opacity: 1; } }
-            .cm-mito { animation: cmMito 2.6s ease-in-out infinite; transform-origin: 180px 100px; }
-            .cm-gear { animation: cmGear 7s linear infinite; transform-origin: 180px 100px; }
-            .cm-gear-2 { animation-duration: 9s; animation-direction: reverse; transform-origin: 208px 116px; }
-            .cm-sun { animation: cmSun 4s ease-in-out infinite; transform-origin: 52px 48px; }
-            .cm-moon { animation: cmMoon 5s ease-in-out infinite; transform-origin: 312px 52px; }
-            .cm-pump { animation: cmPump 2.2s ease-in-out infinite; }
-            .cm-pump-2 { animation-delay: 0.7s; }
-            .cm-pump-3 { animation-delay: 1.4s; }
+            @keyframes cmGearRev { to { transform: rotate(-360deg); } }
+            @keyframes cmBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.01); } }
+            @keyframes cmMitoPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+            @keyframes cmSunSpin { to { transform: rotate(360deg); } }
+            @keyframes cmGlowPulse { 0%,100% { opacity: 0.85; } 50% { opacity: 1; } }
+            @keyframes cmMoonFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+            @keyframes cmAtpPulse { 0%,100% { opacity: 0.78; transform: scale(1); } 50% { opacity: 1; transform: scale(1.035); } }
+            @keyframes cmDash { to { stroke-dashoffset: -36; } }
+            .cm-gear { animation: cmGear 10s linear infinite; transform-box: fill-box; transform-origin: center; }
+            .cm-gear-2 { animation: cmGearRev 6.6s linear infinite; }
+            .cm-breathe { animation: cmBreathe 8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .cm-mito { animation: cmMitoPulse 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .cm-sun-spin { animation: cmSunSpin 90s linear infinite; transform-box: fill-box; transform-origin: center; }
+            .cm-sun-core { animation: cmGlowPulse 4.5s ease-in-out infinite; }
+            .cm-moon { animation: cmMoonFloat 6s ease-in-out infinite; }
+            .cm-atp { animation: cmAtpPulse 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .cm-atp-2 { animation-delay: 1.3s; }
+            .cm-dash { animation: cmDash 3.6s linear infinite; }
           `}
         </style>
       </defs>
 
       <rect width="360" height="210" fill="url(#cm-bg)" />
       <rect width="360" height="210" fill="url(#cm-dots)" />
-      <ellipse cx="180" cy="104" rx="140" ry="90" fill="url(#cm-halo)" opacity="0.7" />
+      <ellipse cx="180" cy="106" rx="150" ry="94" fill="url(#cm-halo)" opacity="0.6" />
+
+      {/* Arco del ciclo día ↔ noche */}
+      <path
+        className="cm-dash"
+        d="M70 54C110 18 250 18 290 54"
+        fill="none"
+        stroke="#fbbf24"
+        strokeOpacity="0.32"
+        strokeWidth="1.5"
+        strokeDasharray="5 7"
+        strokeLinecap="round"
+      />
+      <g filter="url(#cm-glow)">
+        <circle r="2.4" fill="#fef9c3" opacity="0.9">
+          <animateMotion dur="9s" repeatCount="indefinite" path="M70 54C110 18 250 18 290 54" />
+        </circle>
+      </g>
 
       {/* Sol (día) */}
-      <g className="cm-sun" filter="url(#cm-glow)">
-        <circle cx="52" cy="48" r="15" fill="#fde047" />
-        <g stroke="#fde047" strokeWidth="2.4" strokeLinecap="round">
-          <line x1="52" y1="26" x2="52" y2="18" />
-          <line x1="52" y1="70" x2="52" y2="78" />
-          <line x1="30" y1="48" x2="22" y2="48" />
-          <line x1="74" y1="48" x2="82" y2="48" />
-          <line x1="37" y1="33" x2="31" y2="27" />
-          <line x1="67" y1="63" x2="73" y2="69" />
+      <circle cx="48" cy="42" r="32" fill="url(#cm-sun-halo)" />
+      <g filter="url(#cm-glow)">
+        <g className="cm-sun-spin" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" opacity="0.85">
+          <line x1="48" y1="26" x2="48" y2="18" />
+          <line x1="59.3" y1="30.7" x2="65" y2="25" />
+          <line x1="64" y1="42" x2="72" y2="42" />
+          <line x1="59.3" y1="53.3" x2="65" y2="59" />
+          <line x1="48" y1="58" x2="48" y2="66" />
+          <line x1="36.7" y1="53.3" x2="31" y2="59" />
+          <line x1="32" y1="42" x2="24" y2="42" />
+          <line x1="36.7" y1="30.7" x2="31" y2="25" />
         </g>
+        <circle className="cm-sun-core" cx="48" cy="42" r="13" fill="url(#cm-sun)" />
       </g>
-      <text x="52" y="90" textAnchor="middle" fill="#fde68a" fontSize="8.5" fontWeight="900">DÍA</text>
+      <text x="48" y="78" textAnchor="middle" fill="#fde68a" fontSize="8" fontWeight="900" letterSpacing="1">
+        DÍA
+      </text>
 
       {/* Luna (noche) */}
+      <circle cx="312" cy="42" r="30" fill="url(#cm-moon-halo)" />
       <g className="cm-moon" filter="url(#cm-glow)">
-        <circle cx="312" cy="52" r="15" fill="#e2e8f0" />
-        <circle cx="318" cy="48" r="12" fill="#1e293b" />
-        <circle cx="306" cy="44" r="2" fill="#94a3b8" opacity="0.7" />
-        <circle cx="310" cy="58" r="1.6" fill="#94a3b8" opacity="0.6" />
+        <circle cx="312" cy="42" r="14" fill="url(#cm-moon)" mask="url(#cm-moon-mask)" />
+        <circle cx="303" cy="36" r="1.7" fill="#94a3b8" opacity="0.55" />
+        <circle cx="305" cy="49" r="1.2" fill="#94a3b8" opacity="0.45" />
       </g>
-      <text x="312" y="90" textAnchor="middle" fill="#cbd5e1" fontSize="8.5" fontWeight="900">NOCHE</text>
+      <circle cx="288" cy="28" r="1.2" fill="#e2e8f0" opacity="0.5" />
+      <circle cx="296" cy="66" r="1" fill="#e2e8f0" opacity="0.4" />
+      <circle cx="330" cy="62" r="1.1" fill="#e2e8f0" opacity="0.45" />
+      <text x="312" y="78" textAnchor="middle" fill="#cbd5e1" fontSize="8" fontWeight="900" letterSpacing="1">
+        NOCHE
+      </text>
 
-      {/* Célula con motor central */}
-      <g filter="url(#cm-glow)">
-        <path d="M180 20c48 0 90 32 90 84s-40 90-90 90-90-38-90-90 42-84 90-84Z" fill="url(#cm-cyto)" stroke="#fb7185" strokeWidth="3" />
-        <path d="M180 29c42 0 82 30 82 75s-34 80-82 80-82-36-82-80 40-75 82-75Z" fill="none" stroke="#fda4af" strokeOpacity="0.3" strokeWidth="1.2" strokeDasharray="5 6" />
+      {/* Célula con el motor en marcha */}
+      <g className="cm-breathe" filter="url(#cm-glow)">
+        <path
+          d="M180 44c38 0 68 28 68 64s-30 64-68 64-68-28-68-64 30-64 68-64Z"
+          fill="url(#cm-cyto)"
+          stroke="#fb7185"
+          strokeWidth="2.4"
+        />
+        <path
+          d="M180 52c33 0 59 25 59 56s-26 56-59 56-59-25-59-56 26-56 59-56Z"
+          fill="none"
+          stroke="#fecdd3"
+          strokeOpacity="0.26"
+          strokeWidth="1.1"
+          strokeDasharray="5 6"
+        />
 
-        {/* Engranajes (el motor) */}
-        <g className="cm-gear" stroke="#fbbf24" strokeWidth="3" fill="none">
-          <circle cx="180" cy="100" r="16" />
-          <path d="M180 78v10M180 112v10M158 100h10M192 100h10" strokeLinecap="round" />
-        </g>
-        <g className="cm-gear cm-gear-2" stroke="#f472b6" strokeWidth="2.4" fill="none">
-          <circle cx="208" cy="116" r="11" />
-          <path d="M208 100v6M208 126v6M192 116h6M218 116h6" strokeLinecap="round" />
-        </g>
+        {/* Retículo cercano al núcleo */}
+        <path d="M124 110c-6 7-6 15 0 21" fill="none" stroke="#fda4af" strokeOpacity="0.4" strokeWidth="2" strokeLinecap="round" />
+        <path d="M132 104c-7 8-7 18 0 26" fill="none" stroke="#fda4af" strokeOpacity="0.26" strokeWidth="1.6" strokeLinecap="round" />
 
-        {/* Mitocondrias (motoras) */}
+        {/* Núcleo con nucléolo */}
+        <circle cx="139" cy="142" r="14" fill="#c084fc" fillOpacity="0.42" stroke="#ede9fe" strokeOpacity="0.7" strokeWidth="1.3" />
+        <circle cx="142" cy="139" r="5.5" fill="#f5f3ff" fillOpacity="0.9" />
+
+        {/* Mitocondrias activas */}
         <g className="cm-mito">
-          <ellipse cx="146" cy="140" rx="22" ry="11" fill="url(#cm-mito)" stroke="#fed7aa" strokeWidth="1.4" transform="rotate(-18 146 140)" />
-          <path d="M132 135c4 6 8-5 12 1s8-4 12 2" stroke="#7c2d12" strokeWidth="1.3" fill="none" />
+          <ellipse cx="136" cy="68" rx="17" ry="8" fill="url(#cm-mito)" stroke="#fed7aa" strokeWidth="1.2" transform="rotate(-16 136 68)" />
+          <ellipse cx="136" cy="68" rx="11.5" ry="5" fill="#7c2d12" fillOpacity="0.18" transform="rotate(-16 136 68)" />
+          <path
+            d="M126 66c3 4 6-3 9 1s6-3 9 1"
+            fill="none"
+            stroke="#7c2d12"
+            strokeWidth="1.1"
+            strokeOpacity="0.9"
+            strokeLinecap="round"
+            transform="rotate(-16 136 68)"
+          />
+          <ellipse cx="130" cy="63" rx="5.5" ry="2.2" fill="#fff7ed" fillOpacity="0.28" transform="rotate(-16 130 63)" />
         </g>
-        <g className="cm-mito" style={{ animationDelay: '0.8s' }}>
-          <ellipse cx="222" cy="72" rx="19" ry="9.5" fill="#fbbf24" stroke="#fde68a" strokeWidth="1.3" transform="rotate(16 222 72)" />
-          <path d="M210 69c3 4 7-3 11 1s6-3 10 1" stroke="#78350f" strokeWidth="1.2" fill="none" />
+        <g className="cm-mito" style={{ animationDelay: '1.2s' }}>
+          <ellipse cx="222" cy="82" rx="14" ry="7" fill="#fb923c" stroke="#fed7aa" strokeWidth="1.2" transform="rotate(18 222 82)" />
+          <ellipse cx="222" cy="82" rx="9.5" ry="4.4" fill="#7c2d12" fillOpacity="0.16" transform="rotate(18 222 82)" />
+          <path
+            d="M214 80c3 3 5-2 8 1s5-2 8 1"
+            fill="none"
+            stroke="#7c2d12"
+            strokeWidth="1"
+            strokeOpacity="0.9"
+            strokeLinecap="round"
+            transform="rotate(18 222 82)"
+          />
         </g>
 
-        {/* Núcleo */}
-        <circle cx="180" cy="96" r="9" fill="#f5f3ff" opacity="0.9" />
+        {/* Engranajes: el motor que nunca se detiene */}
+        <g transform="translate(174 100)">
+          <g className="cm-gear">
+            <g fill="#fbbf24" stroke="#b45309" strokeWidth="0.7">
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(36)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(72)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(108)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(144)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(180)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(216)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(252)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(288)" />
+              <rect x="-2.5" y="-25" width="5" height="9.5" rx="1.1" transform="rotate(324)" />
+            </g>
+            <circle r="17.5" fill="#f59e0b" stroke="#fde68a" strokeWidth="1.3" />
+            <circle r="12" fill="none" stroke="#b45309" strokeOpacity="0.45" strokeWidth="1.4" />
+            <circle r="6" fill="#7c2d12" fillOpacity="0.5" />
+            <circle r="2.2" fill="#fef3c7" fillOpacity="0.8" />
+          </g>
+        </g>
+        <g transform="translate(205 126)">
+          <g className="cm-gear cm-gear-2">
+            <g fill="#fda4af" stroke="#9f1239" strokeWidth="0.6">
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" />
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" transform="rotate(45)" />
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" transform="rotate(90)" />
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" transform="rotate(135)" />
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" transform="rotate(180)" />
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" transform="rotate(225)" />
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" transform="rotate(270)" />
+              <rect x="-2" y="-18" width="4" height="7" rx="0.9" transform="rotate(315)" />
+            </g>
+            <circle r="11.5" fill="#fb7185" stroke="#fecdd3" strokeWidth="1.1" />
+            <circle r="4.5" fill="#831843" fillOpacity="0.45" />
+            <circle r="1.6" fill="#fecdd3" fillOpacity="0.7" />
+          </g>
+        </g>
+
+        {/* Vesículas y ribosomas */}
+        <circle cx="196" cy="154" r="4" fill="#fde68a" fillOpacity="0.45" stroke="#fef3c7" strokeOpacity="0.55" strokeWidth="0.9" />
+        <circle cx="160" cy="158" r="3" fill="#fde68a" fillOpacity="0.4" />
+        <circle cx="214" cy="62" r="1.4" fill="#fecdd3" opacity="0.7" />
+        <circle cx="122" cy="98" r="1.3" fill="#fecdd3" opacity="0.6" />
+        <circle cx="168" cy="58" r="1.4" fill="#fecdd3" opacity="0.65" />
       </g>
 
-      {/* ATP bombeado sin parar */}
-      <g filter="url(#cm-glow)">
-        <circle className="cm-pump" cx="238" cy="40" r="4" fill="#fde047" stroke="#fefce8" strokeWidth="0.8" />
-        <text x="238" y="43" textAnchor="middle" fill="#713f12" fontSize="4" fontWeight="900">ATP</text>
+      {/* ATP continuo */}
+      <g className="cm-atp" filter="url(#cm-glow)">
+        <rect x="64" y="142" width="54" height="17" rx="8.5" fill="#fbbf24" fillOpacity="0.15" stroke="#fbbf24" strokeOpacity="0.5" strokeWidth="1" />
+        <path d="M76 145l-3.6 6.6h2.6l-1.3 4.6 4.2-6.6h-2.7Z" fill="#fde047" />
+        <text x="98" y="153.5" textAnchor="middle" fill="#fde68a" fontSize="7.5" fontWeight="900" letterSpacing="0.8">
+          ATP
+        </text>
+      </g>
+      <g className="cm-atp cm-atp-2" filter="url(#cm-glow)">
+        <rect x="242" y="142" width="54" height="17" rx="8.5" fill="#fbbf24" fillOpacity="0.15" stroke="#fbbf24" strokeOpacity="0.5" strokeWidth="1" />
+        <path d="M254 145l-3.6 6.6h2.6l-1.3 4.6 4.2-6.6h-2.7Z" fill="#fde047" />
+        <text x="276" y="153.5" textAnchor="middle" fill="#fde68a" fontSize="7.5" fontWeight="900" letterSpacing="0.8">
+          ATP
+        </text>
       </g>
       <g filter="url(#cm-glow)">
-        <circle className="cm-pump cm-pump-2" cx="128" cy="30" r="3.6" fill="#fde047" stroke="#fefce8" strokeWidth="0.8" />
+        <circle r="2" fill="#fde047" opacity="0.85">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M132 150C120 150 112 150 104 150" />
+        </circle>
       </g>
       <g filter="url(#cm-glow)">
-        <circle className="cm-pump cm-pump-3" cx="300" cy="116" r="3.4" fill="#fde047" stroke="#fefce8" strokeWidth="0.8" />
+        <circle r="2" fill="#fde047" opacity="0.85">
+          <animateMotion dur="4s" begin="2s" repeatCount="indefinite" path="M228 150C240 150 248 150 256 150" />
+        </circle>
       </g>
 
-      <text x="180" y="202" textAnchor="middle" fill="#fda4af" fontSize="8.5" fontWeight="900" letterSpacing="1">
+      <text x="180" y="200" textAnchor="middle" fill="#fda4af" fontSize="8" fontWeight="900" letterSpacing="0.9">
         EL MOTOR QUE NUNCA DUERME
       </text>
     </svg>

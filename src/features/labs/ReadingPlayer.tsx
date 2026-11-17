@@ -4128,12 +4128,10 @@ export function Session3Subactivities({
                   borderColor="rgba(251, 191, 36, 0.32)"
                 >
                   <div className="flex h-full flex-col">
-                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
-                      <CellFuelGraphic2D />
-                      <div
-                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
-                        aria-hidden
-                      />
+                    <div className="relative flex justify-center overflow-hidden border-b border-white/10 bg-ink-950/60 py-1">
+                      <div className="w-full max-w-[20rem]">
+                        <CellFuelGraphic2D />
+                      </div>
                     </div>
                     <div className="flex flex-1 flex-col p-4 sm:p-5">
                       <div className="flex flex-wrap items-center gap-2">
@@ -4158,12 +4156,10 @@ export function Session3Subactivities({
                   borderColor="rgba(251, 146, 60, 0.32)"
                 >
                   <div className="flex h-full flex-col">
-                    <div className="relative overflow-hidden border-b border-white/10 bg-ink-950/60">
-                      <CellularMotorGraphic2D />
-                      <div
-                        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-ink-950/90 to-transparent"
-                        aria-hidden
-                      />
+                    <div className="relative flex justify-center overflow-hidden border-b border-white/10 bg-ink-950/60 py-1">
+                      <div className="w-full max-w-[20rem]">
+                        <CellularMotorGraphic2D />
+                      </div>
                     </div>
                     <div className="flex flex-1 flex-col p-4 sm:p-5">
                       <div className="flex flex-wrap items-center gap-2">
