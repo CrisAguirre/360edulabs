@@ -83,6 +83,8 @@ export function BreadcrumbBar({ onOpenSiteMap: _onOpenSiteMap }: BreadcrumbBarPr
     } else {
       crumbs.push({ label: 'Panel Docente (Aulas)' });
     }
+  } else if (parts[0] === 'complementarias') {
+    crumbs.push({ label: 'Actividades Complementarias' });
   } else if (parts[0] === 'misiones' && parts[1]) {
     const missionCode = parts[1].toLowerCase();
     const info = sessionInfo(missionCode);

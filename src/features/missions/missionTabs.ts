@@ -19,8 +19,7 @@ export const MISSION_TABS: Record<string, MissionTabDef[]> = {
     { key: '1.2', label: '1.2 Aporte conceptual', shortLabel: '1.2 Concepto' },
     { key: '1.3', label: '1.3 Video: Historia celular', shortLabel: '1.3 Video' },
     { key: '1.4', label: '1.4 Lectura y participación', shortLabel: '1.4 Lectura' },
-    { key: '1.5', label: '1.5 Reto Final de Evaluación', shortLabel: '1.5 Reto 🏆', tone: 'quiz' },
-    { key: '1.6', label: '1.6 Contenidos extras (Opcional)', shortLabel: '1.6 Extras', tone: 'extras' }
+    { key: '1.5', label: '1.5 Reto Final de Evaluación', shortLabel: '1.5 Reto 🏆', tone: 'quiz' }
   ],
   m2: [
     { key: '2.1', label: '2.1 Saberes previos', shortLabel: '2.1 Saberes' },
@@ -29,8 +28,7 @@ export const MISSION_TABS: Record<string, MissionTabDef[]> = {
     { key: '2.4', label: '2.4 Modelo 360 y Video', shortLabel: '2.4 360 y Video' },
     { key: '2.5', label: '2.5 Participación', shortLabel: '2.5 Participación' },
     { key: '2.6', label: '2.6 Quiver y Comparación', shortLabel: '2.6 Quiver' },
-    { key: '2.7', label: '2.7 Reto Final (Quiz)', shortLabel: '2.7 Reto 🏆', tone: 'quiz' },
-    { key: '2.8', label: '2.8 Actividades complementarias', shortLabel: '2.8 Extras', tone: 'extras' }
+    { key: '2.7', label: '2.7 Reto Final (Quiz)', shortLabel: '2.7 Reto 🏆', tone: 'quiz' }
   ],
   m3: [
     { key: '3.1', label: '3.1 Saberes previos', shortLabel: '3.1 Saberes' },
@@ -50,13 +48,6 @@ export const MISSION_TABS: Record<string, MissionTabDef[]> = {
       shortLabel: '3.7 Reto 🏆',
       tone: 'quiz',
       badge: 'Examen'
-    },
-    {
-      key: '3.8',
-      label: '3.8 Actividades complementarias',
-      shortLabel: '3.8 Extras',
-      tone: 'extras',
-      badge: 'Opcional'
     }
   ]
 };

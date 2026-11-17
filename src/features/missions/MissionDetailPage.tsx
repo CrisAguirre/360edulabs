@@ -33,7 +33,6 @@ import { AnimatedList, Aurora, SpotlightCard } from '../../components/reactbits'
 import {
   DEFAULT_M3_STRUCTURES,
   type GlossaryItem,
-  type Scientist,
   Session1Subactivities,
   type Session1TabKey,
   Session2Subactivities,
@@ -137,9 +136,6 @@ export function MissionDetailPage() {
   const readingActivity = isSession1 || isSession2 || isSession3
     ? mission.activities.find((activity) => activity.type === 'reading') ?? mission.activities[0]
     : null;
-  const complementaryActivities = isSession1 || isSession2 || isSession3
-    ? mission.activities.filter((activity) => activity._id !== readingActivity?._id)
-    : [];
   const completedRequired = required.filter((activity) => activity.status === 'completed').length;
   const remainingRequired = required.length - completedRequired;
   const nextStep = required.find((activity) => activity.status !== 'completed') ?? null;
@@ -408,13 +404,12 @@ export function MissionDetailPage() {
         </figure>
       </section>
 
-      {/* ── Sesión 1: estaciones oficiales 1.1 a 1.6 (sin cabecera duplicada) ── */}
+      {/* ── Sesión 1: estaciones oficiales 1.1 a 1.5 (sin cabecera duplicada) ── */}
       {isSession1 && readingActivity ? (
         <section id="estaciones-sesion-1" className="scroll-mt-24 space-y-4">
           <Session1Subactivities
             activity={readingActivity}
             mission={mission}
-            complementaryActivities={complementaryActivities}
             content={(readingActivity.content as Record<string, unknown>) ?? {}}
             postulates={
               (readingActivity.content?.postulates as string[]) ?? [
@@ -424,7 +419,6 @@ export function MissionDetailPage() {
                 'La célula es la unidad funcional de los seres vivos, porque independientemente del organismo al cual se haga referencia, es en ella donde ocurre las reacciones químicas que se necesitan para vivir.'
               ]
             }
-            scientists={(readingActivity.content?.scientists as Scientist[]) ?? []}
             glossary={(readingActivity.content?.glossary as GlossaryItem[]) ?? []}
             mandatoryQuestion={
               (readingActivity.content?.mandatoryQuestion as string) ??
@@ -455,7 +449,6 @@ export function MissionDetailPage() {
           <Session2Subactivities
             activity={readingActivity}
             mission={mission}
-            complementaryActivities={complementaryActivities}
             comparisonTable={
               (readingActivity.content?.comparisonTable as TableRow[]) ?? [
                 {
@@ -536,7 +529,6 @@ export function MissionDetailPage() {
           <Session3Subactivities
             activity={readingActivity}
             mission={mission}
-            complementaryActivities={complementaryActivities}
             structuresTable={
               (readingActivity.content?.structuresTable as StructureItem[]) ?? DEFAULT_M3_STRUCTURES
             }

@@ -8,6 +8,7 @@ import { AdminPage } from './features/admin/AdminPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { LandingPage } from './features/landing/LandingPage';
 import { ActivityPage } from './features/missions/ActivityPage';
+import { ComplementaryActivitiesPage } from './features/missions/ComplementaryActivitiesPage';
 import { MissionDetailPage } from './features/missions/MissionDetailPage';
 import { ProfilePage } from './features/profile/ProfilePage';
 import { QuizPage } from './features/quiz/QuizPage';
@@ -48,6 +49,7 @@ export function App() {
                   <Route path="/misiones/:codigo/:phase" element={<MissionDetailPage />} />
                   <Route path="/misiones/:codigo/actividades/:activityId" element={<ActivityPage />} />
                   <Route path="/misiones/:codigo/quiz" element={<QuizPage />} />
+                  <Route path="/complementarias" element={<ComplementaryActivitiesPage />} />
 
                   {/* Teacher routes */}
                   <Route element={<ProtectedRoute roles={['teacher', 'admin']} />}>

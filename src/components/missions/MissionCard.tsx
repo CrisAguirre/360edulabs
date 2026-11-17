@@ -134,18 +134,77 @@ export function MissionCard({ mission, index }: { mission: MissionSummary; index
 }
 
 export function MissionMap({ missions }: { missions: MissionSummary[] }) {
+  const totalOptional = missions.reduce((sum, mission) => sum + (mission.progress.optionalActivities ?? 0), 0);
+
   return (
     <div className="relative">
       <div
         className="pointer-events-none absolute left-0 right-0 top-1/2 hidden h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-white/15 to-transparent md:block"
         aria-hidden
       />
-      <AnimatedList className="grid gap-4 md:grid-cols-3" stagger={0.08}>
+      <AnimatedList className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" stagger={0.08}>
         {missions.map((mission, index) => (
           <MissionCard key={mission.code} mission={mission} index={index} />
         ))}
+        <ComplementarySessionCard key="complementarias" totalOptional={totalOptional} />
       </AnimatedList>
     </div>
+  );
+}
+
+/** Cuarta tarjeta del mapa: reúne las actividades complementarias de las 3 sesiones. */
+function ComplementarySessionCard({ totalOptional }: { totalOptional: number }) {
+  return (
+    <SpotlightCard
+      spotlightColor="rgba(167, 139, 250, 0.2)"
+      borderColor="rgba(167, 139, 250, 0.42)"
+      className="group relative flex h-full flex-col overflow-hidden p-5 bg-ink-900/70 transition duration-300 hover:-translate-y-1 hover:shadow-2xl"
+    >
+      <div
+        className="pointer-events-none absolute -right-16 -top-16 size-44 rounded-full bg-violet-400/20 blur-3xl transition group-hover:scale-125"
+        aria-hidden
+      />
+      <div className="relative flex items-start justify-between gap-3">
+        <span
+          className="grid size-14 shrink-0 place-items-center rounded-2xl text-3xl"
+          style={{ background: 'rgba(167, 139, 250, 0.16)', border: '1px solid rgba(167, 139, 250, 0.35)' }}
+        >
+          🧩
+        </span>
+        <span className="text-[11px] font-extrabold uppercase tracking-wider text-violet-300">Sesión 4</span>
+      </div>
+
+      <div className="relative mt-4 flex-1">
+        <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">
+          Exploración opcional
+        </p>
+        <h3 className="mt-0.5 text-xl font-bold leading-tight text-white">Actividades Complementarias</h3>
+        <p className="mt-1 text-sm font-bold text-violet-300">
+          Modelos 3D, cubo AR, videos 360°, animaciones y laboratorios.
+        </p>
+        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-400">
+          Todas las experiencias de apoyo de las tres sesiones reunidas en un solo lugar, listas para explorar sin
+          bloquear tu avance.
+        </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex items-center gap-1 rounded-full border border-violet-400/25 bg-violet-400/10 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-violet-200">
+            <Sparkles className="size-3 text-violet-300" aria-hidden />
+            {totalOptional} experiencias opcionales
+          </span>
+        </div>
+      </div>
+
+      <div className="relative mt-5">
+        <Link
+          to="/complementarias"
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-violet-400 px-4 text-sm font-extrabold text-ink-950 transition shadow-lg shadow-violet-400/20 hover:brightness-110"
+        >
+          <ShinyText text="Explorar" speed={3} className="font-extrabold text-ink-950" />
+          <ArrowRight className="size-4" aria-hidden />
+        </Link>
+      </div>
+    </SpotlightCard>
   );
 }
 
