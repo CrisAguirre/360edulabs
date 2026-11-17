@@ -3,6 +3,39 @@ interface GraphicProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
+/**
+ * Hoja de estilos de animación compartida por los 12 gráficos celulares.
+ * Usa nombres genéricos y se inyecta de forma idéntica en cada SVG, por lo que
+ * no hay colisión entre keyframes aunque todos los gráficos se rendericen a la
+ * vez dentro del carrusel circular 3D.
+ */
+const CG_STYLE = `
+  @keyframes cgPulse { 0%,100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.07); opacity: 1; } }
+  @keyframes cgBreathe { 0%,100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.04); opacity: 1; } }
+  @keyframes cgFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @keyframes cgFloatX { 0%,100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+  @keyframes cgRise { 0% { transform: translateY(0); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(-15px); opacity: 0; } }
+  @keyframes cgShine { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+  @keyframes cgSpin { to { transform: rotate(360deg); } }
+  @keyframes cgSway { 0%,100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+  @keyframes cgDash { to { stroke-dashoffset: -28; } }
+  .cg-pulse { animation: cgPulse 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cg-pulse-2 { animation: cgPulse 4.2s ease-in-out infinite; animation-delay: 0.9s; transform-box: fill-box; transform-origin: center; }
+  .cg-breathe { animation: cgBreathe 4.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cg-float { animation: cgFloat 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cg-float-2 { animation: cgFloat 3.8s ease-in-out infinite; animation-delay: 1s; transform-box: fill-box; transform-origin: center; }
+  .cg-float-3 { animation: cgFloat 4.4s ease-in-out infinite; animation-delay: 1.8s; transform-box: fill-box; transform-origin: center; }
+  .cg-drift { animation: cgFloatX 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cg-rise { animation: cgRise 3.2s ease-in-out infinite; }
+  .cg-rise-2 { animation: cgRise 3.2s ease-in-out infinite; animation-delay: 1.1s; }
+  .cg-rise-3 { animation: cgRise 3.2s ease-in-out infinite; animation-delay: 2.2s; }
+  .cg-shine { animation: cgShine 2.4s ease-in-out infinite; }
+  .cg-shine-2 { animation: cgShine 2.4s ease-in-out infinite; animation-delay: 1.2s; }
+  .cg-spin { animation: cgSpin 18s linear infinite; transform-box: fill-box; transform-origin: center; }
+  .cg-sway { animation: cgSway 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cg-dash { stroke-dasharray: 6 6; animation: cgDash 2.4s linear infinite; }
+`;
+
 /* ══════════════════════════════════════════════════════════════════════════
    GRÁFICOS 2D CÉLULA VEGETAL
    ══════════════════════════════════════════════════════════════════════════ */
@@ -26,7 +59,12 @@ export function CellWallGraphic2D({ className }: GraphicProps) {
           <stop stopColor="#d97706" stopOpacity="0.8" />
           <stop offset="1" stopColor="#78350f" stopOpacity="0.9" />
         </linearGradient>
+        <filter id="wallGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="1.8" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
+      <style>{CG_STYLE}</style>
 
       {/* Fondo de placa vegetal */}
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#18120c" stroke="#b45309" strokeWidth="1.5" />
@@ -38,22 +76,28 @@ export function CellWallGraphic2D({ className }: GraphicProps) {
       </text>
 
       {/* Pared primaria con microfibrillas entrecruzadas */}
-      <rect x="20" y="46" width="200" height="46" rx="8" fill="url(#wallCellulose)" />
+      <rect className="cg-breathe" x="20" y="46" width="200" height="46" rx="8" fill="url(#wallCellulose)" />
       
       {/* Red de microfibrillas de celulosa */}
-      <path d="M26 56 H214 M26 68 H214 M26 80 H214" stroke="#fde68a" strokeWidth="1.2" strokeDasharray="5 3" />
-      <path d="M45 48 L75 90 M95 48 L125 90 M145 48 L175 90 M195 48 L210 70" stroke="#fbbf24" strokeWidth="1" opacity="0.6" />
-      <path d="M75 48 L45 90 M125 48 L95 90 M175 48 L145 90" stroke="#f59e0b" strokeWidth="1" opacity="0.6" />
+      <g filter="url(#wallGlow)">
+        <path className="cg-shine" d="M26 56 H214 M26 68 H214 M26 80 H214" stroke="#fde68a" strokeWidth="1.2" strokeDasharray="5 3" />
+        <path className="cg-shine-2" d="M45 48 L75 90 M95 48 L125 90 M145 48 L175 90 M195 48 L210 70" stroke="#fbbf24" strokeWidth="1" opacity="0.6" />
+        <path className="cg-shine" d="M75 48 L45 90 M125 48 L95 90 M175 48 L145 90" stroke="#f59e0b" strokeWidth="1" opacity="0.6" />
+      </g>
       <text x="120" y="72" textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="bold">
         Microfibrillas de celulosa (Resistencia mecánica)
       </text>
 
       {/* Canales de plasmodesmos */}
       <g>
-        <rect x="52" y="44" width="14" height="50" rx="3" fill="#059669" stroke="#34d399" strokeWidth="1" />
-        <line x1="59" y1="44" x2="59" y2="94" stroke="#a7f3d0" strokeWidth="1.5" />
-        <rect x="174" y="44" width="14" height="50" rx="3" fill="#059669" stroke="#34d399" strokeWidth="1" />
-        <line x1="181" y1="44" x2="181" y2="94" stroke="#a7f3d0" strokeWidth="1.5" />
+        <g className="cg-pulse">
+          <rect x="52" y="44" width="14" height="50" rx="3" fill="#059669" stroke="#34d399" strokeWidth="1" />
+          <line x1="59" y1="44" x2="59" y2="94" stroke="#a7f3d0" strokeWidth="1.5" className="cg-dash" />
+        </g>
+        <g className="cg-pulse-2">
+          <rect x="174" y="44" width="14" height="50" rx="3" fill="#059669" stroke="#34d399" strokeWidth="1" />
+          <line x1="181" y1="44" x2="181" y2="94" stroke="#a7f3d0" strokeWidth="1.5" className="cg-dash" />
+        </g>
       </g>
 
       {/* Membrana plasmática interior */}
@@ -92,23 +136,30 @@ export function ChloroplastGraphic2D({ className }: GraphicProps) {
           <stop stopColor="#86efac" />
           <stop offset="1" stopColor="#22c55e" />
         </linearGradient>
+        <filter id="chloroGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="2.2" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
+      <style>{CG_STYLE}</style>
 
       {/* Caja contenedor */}
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#042111" stroke="#22c55e" strokeWidth="1.5" />
 
       {/* Doble membrana elipsoidal del cloroplasto */}
-      <ellipse cx="120" cy="74" rx="98" ry="52" fill="url(#chloroGrad)" stroke="#4ade80" strokeWidth="2.5" />
+      <ellipse className="cg-breathe" cx="120" cy="74" rx="98" ry="52" fill="url(#chloroGrad)" stroke="#4ade80" strokeWidth="2.5" />
       <ellipse cx="120" cy="74" rx="92" ry="47" stroke="#86efac" strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
 
       {/* Rayos solares entrando */}
-      <path d="M22 20 L55 45" stroke="#fde047" strokeWidth="2" strokeLinecap="round" />
-      <path d="M38 14 L65 35" stroke="#fde047" strokeWidth="1.5" strokeLinecap="round" />
+      <g filter="url(#chloroGlow)">
+        <path className="cg-shine" d="M22 20 L55 45" stroke="#fde047" strokeWidth="2" strokeLinecap="round" />
+        <path className="cg-shine-2" d="M38 14 L65 35" stroke="#fde047" strokeWidth="1.5" strokeLinecap="round" />
+      </g>
       <text x="32" y="44" fill="#fef08a" fontSize="7.5" fontWeight="bold">Luz solar (hν)</text>
 
       {/* Granas (Pilas de tilacoides) */}
       {/* Grana izquierda */}
-      <g>
+      <g className="cg-pulse">
         <ellipse cx="68" cy="62" rx="14" ry="4" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
         <ellipse cx="68" cy="68" rx="14" ry="4" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
         <ellipse cx="68" cy="74" rx="14" ry="4" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
@@ -117,7 +168,7 @@ export function ChloroplastGraphic2D({ className }: GraphicProps) {
       </g>
 
       {/* Grana central */}
-      <g>
+      <g className="cg-pulse-2">
         <ellipse cx="120" cy="58" rx="16" ry="4.5" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
         <ellipse cx="120" cy="65" rx="16" ry="4.5" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
         <ellipse cx="120" cy="72" rx="16" ry="4.5" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
@@ -126,7 +177,7 @@ export function ChloroplastGraphic2D({ className }: GraphicProps) {
       </g>
 
       {/* Grana derecha */}
-      <g>
+      <g className="cg-pulse">
         <ellipse cx="172" cy="62" rx="14" ry="4" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
         <ellipse cx="172" cy="68" rx="14" ry="4" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
         <ellipse cx="172" cy="74" rx="14" ry="4" fill="url(#granaGrad)" stroke="#166534" strokeWidth="0.8" />
@@ -135,8 +186,15 @@ export function ChloroplastGraphic2D({ className }: GraphicProps) {
       </g>
 
       {/* Lamelas estromáticas que conectan las granas */}
-      <path d="M82 74 Q100 70 104 72" stroke="#4ade80" strokeWidth="1.5" />
-      <path d="M136 76 Q150 78 158 74" stroke="#4ade80" strokeWidth="1.5" />
+      <path className="cg-shine" d="M82 74 Q100 70 104 72" stroke="#4ade80" strokeWidth="1.5" />
+      <path className="cg-shine" d="M136 76 Q150 78 158 74" stroke="#4ade80" strokeWidth="1.5" />
+
+      {/* Moléculas de CO2 y agua entrando */}
+      <g filter="url(#chloroGlow)">
+        <circle className="cg-rise" cx="40" cy="70" r="2.4" fill="#bae6fd" />
+        <circle className="cg-rise-2" cx="50" cy="82" r="2" fill="#fef08a" />
+        <circle className="cg-rise-3" cx="34" cy="78" r="2.2" fill="#bae6fd" />
+      </g>
 
       {/* Rótulos anatómicos */}
       <text x="120" y="44" textAnchor="middle" fill="#bbf7d0" fontSize="8" fontWeight="bold">
@@ -172,7 +230,12 @@ export function CentralVacuoleGraphic2D({ className }: GraphicProps) {
           <stop offset="0.6" stopColor="#0284c7" stopOpacity="0.8" />
           <stop offset="1" stopColor="#0369a1" stopOpacity="0.95" />
         </radialGradient>
+        <filter id="vacGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="2" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
+      <style>{CG_STYLE}</style>
 
       {/* Contenedor vegetal */}
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#041a24" stroke="#0ea5e9" strokeWidth="1.5" />
@@ -184,24 +247,32 @@ export function CentralVacuoleGraphic2D({ className }: GraphicProps) {
       <polygon points="27,21 213,21 222,129 17,129" fill="#065f46" opacity="0.6" />
 
       {/* Gran Vacuola Central (Ocupa hasta el 90% del volumen) */}
-      <ellipse cx="120" cy="75" rx="82" ry="46" fill="url(#vacuoleWater)" stroke="#7dd3fc" strokeWidth="2.5" />
+      <ellipse className="cg-breathe" cx="120" cy="75" rx="82" ry="46" fill="url(#vacuoleWater)" stroke="#7dd3fc" strokeWidth="2.5" />
 
       {/* Flechas de Presión Hidrostática de Turgencia (empujan hacia afuera) */}
-      <g stroke="#fef08a" strokeWidth="1.8" strokeLinecap="round">
-        <path d="M120 45 L120 28 M116 32 L120 27 L124 32" />
-        <path d="M120 105 L120 122 M116 118 L120 123 L124 118" />
-        <path d="M55 75 L38 75 M42 71 L37 75 L42 79" />
-        <path d="M185 75 L202 75 M198 71 L203 75 L198 79" />
+      <g stroke="#fef08a" strokeWidth="1.8" strokeLinecap="round" filter="url(#vacGlow)">
+        <g className="cg-pulse">
+          <path d="M120 45 L120 28 M116 32 L120 27 L124 32" />
+        </g>
+        <g className="cg-pulse-2">
+          <path d="M120 105 L120 122 M116 118 L120 123 L124 118" />
+        </g>
+        <g className="cg-pulse">
+          <path d="M55 75 L38 75 M42 71 L37 75 L42 79" />
+        </g>
+        <g className="cg-pulse-2">
+          <path d="M185 75 L202 75 M198 71 L203 75 L198 79" />
+        </g>
       </g>
 
       {/* Burbujas y solutos dentro de la vacuola */}
-      <circle cx="85" cy="65" r="4" fill="#bae6fd" opacity="0.7" />
-      <circle cx="150" cy="85" r="5" fill="#bae6fd" opacity="0.6" />
-      <circle cx="105" cy="90" r="3" fill="#bae6fd" opacity="0.5" />
-      <circle cx="160" cy="60" r="3.5" fill="#bae6fd" opacity="0.6" />
+      <circle className="cg-rise" cx="85" cy="65" r="4" fill="#bae6fd" opacity="0.7" />
+      <circle className="cg-rise-2" cx="150" cy="85" r="5" fill="#bae6fd" opacity="0.6" />
+      <circle className="cg-rise-3" cx="105" cy="90" r="3" fill="#bae6fd" opacity="0.5" />
+      <circle className="cg-rise-2" cx="160" cy="60" r="3.5" fill="#bae6fd" opacity="0.6" />
 
       {/* Núcleo arrinconado contra la pared por la vacuola */}
-      <circle cx="192" cy="40" r="13" fill="#3b82f6" stroke="#93c5fd" strokeWidth="1.5" />
+      <circle className="cg-float" cx="192" cy="40" r="13" fill="#3b82f6" stroke="#93c5fd" strokeWidth="1.5" />
       <circle cx="192" cy="40" r="4" fill="#1e3a8a" />
       <text x="192" y="58" textAnchor="middle" fill="#93c5fd" fontSize="6.5" fontWeight="bold">
         Núcleo periférico
@@ -230,6 +301,7 @@ export function PlasmaMembraneGraphic2D({ className }: GraphicProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <style>{CG_STYLE}</style>
       {/* Fondo */}
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#140b24" stroke="#a78bfa" strokeWidth="1.5" />
 
@@ -244,7 +316,7 @@ export function PlasmaMembraneGraphic2D({ className }: GraphicProps) {
         // Saltear espacio de la proteína
         if (i >= 6 && i <= 8) return null;
         return (
-          <g key={`head-top-${i}`}>
+          <g key={`head-top-${i}`} className="cg-sway" style={{ animationDelay: `${i * 0.18}s` }}>
             <circle cx={x} cy="42" r="5" fill="#a78bfa" stroke="#c4b5fd" strokeWidth="1" />
             <line x1={x - 1.5} y1="47" x2={x - 1.5} y2="65" stroke="#f472b6" strokeWidth="1.2" strokeLinecap="round" />
             <line x1={x + 1.5} y1="47" x2={x + 1.5} y2="65" stroke="#f472b6" strokeWidth="1.2" strokeLinecap="round" />
@@ -257,7 +329,7 @@ export function PlasmaMembraneGraphic2D({ className }: GraphicProps) {
         const x = 24 + i * 14.5;
         if (i >= 6 && i <= 8) return null;
         return (
-          <g key={`head-bot-${i}`}>
+          <g key={`head-bot-${i}`} className="cg-sway" style={{ animationDelay: `${i * 0.18}s` }}>
             <circle cx={x} cy="92" r="5" fill="#a78bfa" stroke="#c4b5fd" strokeWidth="1" />
             <line x1={x - 1.5} y1="87" x2={x - 1.5} y2="69" stroke="#f472b6" strokeWidth="1.2" strokeLinecap="round" />
             <line x1={x + 1.5} y1="87" x2={x + 1.5} y2="69" stroke="#f472b6" strokeWidth="1.2" strokeLinecap="round" />
@@ -266,22 +338,24 @@ export function PlasmaMembraneGraphic2D({ className }: GraphicProps) {
       })}
 
       {/* Proteína Integral Canal de Transporte */}
-      <path
-        d="M104 36 C104 32, 136 32, 136 36 L134 98 C134 102, 106 102, 106 98 Z"
-        fill="#0284c7"
-        stroke="#38bdf8"
-        strokeWidth="1.5"
-      />
-      {/* Canal poro central */}
-      <path d="M116 34 L116 100 M124 34 L124 100" stroke="#bae6fd" strokeWidth="1" strokeDasharray="3 2" />
+      <g className="cg-breathe">
+        <path
+          d="M104 36 C104 32, 136 32, 136 36 L134 98 C134 102, 106 102, 106 98 Z"
+          fill="#0284c7"
+          stroke="#38bdf8"
+          strokeWidth="1.5"
+        />
+        {/* Canal poro central */}
+        <path d="M116 34 L116 100 M124 34 L124 100" stroke="#bae6fd" strokeWidth="1" strokeDasharray="3 2" />
+      </g>
 
       {/* Flecha de paso de moléculas a través del canal */}
       <path d="M120 28 L120 106 M116 102 L120 107 L124 102" stroke="#fde047" strokeWidth="2" strokeLinecap="round" />
 
       {/* Moléculas en transporte */}
-      <circle cx="120" cy="22" r="3" fill="#fde047" />
-      <circle cx="120" cy="55" r="3" fill="#fde047" />
-      <circle cx="120" cy="115" r="3" fill="#fde047" />
+      <circle className="cg-rise" cx="120" cy="40" r="3" fill="#fde047" />
+      <circle className="cg-rise-2" cx="120" cy="60" r="3" fill="#fde047" />
+      <circle className="cg-rise-3" cx="120" cy="80" r="3" fill="#fde047" />
 
       {/* Cadenas glicolipídicas (receptores tipo antena) */}
       <path d="M53 37 Q58 26 50 18 M58 26 Q64 20 60 14" stroke="#34d399" strokeWidth="1.5" strokeLinecap="round" />
@@ -312,42 +386,52 @@ export function NucleusGraphic2D({ className }: GraphicProps) {
           <stop offset="0.7" stopColor="#1e40af" />
           <stop offset="1" stopColor="#0f172a" />
         </radialGradient>
+        <filter id="nucGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="1.8" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
+      <style>{CG_STYLE}</style>
 
       {/* Contenedor */}
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#091124" stroke="#3b82f6" strokeWidth="1.5" />
 
       {/* Envoltura nuclear esférica */}
-      <circle cx="120" cy="74" r="54" fill="url(#nucGrad)" stroke="#60a5fa" strokeWidth="2.5" />
+      <circle className="cg-breathe" cx="120" cy="74" r="54" fill="url(#nucGrad)" stroke="#60a5fa" strokeWidth="2.5" />
 
       {/* Poros nucleares marcados alrededor */}
       {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
         const rad = (angle * Math.PI) / 180;
         const cx = 120 + 54 * Math.cos(rad);
         const cy = 74 + 54 * Math.sin(rad);
-        return <circle key={angle} cx={cx} cy={cy} r="3" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />;
+        return <circle key={angle} className="cg-shine" cx={cx} cy={cy} r="3" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />;
       })}
 
       {/* Hebras de Cromatina (ADN desenrollado) */}
-      <path
-        d="M85 65 Q95 50 110 65 T135 60 T155 70 T145 90 T115 85 T95 90 Z"
-        stroke="#93c5fd"
-        strokeWidth="1.8"
-        strokeDasharray="4 2"
-        fill="none"
-        opacity="0.8"
-      />
-      <path
-        d="M92 78 Q105 88 125 78 T140 85 T130 98"
-        stroke="#60a5fa"
-        strokeWidth="1.5"
-        strokeDasharray="3 3"
-        fill="none"
-        opacity="0.7"
-      />
+      <g filter="url(#nucGlow)">
+        <path
+          className="cg-drift"
+          d="M85 65 Q95 50 110 65 T135 60 T155 70 T145 90 T115 85 T95 90 Z"
+          stroke="#93c5fd"
+          strokeWidth="1.8"
+          strokeDasharray="4 2"
+          fill="none"
+          opacity="0.8"
+        />
+        <path
+          className="cg-drift"
+          style={{ animationDelay: '1.4s' }}
+          d="M92 78 Q105 88 125 78 T140 85 T130 98"
+          stroke="#60a5fa"
+          strokeWidth="1.5"
+          strokeDasharray="3 3"
+          fill="none"
+          opacity="0.7"
+        />
+      </g>
 
       {/* Nucleolo denso central */}
-      <circle cx="120" cy="74" r="18" fill="#1e3a8a" stroke="#93c5fd" strokeWidth="1.5" />
+      <circle className="cg-pulse" cx="120" cy="74" r="18" fill="#1e3a8a" stroke="#93c5fd" strokeWidth="1.5" />
       <circle cx="120" cy="74" r="14" fill="#172554" />
       <text x="120" y="77" textAnchor="middle" fill="#dbeafe" fontSize="7.5" fontWeight="extrabold">
         Nucleolo
@@ -382,16 +466,22 @@ export function MitochondriaGraphic2D({ className }: GraphicProps) {
           <stop offset="0.8" stopColor="#9a3412" />
           <stop offset="1" stopColor="#431407" />
         </radialGradient>
+        <filter id="mitoGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="2" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
+      <style>{CG_STYLE}</style>
 
       {/* Contenedor */}
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#1f0d05" stroke="#fb923c" strokeWidth="1.5" />
 
       {/* Membrana Externa Lisa */}
-      <ellipse cx="120" cy="74" rx="92" ry="46" fill="url(#mitoGrad)" stroke="#fb923c" strokeWidth="2.5" />
+      <ellipse className="cg-breathe" cx="120" cy="74" rx="92" ry="46" fill="url(#mitoGrad)" stroke="#fb923c" strokeWidth="2.5" />
 
       {/* Crestas Mitocondriales Plegadas (Membrana Interna) */}
       <path
+        className="cg-shine"
         d="M48 74 Q62 60 72 74 Q82 88 92 74 Q102 60 112 74 Q122 88 132 74 Q142 60 152 74 Q162 88 172 74 Q182 60 192 74"
         stroke="#fed7aa"
         strokeWidth="3.5"
@@ -406,16 +496,16 @@ export function MitochondriaGraphic2D({ className }: GraphicProps) {
       />
 
       {/* Partículas de ATP Sintasa (Chispas de energía) */}
-      <g fill="#fde047">
-        <circle cx="70" cy="66" r="2.5" />
-        <circle cx="95" cy="80" r="2.5" />
-        <circle cx="125" cy="66" r="2.5" />
-        <circle cx="150" cy="80" r="2.5" />
-        <circle cx="175" cy="66" r="2.5" />
+      <g fill="#fde047" filter="url(#mitoGlow)">
+        <circle className="cg-shine" cx="70" cy="66" r="2.5" />
+        <circle className="cg-shine-2" cx="95" cy="80" r="2.5" />
+        <circle className="cg-shine" cx="125" cy="66" r="2.5" />
+        <circle className="cg-shine-2" cx="150" cy="80" r="2.5" />
+        <circle className="cg-shine" cx="175" cy="66" r="2.5" />
       </g>
 
       {/* Rótulo de ATP */}
-      <g>
+      <g className="cg-float">
         <rect x="100" y="20" width="40" height="16" rx="5" fill="#eab308" />
         <text x="120" y="31" textAnchor="middle" fill="#000000" fontSize="8.5" fontWeight="extrabold">
           ⚡ ATP
@@ -442,25 +532,28 @@ export function CytoplasmGraphic2D({ className }: GraphicProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <style>{CG_STYLE}</style>
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#04201e" stroke="#58e6c5" strokeWidth="1.5" />
 
       {/* Matriz coloidal de Citosol */}
       <rect x="20" y="20" width="200" height="110" rx="10" fill="#064e43" opacity="0.6" />
 
       {/* Microtúbulos (Cilindros gruesos) */}
-      <line x1="30" y1="40" x2="210" y2="48" stroke="#5eead4" strokeWidth="3" strokeDasharray="8 3" />
-      <line x1="35" y1="110" x2="205" y2="102" stroke="#5eead4" strokeWidth="3" strokeDasharray="8 3" />
-      <line x1="45" y1="35" x2="70" y2="115" stroke="#2dd4bf" strokeWidth="2.5" />
-      <line x1="170" y1="35" x2="195" y2="115" stroke="#2dd4bf" strokeWidth="2.5" />
+      <line className="cg-shine" x1="30" y1="40" x2="210" y2="48" stroke="#5eead4" strokeWidth="3" strokeDasharray="8 3" />
+      <line className="cg-shine-2" x1="35" y1="110" x2="205" y2="102" stroke="#5eead4" strokeWidth="3" strokeDasharray="8 3" />
+      <line className="cg-drift" x1="45" y1="35" x2="70" y2="115" stroke="#2dd4bf" strokeWidth="2.5" />
+      <line className="cg-drift" style={{ animationDelay: '1.2s' }} x1="170" y1="35" x2="195" y2="115" stroke="#2dd4bf" strokeWidth="2.5" />
 
       {/* Microfilamentos de actina (red fina) */}
       <path
+        className="cg-shine"
         d="M30 75 Q60 55 90 75 T150 75 T210 75"
         stroke="#99f6e4"
         strokeWidth="1.5"
         fill="none"
       />
       <path
+        className="cg-shine-2"
         d="M30 85 Q75 100 120 85 T210 85"
         stroke="#14b8a6"
         strokeWidth="1.2"
@@ -468,20 +561,22 @@ export function CytoplasmGraphic2D({ className }: GraphicProps) {
       />
 
       {/* Corrientes citoplasmáticas de Ciclosis (flechas en remolino) */}
-      <path
-        d="M100 65 A 25 18 0 1 1 140 85"
-        stroke="#fde047"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <polygon points="144,83 140,89 135,84" fill="#fde047" />
+      <g className="cg-spin" style={{ transformOrigin: '120px 75px' }}>
+        <path
+          d="M100 65 A 25 18 0 1 1 140 85"
+          stroke="#fde047"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <polygon points="144,83 140,89 135,84" fill="#fde047" />
+      </g>
 
       {/* Organelos flotando suspendidos en la red */}
-      <circle cx="85" cy="55" r="5" fill="#f97316" />
-      <circle cx="155" cy="58" r="4" fill="#38bdf8" />
-      <circle cx="140" cy="95" r="5.5" fill="#84cc16" />
-      <circle cx="75" cy="95" r="4.5" fill="#a855f7" />
+      <circle className="cg-float" cx="85" cy="55" r="5" fill="#f97316" />
+      <circle className="cg-float-2" cx="155" cy="58" r="4" fill="#38bdf8" />
+      <circle className="cg-float-3" cx="140" cy="95" r="5.5" fill="#84cc16" />
+      <circle className="cg-float-2" cx="75" cy="95" r="4.5" fill="#a855f7" />
 
       <text x="120" y="32" textAnchor="middle" fill="#99f6e4" fontSize="8" fontWeight="bold">
         Red de Citoesqueleto: Microtúbulos y Microfilamentos
@@ -506,10 +601,12 @@ export function AnimalMembraneGraphic2D({ className }: GraphicProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <style>{CG_STYLE}</style>
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#1a102b" stroke="#c084fc" strokeWidth="1.5" />
 
       {/* Contorno ondulante y flexible (ameboide/dinámico) */}
       <path
+        className="cg-breathe"
         d="M30 75 Q45 35 90 40 T170 35 T210 75 T160 115 T70 120 Z"
         fill="#3b0764"
         stroke="#a855f7"
@@ -517,6 +614,8 @@ export function AnimalMembraneGraphic2D({ className }: GraphicProps) {
         opacity="0.8"
       />
       <path
+        className="cg-breathe"
+        style={{ animationDelay: '1.1s' }}
         d="M38 75 Q50 45 92 48 T165 44 T202 75 T155 108 T76 112 Z"
         fill="#581c87"
         stroke="#e9d5ff"
@@ -525,16 +624,18 @@ export function AnimalMembraneGraphic2D({ className }: GraphicProps) {
       />
 
       {/* Vesículas de endocitosis/exocitosis brotando */}
-      <circle cx="198" cy="75" r="7" fill="#c084fc" stroke="#f3e8ff" strokeWidth="1.2" />
-      <circle cx="178" cy="75" r="5" fill="#a855f7" />
+      <g className="cg-float">
+        <circle cx="198" cy="75" r="7" fill="#c084fc" stroke="#f3e8ff" strokeWidth="1.2" />
+        <circle cx="178" cy="75" r="5" fill="#a855f7" />
+      </g>
       <text x="198" y="93" textAnchor="middle" fill="#e9d5ff" fontSize="6.5" fontWeight="bold">
         Endocitosis
       </text>
 
       {/* Colesterol integrado en la membrana (proporciona flexibilidad) */}
-      <rect x="75" y="44" width="6" height="4" rx="1" fill="#facc15" />
-      <rect x="125" y="42" width="6" height="4" rx="1" fill="#facc15" />
-      <rect x="105" y="112" width="6" height="4" rx="1" fill="#facc15" />
+      <rect className="cg-float" x="75" y="44" width="6" height="4" rx="1" fill="#facc15" />
+      <rect className="cg-float-2" x="125" y="42" width="6" height="4" rx="1" fill="#facc15" />
+      <rect className="cg-float-3" x="105" y="112" width="6" height="4" rx="1" fill="#facc15" />
 
       <text x="120" y="24" textAnchor="middle" fill="#f3e8ff" fontSize="8.5" fontWeight="bold">
         Membrana Elástica sin pared externa rígida
@@ -561,20 +662,23 @@ export function CentriolesGraphic2D({ className }: GraphicProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <style>{CG_STYLE}</style>
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#082026" stroke="#06b6d4" strokeWidth="1.5" />
 
       {/* Áster celular con fibras irradiando */}
-      <g stroke="#67e8f9" strokeWidth="1" strokeDasharray="3 3" opacity="0.6">
-        <line x1="120" y1="74" x2="30" y2="30" />
-        <line x1="120" y1="74" x2="210" y2="30" />
-        <line x1="120" y1="74" x2="30" y2="120" />
-        <line x1="120" y1="74" x2="210" y2="120" />
-        <line x1="120" y1="74" x2="120" y2="20" />
-        <line x1="120" y1="74" x2="120" y2="130" />
+      <g className="cg-spin" style={{ transformOrigin: '120px 74px' }}>
+        <g stroke="#67e8f9" strokeWidth="1" strokeDasharray="3 3" opacity="0.6">
+          <line x1="120" y1="74" x2="30" y2="30" />
+          <line x1="120" y1="74" x2="210" y2="30" />
+          <line x1="120" y1="74" x2="30" y2="120" />
+          <line x1="120" y1="74" x2="210" y2="120" />
+          <line x1="120" y1="74" x2="120" y2="20" />
+          <line x1="120" y1="74" x2="120" y2="130" />
+        </g>
       </g>
 
       {/* Centríolo 1 (Vertical) */}
-      <g>
+      <g className="cg-pulse">
         <rect x="100" y="52" width="18" height="42" rx="4" fill="#0891b2" stroke="#22d3ee" strokeWidth="1.5" />
         {/* Microtúbulos en tripletes */}
         <line x1="104" y1="56" x2="104" y2="90" stroke="#a5f3fc" strokeWidth="1.5" />
@@ -583,7 +687,7 @@ export function CentriolesGraphic2D({ className }: GraphicProps) {
       </g>
 
       {/* Centríolo 2 (Perpendicular a 90°) */}
-      <g>
+      <g className="cg-pulse-2">
         <rect x="122" y="65" width="42" height="18" rx="4" fill="#0e7490" stroke="#22d3ee" strokeWidth="1.5" />
         <line x1="126" y1="69" x2="160" y2="69" stroke="#a5f3fc" strokeWidth="1.5" />
         <line x1="126" y1="74" x2="160" y2="74" stroke="#a5f3fc" strokeWidth="1.5" />
@@ -612,25 +716,28 @@ export function GolgiGraphic2D({ className }: GraphicProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <style>{CG_STYLE}</style>
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#260b19" stroke="#f472b6" strokeWidth="1.5" />
 
       {/* Cisternas curvas del Complejo de Golgi */}
-      <g stroke="#f472b6" strokeWidth="5.5" strokeLinecap="round" fill="none">
-        <path d="M65 45 Q120 35 175 45" />
-        <path d="M60 60 Q120 50 180 60" stroke="#ec4899" />
-        <path d="M58 75 Q120 65 182 75" stroke="#db2777" />
-        <path d="M62 90 Q120 80 178 90" stroke="#be185d" />
+      <g className="cg-sway">
+        <g stroke="#f472b6" strokeWidth="5.5" strokeLinecap="round" fill="none">
+          <path d="M65 45 Q120 35 175 45" />
+          <path d="M60 60 Q120 50 180 60" stroke="#ec4899" />
+          <path d="M58 75 Q120 65 182 75" stroke="#db2777" />
+          <path d="M62 90 Q120 80 178 90" stroke="#be185d" />
+        </g>
       </g>
 
       {/* Vesículas de transporte entrando por cara cis */}
-      <circle cx="50" cy="40" r="4.5" fill="#fbcfe8" stroke="#f472b6" strokeWidth="1" />
-      <circle cx="75" cy="30" r="3.5" fill="#fbcfe8" stroke="#f472b6" strokeWidth="1" />
+      <circle className="cg-float" cx="50" cy="40" r="4.5" fill="#fbcfe8" stroke="#f472b6" strokeWidth="1" />
+      <circle className="cg-float-2" cx="75" cy="30" r="3.5" fill="#fbcfe8" stroke="#f472b6" strokeWidth="1" />
       <text x="60" y="24" fill="#fbcfe8" fontSize="7" fontWeight="bold">Cara Cis (Entrada)</text>
 
       {/* Vesículas secretoras brotando por cara trans */}
-      <circle cx="188" cy="98" r="6" fill="#f43f5e" stroke="#ffe4e6" strokeWidth="1" />
-      <circle cx="170" cy="108" r="4.5" fill="#f43f5e" stroke="#ffe4e6" strokeWidth="1" />
-      <circle cx="198" cy="115" r="5" fill="#f43f5e" stroke="#ffe4e6" strokeWidth="1" />
+      <circle className="cg-rise" cx="188" cy="98" r="6" fill="#f43f5e" stroke="#ffe4e6" strokeWidth="1" />
+      <circle className="cg-rise-2" cx="170" cy="108" r="4.5" fill="#f43f5e" stroke="#ffe4e6" strokeWidth="1" />
+      <circle className="cg-rise-3" cx="198" cy="115" r="5" fill="#f43f5e" stroke="#ffe4e6" strokeWidth="1" />
       <text x="185" y="128" fill="#fda4af" fontSize="7" fontWeight="bold">Cara Trans (Salida)</text>
 
       <text x="120" y="24" textAnchor="middle" fill="#fbcfe8" fontSize="8.5" fontWeight="bold">
@@ -661,12 +768,17 @@ export function LysosomeGraphic2D({ className }: GraphicProps) {
           <stop offset="0.7" stopColor="#be123c" />
           <stop offset="1" stopColor="#4c0519" />
         </radialGradient>
+        <filter id="lysoGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="2" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
       </defs>
+      <style>{CG_STYLE}</style>
 
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#1f0710" stroke="#f43f5e" strokeWidth="1.5" />
 
       {/* Esfera lisosómica */}
-      <circle cx="120" cy="74" r="50" fill="url(#lysoGrad)" stroke="#fb7185" strokeWidth="2.5" />
+      <circle className="cg-breathe" cx="120" cy="74" r="50" fill="url(#lysoGrad)" stroke="#fb7185" strokeWidth="2.5" />
 
       {/* Membrana con bombas de protones H+ (acidifican el interior a pH 5) */}
       {[0, 60, 120, 180, 240, 300].map((deg) => {
@@ -674,7 +786,7 @@ export function LysosomeGraphic2D({ className }: GraphicProps) {
         const x = 120 + 50 * Math.cos(rad);
         const y = 74 + 50 * Math.sin(rad);
         return (
-          <g key={deg}>
+          <g key={deg} className="cg-shine">
             <rect x={x - 3} y={y - 3} width="6" height="6" rx="1.5" fill="#facc15" />
             <text x={x} y={y + 10} textAnchor="middle" fill="#fef08a" fontSize="6" fontWeight="bold">H⁺</text>
           </g>
@@ -682,13 +794,13 @@ export function LysosomeGraphic2D({ className }: GraphicProps) {
       })}
 
       {/* Enzimas hidrolíticas en el interior descomponiendo desechos */}
-      <circle cx="105" cy="65" r="4" fill="#fde047" />
-      <circle cx="135" cy="65" r="4.5" fill="#fde047" />
-      <circle cx="115" cy="85" r="5" fill="#fde047" />
-      <circle cx="130" cy="90" r="3.5" fill="#fde047" />
+      <circle className="cg-float" cx="105" cy="65" r="4" fill="#fde047" />
+      <circle className="cg-float-2" cx="135" cy="65" r="4.5" fill="#fde047" />
+      <circle className="cg-float-3" cx="115" cy="85" r="5" fill="#fde047" />
+      <circle className="cg-float-2" cx="130" cy="90" r="3.5" fill="#fde047" />
 
       {/* Fragmento orgánico en digestión */}
-      <path d="M110 70 L125 78 L118 82 Z" fill="#94a3b8" stroke="#f1f5f9" strokeWidth="0.8" />
+      <path className="cg-float-3" d="M110 70 L125 78 L118 82 Z" fill="#94a3b8" stroke="#f1f5f9" strokeWidth="0.8" />
 
       <text x="120" y="22" textAnchor="middle" fill="#fda4af" fontSize="8.5" fontWeight="bold">
         Lisosoma: Digestor Celular (pH ácido ~5.0)
@@ -712,24 +824,31 @@ export function AnimalVacuolesGraphic2D({ className }: GraphicProps) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <style>{CG_STYLE}</style>
       <rect x="8" y="8" width="224" height="134" rx="14" fill="#1c1606" stroke="#eab308" strokeWidth="1.5" />
 
       {/* Múltiples vesículas y vacuolas pequeñas dispersas */}
-      <circle cx="65" cy="65" r="22" fill="#ca8a04" opacity="0.4" stroke="#facc15" strokeWidth="2" />
-      <circle cx="65" cy="65" r="16" fill="#eab308" opacity="0.6" />
-      <text x="65" y="68" textAnchor="middle" fill="#ffffff" fontSize="7" fontWeight="bold">Vacuola 1</text>
+      <g className="cg-float">
+        <circle cx="65" cy="65" r="22" fill="#ca8a04" opacity="0.4" stroke="#facc15" strokeWidth="2" />
+        <circle cx="65" cy="65" r="16" fill="#eab308" opacity="0.6" />
+        <text x="65" y="68" textAnchor="middle" fill="#ffffff" fontSize="7" fontWeight="bold">Vacuola 1</text>
+      </g>
 
-      <circle cx="170" cy="55" r="26" fill="#ca8a04" opacity="0.4" stroke="#facc15" strokeWidth="2" />
-      <circle cx="170" cy="55" r="19" fill="#eab308" opacity="0.6" />
-      <text x="170" y="58" textAnchor="middle" fill="#ffffff" fontSize="7" fontWeight="bold">Vacuola 2</text>
+      <g className="cg-float-2">
+        <circle cx="170" cy="55" r="26" fill="#ca8a04" opacity="0.4" stroke="#facc15" strokeWidth="2" />
+        <circle cx="170" cy="55" r="19" fill="#eab308" opacity="0.6" />
+        <text x="170" y="58" textAnchor="middle" fill="#ffffff" fontSize="7" fontWeight="bold">Vacuola 2</text>
+      </g>
 
-      <circle cx="120" cy="95" r="18" fill="#ca8a04" opacity="0.4" stroke="#facc15" strokeWidth="2" />
-      <circle cx="120" cy="95" r="13" fill="#eab308" opacity="0.6" />
-      <text x="120" y="98" textAnchor="middle" fill="#ffffff" fontSize="6.5" fontWeight="bold">Vacuola 3</text>
+      <g className="cg-float-3">
+        <circle cx="120" cy="95" r="18" fill="#ca8a04" opacity="0.4" stroke="#facc15" strokeWidth="2" />
+        <circle cx="120" cy="95" r="13" fill="#eab308" opacity="0.6" />
+        <text x="120" y="98" textAnchor="middle" fill="#ffffff" fontSize="6.5" fontWeight="bold">Vacuola 3</text>
+      </g>
 
-      <circle cx="130" cy="42" r="10" fill="#a16207" opacity="0.5" stroke="#fde047" strokeWidth="1" />
-      <circle cx="185" cy="105" r="9" fill="#a16207" opacity="0.5" stroke="#fde047" strokeWidth="1" />
-      <circle cx="50" cy="110" r="8" fill="#a16207" opacity="0.5" stroke="#fde047" strokeWidth="1" />
+      <circle className="cg-float" cx="130" cy="42" r="10" fill="#a16207" opacity="0.5" stroke="#fde047" strokeWidth="1" />
+      <circle className="cg-float-2" cx="185" cy="105" r="9" fill="#a16207" opacity="0.5" stroke="#fde047" strokeWidth="1" />
+      <circle className="cg-float-3" cx="50" cy="110" r="8" fill="#a16207" opacity="0.5" stroke="#fde047" strokeWidth="1" />
 
       <text x="120" y="24" textAnchor="middle" fill="#fef08a" fontSize="8.5" fontWeight="bold">
         Vacuolas Pequeñas y Dispersas (Animales)

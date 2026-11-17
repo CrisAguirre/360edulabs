@@ -1313,14 +1313,20 @@ export function Session1Subactivities({
               </span>
             </div>
 
-            {/* Texto literal del aporte conceptual */}
-            <div className="rounded-2xl border border-mint-400/30 bg-mint-400/8 p-4 sm:p-5">
+            {/* Texto del aporte conceptual (dirigido al estudiante) */}
+            <div className="rounded-2xl border border-mint-400/30 bg-gradient-to-r from-mint-400/12 via-mint-400/6 to-transparent p-4 sm:p-5 space-y-2">
+              <p className="flex items-center gap-2 text-sm font-extrabold text-mint-200 sm:text-base">
+                <Sparkles className="size-4" aria-hidden />
+                ¡Descubramos juntos el gran secreto de la biología!
+              </p>
               <p className="text-sm leading-relaxed text-slate-100 sm:text-base">
-                La docente realiza un aporte conceptual explicando que{' '}
+                Ahora que conoces cómo nació la idea de la célula, imagina que los científicos unieron todos sus
+                hallazgos en una sola gran conclusión:{' '}
                 <strong className="text-mint-200 font-extrabold">
-                  La Teoría celular explica por qué razón la célula es la unidad estructural y funcional de todos los seres vivos que habitan el planeta, excepto los virus que son acelulares.
+                  la Teoría Celular, que explica por qué la célula es la unidad estructural y funcional de todos
+                  los seres vivos que habitan el planeta… ¡excepto los virus, que son acelulares!
                 </strong>{' '}
-                Incluye los siguientes postulados:
+                Explora el muro y descubre sus postulados:
               </p>
             </div>
 
