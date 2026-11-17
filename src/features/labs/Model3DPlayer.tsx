@@ -25,7 +25,10 @@ interface ModeContent {
   hotspots: RawHotspot[];
 }
 
-export function Model3DPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity'>) {
+export function Model3DPlayer({
+  activity,
+  initialView
+}: Pick<ActivityRuntimeProps, 'activity'> & { initialView?: 'sketchfab' | 'local' | 'organelles' | 'simulator' }) {
   const content = activity.content as Record<string, any>;
   const model = String(content.model ?? 'microscope');
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
@@ -38,10 +41,14 @@ export function Model3DPlayer({ activity }: Pick<ActivityRuntimeProps, 'activity
   );
 
   // View mode switcher for cell-compare: 'sketchfab' | 'local' | 'organelles'
-  const [cellCompareView, setCellCompareView] = useState<'sketchfab' | 'local' | 'organelles'>('sketchfab');
+  const [cellCompareView, setCellCompareView] = useState<'sketchfab' | 'local' | 'organelles'>(
+    initialView === 'local' ? 'local' : initialView === 'organelles' ? 'organelles' : 'sketchfab'
+  );
 
   // View mode switcher for energy-cell: 'sketchfab' | 'simulator'
-  const [energyView, setEnergyView] = useState<'sketchfab' | 'simulator'>('sketchfab');
+  const [energyView, setEnergyView] = useState<'sketchfab' | 'simulator'>(
+    initialView === 'simulator' ? 'simulator' : 'sketchfab'
+  );
 
   const modes: ModeContent[] = Array.isArray(content.modes) ? content.modes : [];
   const mode = modes[modeIndex];

@@ -95,6 +95,14 @@ import {
   VirchowDivisionGraphic2D
 } from './CellGraphics2D';
 import { ReflectiveStructureCarousel } from './ReflectiveStructureCarousel';
+import { Model3DPlayer } from './Model3DPlayer';
+import { Animation3DPlayer } from './Animation3DPlayer';
+import {
+  CELL_COMPARE_ACTIVITY,
+  ENERGY_CELL_ACTIVITY,
+  M1_ZOOM_MISSION,
+  ZOOM_ACTIVITY
+} from './embeddedModels';
 
 export interface Scientist {
   name?: string;
@@ -2419,10 +2427,6 @@ export function Session2Subactivities({
     toast.success('¡Saberes previos registrados! Ahora socializa tu respuesta con el grupo.');
   };
 
-  // Extra activities from mission to link in 2.4
-  const extraVideo360 = mission?.activities.find((a) => a.type === 'video360');
-  const extraModel3d = mission?.activities.find((a) => a.type === 'model3d');
-
   // Comparison table items with filter
   const baseTable: TableRow[] = comparisonTable && comparisonTable.length > 0 ? comparisonTable : [
     { structure: 'Membrana celular', animal: 'Sí', plant: 'Sí', function: 'Controla qué sustancias entran y salen de la célula' },
@@ -2829,6 +2833,11 @@ export function Session2Subactivities({
               </a>
             </div>
 
+            {/* Modelo 3D interactivo: Célula de la energía */}
+            <div className="overflow-hidden rounded-3xl border border-emerald-400/25 bg-ink-950/60 p-4 sm:p-5">
+              <Model3DPlayer activity={ENERGY_CELL_ACTIVITY} initialView="simulator" />
+            </div>
+
             <p className="text-sm leading-relaxed text-slate-200 sm:text-base font-medium">
               La célula vegetal es la unidad básica del reino de las plantas. Su arquitectura está diseñada para sostener el cuerpo del vegetal, resistir cambios climáticos y producir su propio alimento a partir del sol:
             </p>
@@ -2904,6 +2913,11 @@ export function Session2Subactivities({
                 <Download className="size-3.5" aria-hidden />
                 Abrir plantilla Célula Animal en Google Drive
               </a>
+            </div>
+
+            {/* Modelo 3D interactivo: Dos células para comparar */}
+            <div className="overflow-hidden rounded-3xl border border-sky-400/25 bg-ink-950/60 p-4 sm:p-5">
+              <Model3DPlayer activity={CELL_COMPARE_ACTIVITY} initialView="local" />
             </div>
 
             <p className="text-sm leading-relaxed text-slate-200 sm:text-base font-medium">
@@ -2985,118 +2999,57 @@ export function Session2Subactivities({
               ) : null}
             </div>
 
-            <p className="text-sm leading-relaxed text-slate-200 sm:text-base font-medium">
-              Para dar respuesta al planteamiento de indagación, la docente invita a los estudiantes a visualizar el{' '}
-              <strong className="text-rose-200">modelo 360 de la célula y sus partes (modelo 3D)</strong> y el{' '}
-              <strong className="text-sky-200">video interactivo</strong> (<a href="https://www.youtube.com/watch?v=h1gryskdtmk" target="_blank" rel="noreferrer" className="text-sky-300 underline hover:text-sky-200">https://www.youtube.com/watch?v=h1gryskdtmk</a>).
-            </p>
-
-            {/* Reproductor de video interactivo embebido sin cookies */}
-            {videoEmbedUrl ? (
-              <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
-                <iframe
-                  src={videoEmbedUrl}
-                  title="Video interactivo: Estructura y partes de la célula animal y vegetal"
-                  className="absolute inset-0 size-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            ) : null}
-
-            {/* Descripción pedagógica del video interactivo */}
-            <div className="space-y-2 rounded-2xl border border-white/10 bg-white/4 p-4 text-xs leading-relaxed text-slate-300 sm:text-sm">
-              <h4 className="font-bold text-white flex items-center gap-2">
-                <Play className="size-4 text-rose-400 fill-current" aria-hidden />
-                Descripción del video interactivo:
-              </h4>
-              <p>
-                Este video interactivo recorre tridimensionalmente el interior de las células, mostrando cómo se organizan sus partes, sus funciones específicas y por qué las células vegetales y animales presentan diferencias anatómicas adaptadas a su tipo de vida.
+            {/* Descripción: exploración libre de la célula */}
+            <div className="rounded-2xl border border-rose-400/25 bg-rose-400/8 p-4 sm:p-5">
+              <p className="text-sm leading-relaxed text-slate-100 sm:text-base">
+                <strong className="text-rose-200">Explora libremente la estructura de la célula.</strong> Gira el
+                modelo, acércate y reconoce las partes que viste en los dos módulos anteriores: la{' '}
+                <strong className="text-emerald-300">célula vegetal</strong> (pared celular, cloroplastos y vacuola
+                central) y la <strong className="text-sky-300">célula animal</strong> (membrana, núcleo y
+                mitocondrias).
               </p>
             </div>
 
-            {/* ¿Para qué se mira este video? */}
-            <div className="space-y-3 rounded-2xl border border-sky-400/30 bg-sky-400/8 p-4 sm:p-5">
-              <h4 className="text-sm font-extrabold text-sky-200 uppercase tracking-wider flex items-center gap-2">
-                <Star className="size-4 text-sky-300 fill-current" aria-hidden />
-                ¿Para qué se mira este video? (Propósito pedagógico):
-              </h4>
-              <ul className="grid gap-2 sm:grid-cols-2 text-xs leading-relaxed text-slate-200 sm:text-sm">
-                <li className="flex items-start gap-2">
-                  <span className="font-bold text-sky-400 shrink-0">1.</span>
-                  <span>
-                    <strong>Identificar la tridimensionalidad celular:</strong> Apreciar la disposición tridimensional real de mitocondrias, núcleo y vacuolas.
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="font-bold text-sky-400 shrink-0">2.</span>
-                  <span>
-                    <strong>Comprender la especialización fotosintética:</strong> Entender por qué los cloroplastos son verdes y sintetizan alimento con la luz del sol.
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="font-bold text-sky-400 shrink-0">3.</span>
-                  <span>
-                    <strong>Observar la función de la pared celular:</strong> Descubrir cómo la pared de celulosa previene que la célula vegetal reviente por exceso de agua.
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="font-bold text-sky-400 shrink-0">4.</span>
-                  <span>
-                    <strong>Argumentar en la plataforma:</strong> Recopilar evidencias visuales para sustentar tu respuesta formal a la pregunta 2.5.
-                  </span>
-                </li>
-              </ul>
+            {/* Modelo 3D: Zoom microscópico */}
+            <div className="overflow-hidden rounded-3xl border border-violet-400/25 bg-ink-950/60 p-4 sm:p-5">
+              <Animation3DPlayer activity={ZOOM_ACTIVITY} mission={M1_ZOOM_MISSION} onProgressChange={() => {}} />
             </div>
 
-            {/* Tarjeta del Modelo 360 y enlaces 3D interactivos */}
-            <div className="rounded-2xl border border-mint-400/30 bg-mint-400/8 p-4 sm:p-5 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <span className="text-2xl">🧬</span>
-                <div>
-                  <h4 className="text-sm font-extrabold text-white sm:text-base">
-                    Presentación del modelo 360 de la célula y sus partes
+            {/* Video interactivo como dato adjunto (tamaño reducido) */}
+            {videoEmbedUrl ? (
+              <div className="space-y-2 rounded-2xl border border-white/10 bg-white/4 p-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Play className="size-4 text-rose-400 fill-current" aria-hidden />
+                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+                    Video de apoyo: estructura y partes de la célula
                   </h4>
-                  <p className="text-xs text-slate-300">
-                    Explora las células vegetal y animal en tres dimensiones con controles de rotación, zoom y conmutación de capas:
-                  </p>
+                  {videoUrl ? (
+                    <a
+                      href={videoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="ml-auto inline-flex items-center gap-1 text-[11px] font-bold text-sky-300 hover:text-sky-200"
+                    >
+                      Abrir en YouTube
+                      <ExternalLink className="size-3" aria-hidden />
+                    </a>
+                  ) : null}
                 </div>
+                <div className="relative mx-auto aspect-video w-full max-w-lg overflow-hidden rounded-xl border border-white/10 bg-black">
+                  <iframe
+                    src={videoEmbedUrl}
+                    title="Video de apoyo: Estructura y partes de la célula animal y vegetal"
+                    className="absolute inset-0 size-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <p className="text-[11px] leading-relaxed text-slate-400">
+                  Recorre tridimensionalmente el interior de las células y fíjate en cómo se organizan sus partes y
+                  en las diferencias entre célula vegetal y animal.
+                </p>
               </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 pt-1">
-                {extraModel3d && mission ? (
-                  <Link
-                    to={activityUrl(mission.code, extraModel3d)}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-mint-400/30 bg-mint-400/10 p-3.5 transition hover:bg-mint-400/20"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Box className="size-4 text-mint-300" />
-                      <div>
-                        <span className="block text-xs font-bold text-white">Visor 3D: Células animal y vegetal</span>
-                        <span className="text-[11px] text-slate-400">Gira los modelos 3D y toca hotspots</span>
-                      </div>
-                    </div>
-                    <Eye className="size-4 text-mint-300" />
-                  </Link>
-                ) : null}
-
-                {extraVideo360 && mission ? (
-                  <Link
-                    to={activityUrl(mission.code, extraVideo360)}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-sky-400/30 bg-sky-400/10 p-3.5 transition hover:bg-sky-400/20"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Eye className="size-4 text-sky-300" />
-                      <div>
-                        <span className="block text-xs font-bold text-white">Video 360 panorámico de la célula</span>
-                        <span className="text-[11px] text-slate-400">Recorrido 360 inmersivo</span>
-                      </div>
-                    </div>
-                    <Eye className="size-4 text-sky-300" />
-                  </Link>
-                ) : null}
-              </div>
-            </div>
+            ) : null}
 
             {/* Pie de navegación de la sub-actividad */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
