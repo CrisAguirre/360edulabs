@@ -9,3 +9,5 @@ Reto de la misión: Convertirse en pequeños científicos para descubrir cómo l
 Insignia por conquistar: Guardián de la Energía Celular.
 
 opencode -s ses_e37446d6cffeUZW9bqMjFAKM2P
+
+opencode -s ses_e9166ee64ffeXABZrNIUrGFzbG
