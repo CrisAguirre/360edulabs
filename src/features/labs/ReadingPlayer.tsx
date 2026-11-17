@@ -2918,8 +2918,8 @@ export function Session2Subactivities({
               <Model3DPlayer
                 activity={CELL_COMPARE_ACTIVITY}
                 initialView="local"
-                sketchfabLabel="Visor 360 Célula Animal"
-                organellesLabel="Núcleo y Nucléolo"
+                sketchfabLabel="Modelo 3D · Célula Animal"
+                organellesLabel="Modelo 3D · Núcleo y Nucléolo"
               />
             </div>
 

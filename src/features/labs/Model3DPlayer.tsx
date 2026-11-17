@@ -29,8 +29,8 @@ export function Model3DPlayer({
   activity,
   initialView,
   showEnergyControls = true,
-  sketchfabLabel = 'Visor Sketchfab Inmersivo',
-  organellesLabel = 'Explorador de Organelos'
+  sketchfabLabel = 'Modelo 3D · Sketchfab',
+  organellesLabel = 'Modelo 3D · Organelos'
 }: Pick<ActivityRuntimeProps, 'activity'> & {
   initialView?: 'sketchfab' | 'local' | 'organelles' | 'simulator';
   /** Oculta los sliders de agua/luz/nutrientes cuando el objetivo es solo observar la célula. */
@@ -102,7 +102,7 @@ export function Model3DPlayer({
             {model === 'microscope'
               ? 'Modelo 3D · Microscopio Óptico Compuesto'
               : model === 'cell-compare'
-                ? 'Modelos 3D · Células Animal y Vegetal'
+                ? 'Modelo 3D · Células Animal y Vegetal'
                 : 'Modelo 3D · Célula de la Energía'}
           </Chip>
           <h3 className="mt-2 font-display text-xl font-extrabold text-white">
@@ -174,7 +174,7 @@ export function Model3DPlayer({
             >
               <span className="flex items-center gap-1.5">
                 <Eye className="size-3.5 text-mint-300" aria-hidden />
-                Visor Interactivo Local
+                Modelo 3D · Visor Local
               </span>
             </button>
             <button
@@ -195,10 +195,10 @@ export function Model3DPlayer({
           </div>
           <span className="text-[11px] text-slate-400">
             {cellCompareView === 'sketchfab'
-              ? 'Modelo 3D fotorrealista embed'
+              ? 'Modelo 3D · fotorrealista'
               : cellCompareView === 'local'
-                ? 'Modelo 3D manipulable con puntos informativos'
-                : 'Inspecciona organelo por organelo'}
+                ? 'Modelo 3D · manipulable con puntos informativos'
+                : 'Modelo 3D · inspecciona organelo por organelo'}
           </span>
         </div>
       ) : null}
@@ -219,7 +219,7 @@ export function Model3DPlayer({
             >
               <span className="flex items-center gap-1.5">
                 <Sparkles className="size-3.5 text-amber-300" aria-hidden />
-                {showEnergyControls ? 'Visor Sketchfab (Célula Interactiva)' : 'Visor 360 Célula Vegetal'}
+                {showEnergyControls ? 'Modelo 3D · Célula Interactiva' : 'Modelo 3D · Célula Vegetal'}
               </span>
             </button>
             <button
@@ -234,16 +234,16 @@ export function Model3DPlayer({
             >
               <span className="flex items-center gap-1.5">
                 <Waves className="size-3.5 text-sky-300" aria-hidden />
-                {showEnergyControls ? 'Simulador de Fábrica Celular' : 'Célula Vegetal en 3D'}
+                {showEnergyControls ? 'Modelo 3D · Fábrica Celular' : 'Modelo 3D · Célula Vegetal Interactiva'}
               </span>
             </button>
           </div>
           <span className="text-[11px] text-slate-400">
             {energyView === 'sketchfab'
-              ? 'Modelo 3D metabólico'
+              ? 'Modelo 3D · metabólico'
               : showEnergyControls
-                ? 'Manipula agua, luz y nutrientes'
-                : 'Observa las estructuras de la célula vegetal'}
+                ? 'Modelo 3D · manipula agua, luz y nutrientes'
+                : 'Modelo 3D · observa las estructuras de la célula vegetal'}
           </span>
         </div>
       ) : null}
@@ -406,7 +406,7 @@ export function Model3DPlayer({
               </div>
               <p className="mt-3 text-xs leading-relaxed text-slate-400">
                 El visor muestra las estructuras celulares tridimensionales. Utiliza el botón de pantalla completa o
-                pasa a {organellesLabel} para ver cada estructura en detalle.
+                pasa a la pestaña «{organellesLabel}» para ver cada estructura en detalle.
               </p>
             </div>
           </SpotlightCard>

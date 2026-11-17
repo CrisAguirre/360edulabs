@@ -119,7 +119,7 @@ export function Animation3DPlayer({ activity, mission }: ActivityRuntimeProps) {
                     : 'text-slate-400 hover:text-slate-200'
                 )}
               >
-                Visor Sketchfab Inmersivo
+                Modelo 3D · Sketchfab
               </button>
               <button
                 type="button"
